@@ -8,6 +8,8 @@ from scipy.stats import norm
 from scipy.stats import pearsonr
 from scipy.stats import gaussian_kde as smooth
 from scipy.stats import expon
+from scipy.stats import norm
+from scipy.stats.mstats import gmean
 
 # requires "module load R/3.5.3"
 # If that is insufficient, then use install.packages("OpVaR") in an R environment before running this
@@ -53,7 +55,7 @@ def detect_exponential_data(x_unadjusted, n_bins):
     real_log_range = np.log(real_range[nonzeros])
 
     exp_status1 =  pearsonr(est_log_range, real_log_range)[0] > 0.95 
-    monotonicity = detect_monotonic_data(x, int(len(x)/150))
+    monotonicity = detect_monotonic_data(x, np.max([10, int(len(x)/150)]))
     exp_status2 = monotonicity > 0.9
 
     return(exp_status1 or exp_status2)
@@ -127,7 +129,7 @@ def approximate_quantiles(x, quantiles, bw_coef = 0.3):
     else:
         pdb.set_trace()
  
-def estimate_tukey_params(W, name):
+def estimate_tukey_params(W, name, bound):
 
     body = np.logical_and(W <= np.percentile(W, 99), W >= np.percentile(W, 1))
     W_main = W[body]
@@ -169,16 +171,13 @@ def estimate_tukey_params(W, name):
     phi = 0.6817766 + 0.0534282*SK + 0.1794771*T - 0.0059595*(T**2)
     B = (0.7413*IQR)/phi
 
-    Q_vec2 = np.percentile(W, [5, 25, 50, 75, 95])
+    Q_vec2 = np.percentile(W, [100 - bound, 25, 50, 75, bound])
     if len(np.unique(Q_vec2)) != 5:
-        Q_vec2 = approximate_quantiles(W, [5, 25, 50, 75, 95])
+        Q_vec2 = approximate_quantiles(W, [100 - bound, 25, 50, 75, bound])
     if not np.all(Q_vec2[1:] > Q_vec2[:4]):
         pdb.set_trace()
 
-    # 95th percentile of N(0, 1)
-    zv = 1.64485
-    # 90th percentile of N(0, 1)
-    # zv = 1.28155
+    zv = norm.ppf(bound/100, 0, 1)
     UHS = Q_vec2[4] - Q_vec2[2]
     LHS = Q_vec2[2] - Q_vec2[0]
     g = (1/zv)*np.log(UHS/LHS)
@@ -187,9 +186,9 @@ def estimate_tukey_params(W, name):
     if np.any(y == np.inf):
         pdb.set_trace()
         
-    Q_vec3 = np.percentile(y, [5, 25, 50, 75, 95])
+    Q_vec3 = np.percentile(y, [100 - bound, 25, 50, 75, bound])
     if len(np.unique(Q_vec3)) != 5:
-        Q_vec3 = approximate_quantiles(y, [5, 25, 50, 75, 95])
+        Q_vec3 = approximate_quantiles(y, [100 - bound, 25, 50, 75, bound])
     if not np.all(Q_vec3[1:] > Q_vec3[:4]):
         pdb.set_trace()
     Q_ratio = (Q_vec3[4]*Q_vec3[0])/(Q_vec3[4] + Q_vec3[0])
@@ -238,7 +237,7 @@ def compute_w(x):
     ASO = (ASO + 1E-10)/(np.min(ASO) + np.max(ASO) + 2E-10)
     return(norm.ppf(ASO))
     
-def plot_test(test_dist, fitted_curve, range, exp_status, bw_coef,
+def plot_test(test_dist, fitted_curve, range, exp_status, bw_coef, prefix,
               cutoff, outliers, name, curve = None, ignored_values = None):
 
     if not ignored_values is None:
@@ -289,12 +288,13 @@ def plot_test(test_dist, fitted_curve, range, exp_status, bw_coef,
     plt.xlim([p1 - delta, p99 + delta])
     plt.title(title)
     plt.legend()
-    if not os.path.exists("Alena_Orlenko_outlier_plots"):
-        os.mkdir("Alena_Orlenko_outlier_plots")
-    plt.savefig("Alena_Orlenko_outlier_plots/" + name + ".png")
+    if not os.path.exists(prefix + "_outlier_plots"):
+        os.mkdir(prefix + "_outlier_plots")
+    plt.savefig(prefix + "_outlier_plots/" + name + ".png")
     plt.clf()
+    return(r_sq)
 
-def plot_data(data_dist, cutoff, outliers, spike_vals, name):
+def plot_data(data_dist, cutoff, outliers, spike_vals, name, prefix):
     num_outliers = len(outliers)
     label0 = "feature distribution"
     nbins = np.max([int(len(data_dist)/300), 100])
@@ -330,27 +330,126 @@ def plot_data(data_dist, cutoff, outliers, spike_vals, name):
     plt.xlim([p1 - delta, p99 + delta])
     plt.title("field " + name + " outlier cutoffs")
     plt.legend()
-    if not os.path.exists("Alena_Orlenko_outlier_plots_untransformed"):
-        os.mkdir("Alena_Orlenko_outlier_plots_untransformed")
-    plt.savefig("Alena_Orlenko_outlier_plots_untransformed/" + name + ".png")
+    if not os.path.exists(prefix + "_outlier_plots_untransformed"):
+        os.mkdir(prefix + "_outlier_plots_untransformed")
+    plt.savefig(prefix + "_outlier_plots_untransformed/" + name + ".png")
     plt.clf()
 
-def compute_outliers(x_spiked, name):
+def adjusted_IQR(x, x_spiked, name):
+    message = "The adjusted IQR test is being used for feature "
+    message += name + " because the main test fit the data poorly."
+    print(message)
+    sampled_indices = np.random.choice(np.arange(len(x)), (1000, 4000))
+    MC = np.mean(medcouple(x[sampled_indices]))
+    # integrate N(0,1) from -inf to 2.7822 gets 99.73
+    C = (2.7822 - 0.675)/1.35
+    Q13 = np.nanpercentile(x, [25, 75])
+    IQR = Q13[1] - Q13[0]
+    ub = Q13[1] + C*IQR*np.exp(3.87*MC)
+    lb = Q13[0] - C*IQR*np.exp(-3.79*MC)
+    outliers = x[np.logical_or(x < lb, x > ub)]
+    x_spiked[np.isin(x_spiked, outliers)] = np.nan
+    return(x_spiked, outliers)
+
+def geometric_test(x, x_spiked, name, mean_decrease):
+    message = "The geometric test is being used for feature "
+    message += name + " because the main test fit the data poorly."
+    print(message)
+    x_unique, x_counts = np.unique(x, return_counts = True)
+    sorted_indices = np.flip(np.argsort(x_counts))
+    cdf = 1 - np.cumprod([mean_decrease]*len(x_unique))
+    cutoff_index = np.where(cdf <= 0.9973)[0][-1] + 2
+    outliers = x_unique[sorted_indices[cutoff_index:]]
+    x_spiked[np.isin(x_spiked, outliers)] = np.nan
+    return(x_spiked, outliers)
+
+def backup_test(x_spiked, name, prefix, mean_decrease = None):
+    x = COPY(x_spiked)[np.isnan(x_spiked)==False]
+    x = remove_severe_outliers(x, name)
+    if mean_decrease is None:
+        x_spiked, outliers = adjusted_IQR(x, x_spiked, name)
+        test = " (adjusted IQR)"
+    else:
+        x_spiked, outliers = geometric_test(x, x_spiked, name, mean_decrease)
+        test = " (geometric test)"
+    n = np.max([int(len(x)/300), 100])
+    label2 = "outliers (N = " + str(len(outliers)) + ")"
+    plt.hist(x[np.isin(x, outliers) == False], bins = n, label = "inliers")
+    plt.hist(x[np.isin(x, outliers)], bins = n, label = label2)
+    plt.xlabel('feature_value')
+    plt.ylabel('count')
+    p1, p99 = np.percentile(x, 1), np.percentile(x, 99)
+    delta = (p99 - p1)/2
+    plt.xlim([p1 - delta, p99 + delta])
+    plt.title("field " + name + " outlier cutoffs" + test)
+    plt.legend()
+    if not os.path.exists(prefix + "_outlier_plots_untransformed"):
+        os.mkdir(prefix + "_outlier_plots_untransformed")
+    plt.savefig(prefix + "_outlier_plots_untransformed/" + name + ".png")
+    return(x_spiked)
+
+def remove_spikes(x, x_spiked, name, prefix, count, spikes, decreases):
+    x_unique, x_counts = np.unique(x, return_counts = True)
+    if np.max(x_counts)/np.sum(x_counts) < 0.5 or count == 3:
+        return(x, spikes, decreases)
+    decreases.append(1 - np.max(x_counts)/np.sum(x_counts))
+    new_spike = x_unique[np.argmax(x_counts)]
+    spikes.append(new_spike)
+    x = x[x != new_spike]
+    count += 1
+    return(remove_spikes(x, x_spiked, name, prefix, 
+                         count, spikes, decreases))
+
+def remove_severe_outliers(x, name):
+    p_low, p_high = np.percentile(x, [2.5, 97.5])
+    range = p_high - p_low
+    lb = p_low - 5*range
+    ub = p_high + 5*range
+    severe_outliers = x[np.logical_or(x < lb, x > ub)]
+    message = "The following severe outliers were removed for feature "
+    message += name + ": " + str(np.unique(severe_outliers))
+    if len(severe_outliers > 0):
+        print(message)
+    return(x[np.isin(x, severe_outliers) == False])
+
+def get_gmean_decrease(x):
+    total_decrease = 1
+    decreases = []
+    x_new = COPY(x)
+    while total_decrease > 0.05:
+        x_unique, x_counts = np.unique(x_new, return_counts = True)
+        decrease = 1 - np.max(x_counts)/np.sum(x_counts)
+        decreases.append(decrease)
+        total_decrease = total_decrease*decrease
+        x_new = x_new[x_new != x_unique[np.argmax(x_counts)]]
+    return(gmean(decreases))
+
+def get_geometric_info(x):
+    x_unique, x_counts = np.unique(x, return_counts = True)
+    sorted_indices = np.flip(np.argsort(x_counts))
+    cdf = np.cumsum(x_counts[sorted_indices])/np.sum(x_counts)
+    p1 = np.where(cdf >= 0.01)[0][0]
+    p99 = np.where(cdf <= 0.99)[0][-1]
+    num_main_values = len(cdf[p1:p99])
+    gmean_decrease = get_gmean_decrease(x)
+    return(num_main_values, gmean_decrease)
+        
+def compute_outliers(x_spiked, name, prefix, bound):
 
     x_spiked = x_spiked.astype(float)
     x = COPY(x_spiked)[np.isnan(x_spiked)==False]
+    x, spikes, decreases = remove_spikes(x, x_spiked, name, prefix, 0, [], [])
+    if len(spikes) > 3:
+        return(backup_test(x_spiked, name, prefix, gmean(decreases)))
 
-    if len(x) < 10000:
-        bw_coef = 0.3
-    elif len(x) < 100000:
-        bw_coef = 0.2
-    else:
-        bw_coef = 0.1
-    
-    exp_status = detect_exponential_data(x, int(len(x)/300))
+    x = remove_severe_outliers(x, name) 
+    x_unique, x_counts = np.unique(x, return_counts = True)
+
+    bw_coef = 0.3    
+    exp_status = detect_exponential_data(x, np.max([10, int(len(x)/300)]))
 
     #TODO: something for this
-    if exp_status == True or name in ["DR1TACAR"]:
+    if exp_status == True:
         print(name)    
         spike_vals = np.array([])
         alpha_body = 0.05
@@ -363,9 +462,9 @@ def compute_outliers(x_spiked, name):
             print("the minimum value contains more than 50% of the probability mass.")
             print("you need to specify a list of spike values for each input feature.")
             return([])
-        range = expon.ppf(np.linspace(0, 0.99, len(x_tail)), loc, scale)
+        range = expon.ppf(np.linspace(0, 0.9973, len(x_tail)), loc, scale)
         curve_dist = x[x >= np.percentile(x, 100*(1 - 2*alpha_body))]
-        curve_range = expon.ppf(np.linspace(0, 0.99, len(curve_dist)), loc, scale)
+        curve_range = expon.ppf(np.linspace(0, 0.9973, len(curve_dist)), loc, scale)
         curve = [curve_dist, curve_range]
         fitted_curve = expon.pdf(range, loc, scale)
         cutoff = expon.ppf(alpha_tail, loc, scale)
@@ -373,26 +472,39 @@ def compute_outliers(x_spiked, name):
             outliers = x[x > cutoff]
         else:
             outliers = x[x < cutoff]
-        plot_test(x_tail, fitted_curve, range, exp_status, bw_coef, 
-                  cutoff, outliers, name, curve, ignored_values = None)
-        plot_data(x, cutoff, outliers, spike_vals, name)
+        r_sq = plot_test(x_tail, fitted_curve, range, exp_status, bw_coef, 
+                         prefix, cutoff, outliers, name, curve)
+        if r_sq < 0.6:
+            num_main_values, gmean_decrease = get_geometric_info(x)
+            if num_main_values >= 6: 
+                return(backup_test(x_spiked, name, prefix))
+            else:
+                return(backup_test(x_spiked, name, prefix, gmean_decrease))
+        plot_data(x, cutoff, outliers, spike_vals, name, prefix)
 
     else:
         spike_vals = np.array([])
         W = compute_w(x)
-        A, B, g, h, W_ignored = estimate_tukey_params(W, name)
+        A, B, g, h, W_ignored = estimate_tukey_params(W, name, bound)
         if A == B == g == h == W_ignored == 0:
             return([])
         fitted_TGH = TGH.rgh(len(x), float(A), float(B), float(g), float(h))
         delta = (np.percentile(W, 99) - np.percentile(W, 1))/2
         xlims = [np.percentile(W, 1) - delta, np.percentile(W, 99) + delta]
-        range = np.linspace(xlims[0] + 1, xlims[1] - 1, int(len(W)/300))
+        range = np.linspace(xlims[0] - delta, xlims[1] + delta, 
+                            np.max([100, int(len(W)/300)]))
         smooth_TGH = smooth(fitted_TGH, bw_method =  bw_coef)(range)
         cutoff = np.percentile(fitted_TGH, 99.73)
         x_outliers = np.unique(x[W > cutoff])
-        plot_test(W, smooth_TGH, range, exp_status, bw_coef, 
-                  cutoff, x_outliers, name, ignored_values = W_ignored)
-        plot_data(x, cutoff, x_outliers, spike_vals, name)
+        r_sq = plot_test(W, smooth_TGH, range, exp_status, bw_coef, prefix, 
+                         cutoff, x_outliers, name, ignored_values = W_ignored)
+        if r_sq < 0.8:
+            num_main_values, gmean_decrease = get_geometric_info(x)
+            if num_main_values > 6:
+                return(backup_test(x_spiked, name, prefix))
+            else:
+                return(backup_test(x_spiked, name, prefix, gmean_decrease))
+        plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
         x_spiked[np.isin(x_spiked, x_outliers)] = np.nan
     return(x_spiked)
 
