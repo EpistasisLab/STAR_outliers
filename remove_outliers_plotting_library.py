@@ -13,6 +13,18 @@ from scipy.stats.mstats import gmean
 
 from remove_outliers_testing_library import bin_data
 
+def smooth_tail_subsection(curve, range0, bw_coef, cutoff, main_dist):
+    smoothed_curve = smooth(curve[0], bw_method = bw_coef)(curve[1])
+    if cutoff > np.percentile(main_dist, 50):
+        smoothed_curve = smoothed_curve[(len(smoothed_curve) - len(range0)):]
+        subrange = curve[1][(len(curve[1]) - len(range0)):]
+    else:
+        smoothed_curve = smoothed_curve[:len(range0)]
+        subrange = curve[1][:len(range0)]
+    deltas = subrange[1:] - subrange[:-1]
+    smoothed_curve = smoothed_curve/np.sum(smoothed_curve[:-1]*deltas)
+    return(smoothed_curve)
+
 def plot_test(test_dist, fitted_curve, range0, exp_status, bw_coef, prefix,
               cutoff, outliers, name, curve = None, ignored_values = None):
 
@@ -22,20 +34,11 @@ def plot_test(test_dist, fitted_curve, range0, exp_status, bw_coef, prefix,
         main_dist = test_dist
      
     if curve != None:
-        smoothed_curve = smooth(curve[0], bw_method =  bw_coef)(curve[1])
-        if cutoff > np.percentile(main_dist, 50):
-            smoothed_curve = smoothed_curve[(len(smoothed_curve) - len(range0)):]
-            subrange = curve[1][(len(curve[1]) - len(range0)):]
-            deltas = subrange[1:] - subrange[:-1]
-            smoothed_curve = smoothed_curve/np.sum(smoothed_curve[:-1]*deltas)
-        else:
-            smoothed_curve = smoothed_curve[:len(range0)]
-            subrange = curve[1][:len(range0)]
-            deltas = subrange[1:] - subrange[:-1]
-            smoothed_curve = smoothed_curve/np.sum(smoothed_curve[1:]*deltas)
-
+        smoothed_curve = smooth_tail_subsection(curve, range0, bw_coef,
+                                                cutoff, main_dist)
     else:
         smoothed_curve = smooth(main_dist, bw_method =  bw_coef)(range0)
+
     r_sq = pearsonr(smoothed_curve, fitted_curve)[0]**2
     test_name = (["tukey", "exp_tail_fit"])[np.array([exp_status]).astype(int)[0]]
     title = "field " + name + " vs fitted " + test_name 
@@ -70,6 +73,25 @@ def plot_test(test_dist, fitted_curve, range0, exp_status, bw_coef, prefix,
     plt.clf()
     return(r_sq)
 
+def plot_highliers(plot_object, y_vec, data_dist, outliers, p50):
+    min_highlier = np.min(outliers[outliers > p50])
+    high_cutoff = np.max(data_dist[data_dist < min_highlier]) 
+    num_highliers = np.sum(outliers > p50)
+    label = "upper bound: " +  str(num_highliers) 
+    label += " values > " + str(high_cutoff)[0:6]
+    plt.plot(np.repeat(high_cutoff, 2), y_vec, "k-", label = label)
+
+def plot_lowliers(plot_object, y_vec, data_dist, outliers, p50):
+    label = ""
+    if len(outliers[outliers > p50]) > 0:
+        label += "\n"
+    max_lowlier = np.max(outliers[outliers < p50])
+    low_cutoff = np.min(data_dist[data_dist > max_lowlier])
+    num_lowliers = np.sum(outliers < p50)
+    label += "lower bound: " + str(num_lowliers) 
+    label += " values < " + str(low_cutoff)[0:6]
+    plt.plot(np.repeat(low_cutoff, 2),  y_vec, "k-", label = label)
+
 def plot_data(data_dist, cutoff, outliers, spike_vals, name, prefix):
     num_outliers = len(outliers)
     label0 = "feature distribution"
@@ -84,21 +106,9 @@ def plot_data(data_dist, cutoff, outliers, spike_vals, name, prefix):
     plt.hist(data_dist, bins = nbins, density = True, label = label0)
     p50 = np.percentile(data_dist, 50)
     if len(outliers[outliers > p50]) > 0:
-        min_highlier = np.min(outliers[outliers > p50])
-        high_cutoff = np.max(data_dist[data_dist < min_highlier]) 
-        num_highliers = np.sum(outliers > p50)
-        label1 = "upper bound: " +  str(num_highliers) + " values > " + str(high_cutoff)[0:6]
-        plt.plot(np.repeat(high_cutoff, 2), halfmax*np.arange(2), "k-", label = label1)
+        plot_highliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)
     if len(outliers[outliers < p50]) > 0:
-        if len(outliers[outliers > p50]) > 0:
-            label2 = "\n"
-        else:
-            label2 = ""
-        max_lowlier = np.max(outliers[outliers < p50])
-        low_cutoff = np.min(data_dist[data_dist > max_lowlier])
-        num_lowliers = np.sum(outliers < p50)
-        label2 += "lower bound: " + str(num_lowliers) + " values < " + str(low_cutoff)[0:6]
-        plt.plot(np.repeat(low_cutoff, 2),  halfmax*np.arange(2), "k-", label = label2)
+        plot_lowliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)        
     plt.xlabel('feature_value')
     plt.ylabel('density')
     p1, p99 = np.percentile(data_dist, 1), np.percentile(data_dist, 99)

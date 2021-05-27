@@ -45,39 +45,47 @@ path_names = [name_prefix + "_cols/" + name for name in filenames]
 field_cols = [pd.read_csv(path, delimiter = "\t", header = None) 
               for path in path_names]
 field_cols = [col[0].to_numpy() for col in field_cols]
+unique_val_counts = np.array([len(np.unique(field[np.isnan(field) == False])) 
+                              for field in field_cols])
+field_cols_with_outliers = [field_cols[i] for i in 
+                            np.where(unique_val_counts >= 10)[0]]
+field_names_with_outliers = [field_names[i] for i in 
+                             np.where(unique_val_counts >= 10)[0]]
+field_cols_without_outliers = [field_cols[i] for i in 
+                               np.where(unique_val_counts < 10)[0]]
+field_names_without_outliers = [field_names[i] for i in 
+                                np.where(unique_val_counts < 10)[0]]
 
+
+bound_not_present = False
 if bound is None:
-    if len(field_cols[0]) < 1000:
-        bound = 90
-    elif len(field_cols[0]) < 10000:
-        bound = 95
-    elif len(field_cols[0]) < 100000:
-        bound = 97.5
-    else:
-        bound = 99
+    bound_not_present = True
+if len(field_cols[0]) < 1000 and bound_not_present:
+    bound = 90
+elif len(field_cols[0]) < 10000 and bound_not_present:
+    bound = 95
+elif len(field_cols[0]) < 100000 and bound_not_present:
+    bound = 97.5
+else:
+    bound = 99
 print(bound)
 
-for i in tqdm(range(len(field_cols))):
+for i in tqdm(range(len(field_cols_with_outliers))):
 
-    field = field_cols[i]
-    name = field_names[i]
-    num_vals = len(np.unique(field[np.isnan(field) == False]))
-    if num_vals >= 10 and name not in []:
+    field = field_cols_with_outliers[i]
+    name = field_names_with_outliers[i]
+    cleaned_field = compute_outliers(field, name, name_prefix, bound)
+    path = name_prefix + "_cleaned_cols/" + name + ".txt"
+    DF = pd.DataFrame(cleaned_field)
+    DF.to_csv(path, sep = "\t", header = False, index = False)
 
-        cleaned_field = compute_outliers(field, name, name_prefix, bound)
-        #signifies technical problem with the data
-        if len(cleaned_field) == 0:
-            path = name_prefix + "_cleaned_cols/" + filenames[i]
-            DF = pd.DataFrame(field)
-            DF.to_csv(path, sep = "\t", header = False, index = False)
-        else:
-            path = name_prefix + "_cleaned_cols/" + filenames[i]
-            DF = pd.DataFrame(cleaned_field)
-            DF.to_csv(path, sep = "\t", header = False, index = False)
-    else:
-        path = name_prefix + "_cleaned_cols/" + filenames[i]
-        DF = pd.DataFrame(field)
-        DF.to_csv(path, sep = "\t", header = False, index = False)
+for i in range(len(field_cols_without_outliers)):
+
+    field = field_cols_without_outliers[i]
+    name = field_names_without_outliers[i]
+    path = name_prefix + "_cleaned_cols/" + name + ".txt"
+    DF = pd.DataFrame(field)
+    DF.to_csv(path, sep = "\t", header = False, index = False)
 
 cleaned_filenames = np.array(os.listdir(name_prefix + "_cleaned_cols"))
 cleaned_fieldnames = [name[:-4] for name in cleaned_filenames]
