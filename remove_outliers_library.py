@@ -450,8 +450,7 @@ def compute_outliers(x_spiked, name, prefix, bound):
     exp_status = detect_exponential_data(x, np.max([10, int(len(x)/300)]))
 
     #TODO: something for this
-    if exp_status == True:
-        print(name)    
+    if exp_status == True: 
         spike_vals = np.array([])
         alpha_body = 0.05
         alpha_tail = (.9973 - (1 - alpha_body))/alpha_body
