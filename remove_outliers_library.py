@@ -372,10 +372,10 @@ def backup_test(x_spiked, name, prefix, mean_decrease = None):
     else:
         x_spiked, outliers = geometric_test(x, x_spiked, name, mean_decrease)
         test = " (geometric test)"
-    n = np.max([int(len(x)/300), 100])
-    label2 = "outliers (N = " + str(len(outliers)) + ")"
-    plt.hist(x[np.isin(x, outliers) == False], bins = n, label = "inliers")
-    plt.hist(x[np.isin(x, outliers)], bins = n, label = label2)
+
+    label2 = "outliers (n = " + str(len(outliers)) + ")"
+    plt.hist(x[np.isin(x, outliers) == False], bins = 100, label = "inliers")
+    plt.hist(x[np.isin(x, outliers)], bins = 100, label = label2)
     plt.xlabel('feature_value')
     plt.ylabel('count')
     p1, p99 = np.percentile(x, 1), np.percentile(x, 99)
@@ -386,6 +386,7 @@ def backup_test(x_spiked, name, prefix, mean_decrease = None):
     if not os.path.exists(prefix + "_outlier_plots_untransformed"):
         os.mkdir(prefix + "_outlier_plots_untransformed")
     plt.savefig(prefix + "_outlier_plots_untransformed/" + name + ".png")
+    plt.clf()
     return(x_spiked)
 
 def remove_spikes(x, x_spiked, name, prefix, count, spikes, decreases):
@@ -428,8 +429,8 @@ def get_geometric_info(x):
     x_unique, x_counts = np.unique(x, return_counts = True)
     sorted_indices = np.flip(np.argsort(x_counts))
     cdf = np.cumsum(x_counts[sorted_indices])/np.sum(x_counts)
-    p1 = np.where(cdf >= 0.01)[0][0]
-    p99 = np.where(cdf <= 0.99)[0][-1]
+    p1 = np.where(cdf >= 0.025)[0][0]
+    p99 = np.where(cdf <= 0.975)[0][-1]
     num_main_values = len(cdf[p1:p99])
     gmean_decrease = get_gmean_decrease(x)
     return(num_main_values, gmean_decrease)
@@ -476,7 +477,7 @@ def compute_outliers(x_spiked, name, prefix, bound):
                          prefix, cutoff, outliers, name, curve)
         if r_sq < 0.6:
             num_main_values, gmean_decrease = get_geometric_info(x)
-            if num_main_values >= 6: 
+            if num_main_values > 10: 
                 return(backup_test(x_spiked, name, prefix))
             else:
                 return(backup_test(x_spiked, name, prefix, gmean_decrease))
@@ -500,7 +501,7 @@ def compute_outliers(x_spiked, name, prefix, bound):
                          cutoff, x_outliers, name, ignored_values = W_ignored)
         if r_sq < 0.8:
             num_main_values, gmean_decrease = get_geometric_info(x)
-            if num_main_values > 6:
+            if num_main_values > 10:
                 return(backup_test(x_spiked, name, prefix))
             else:
                 return(backup_test(x_spiked, name, prefix, gmean_decrease))
