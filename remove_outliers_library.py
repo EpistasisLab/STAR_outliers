@@ -180,13 +180,17 @@ def run_backup_test(x, x_spiked, name, prefix):
     else:
         return(backup_test(x_geo, x_spiked, name, prefix, gmean_decrease))
 
-def attempt_exponential_fit(x, x_spiked, name, prefix, bw_coef, exp_status):
+def attempt_exponential_fit(x, x_spiked, name, alt_tests, 
+                            prefix, bw_coef, exp_status):
     spike_vals = np.array([])
     alpha_body = 0.05
     alpha_tail = (.9973 - (1 - alpha_body))/alpha_body
     x_tail = x[x >= np.percentile(x, 100*(1 - alpha_body))]
     loc = np.min(x_tail)
     scale = np.mean(x_tail) - loc
+    tail_unique, tail_counts = np.unique(x_tail, return_counts = True)
+    if np.max(tail_counts)/np.sum(tail_counts) < 0.05:
+        scale = (np.percentile(x_tail, 50) - loc)/np.log(2)
     range0 = expon.ppf(np.linspace(0, 0.9973, len(x_tail)), loc, scale)
     curve_dist = x[x >= np.percentile(x, 100*(1 - 2*alpha_body))]
     curve_range = expon.ppf(np.linspace(0, 0.9973, len(curve_dist)), loc, scale)
@@ -199,13 +203,14 @@ def attempt_exponential_fit(x, x_spiked, name, prefix, bw_coef, exp_status):
         x_outliers = x[x < cutoff]
     r_sq = plot_test(x_tail, fitted_curve, range0, exp_status, bw_coef, 
                      prefix, cutoff, x_outliers, name, curve)
-    if r_sq < 0.6:
+    if r_sq < 0.6 and alt_tests == True:
         return(run_backup_test(x, x_spiked, name, prefix))
     plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
     x_spiked[np.isin(x_spiked, x_outliers)] = np.nan
     return(x_spiked)
 
-def attempt_tukey_fit(x, x_spiked, name, prefix, bound, bw_coef, exp_status):
+def attempt_tukey_fit(x, x_spiked, name, alt_tests, 
+                      prefix, bound, bw_coef, exp_status):
     spike_vals = np.array([])
     W = compute_w(x)
     A, B, g, h, W_ignored = estimate_tukey_params(W, name, bound)
@@ -221,13 +226,13 @@ def attempt_tukey_fit(x, x_spiked, name, prefix, bound, bw_coef, exp_status):
     x_outliers = np.unique(x[W > cutoff])
     r_sq = plot_test(W, smooth_TGH, range0, exp_status, bw_coef, prefix, 
                      cutoff, x_outliers, name, ignored_values = W_ignored)
-    if r_sq < 0.8:
+    if r_sq < 0.8 and alt_tests == True:
         return(run_backup_test(x, x_spiked, name, prefix))
     plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
     x_spiked[np.isin(x_spiked, x_outliers)] = np.nan
     return(x_spiked)
 
-def compute_outliers(x_spiked, name, prefix, bound):
+def compute_outliers(x_spiked, name, prefix, bound, alt_tests):
 
     x_spiked = x_spiked.astype(float)
     x = clean_data(x_spiked, name, prefix, 0, [], [])
@@ -238,10 +243,10 @@ def compute_outliers(x_spiked, name, prefix, bound):
 
     #TODO: something for this
     if exp_status == True: 
-        return(attempt_exponential_fit(x, x_spiked, name, 
+        return(attempt_exponential_fit(x, x_spiked, name, alt_tests,
                                        prefix, bw_coef, exp_status))
     else:
-        return(attempt_tukey_fit(x, x_spiked, name, prefix, 
+        return(attempt_tukey_fit(x, x_spiked, name, alt_tests, prefix, 
                                  bound, bw_coef, exp_status))
 
 

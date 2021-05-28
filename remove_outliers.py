@@ -10,7 +10,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--input ', type = str, action = "store", dest = "input")
 parser.add_argument('--bound ', type = float, action = "store", dest = "bound")
 parser.add_argument('--index ', type = str, action = "store", dest = "index")
+parser.add_argument('--use_backup_tests ', type = str, action = "store", 
+                       dest = "use_backup_tests")
 
+
+alt_tests = parser.parse_args().use_backup_tests
+if alt_tests is None:
+    alt_tests = False
 input_file_name = parser.parse_args().input
 index_name = parser.parse_args().index
 bound = parser.parse_args().bound
@@ -60,7 +66,8 @@ for i in tqdm(range(len(field_cols_with_outliers))):
 
     field = field_cols_with_outliers[i]
     name = field_names_with_outliers[i]
-    cleaned_field = compute_outliers(field, name, name_prefix, bound)
+    cleaned_field = compute_outliers(field, name, name_prefix, 
+                                     bound, alt_tests)
     path = name_prefix + "_cleaned_cols/" + name + ".txt"
     DF = pd.DataFrame(cleaned_field)
     DF.to_csv(path, sep = "\t", header = False, index = False)
