@@ -45,29 +45,15 @@ path_names = [name_prefix + "_cols/" + name for name in filenames]
 field_cols = [pd.read_csv(path, delimiter = "\t", header = None) 
               for path in path_names]
 field_cols = [col[0].to_numpy() for col in field_cols]
-unique_val_counts = np.array([len(np.unique(field[np.isnan(field) == False])) 
-                              for field in field_cols])
-field_cols_with_outliers = [field_cols[i] for i in 
-                            np.where(unique_val_counts >= 10)[0]]
-field_names_with_outliers = [field_names[i] for i in 
-                             np.where(unique_val_counts >= 10)[0]]
-field_cols_without_outliers = [field_cols[i] for i in 
-                               np.where(unique_val_counts < 10)[0]]
-field_names_without_outliers = [field_names[i] for i in 
-                                np.where(unique_val_counts < 10)[0]]
-
+unique_val_counts = np.array([len(np.unique(field[np.isnan(field) == False])) for field in field_cols])
+field_cols_with_outliers = [field_cols[i] for i in np.where(unique_val_counts >= 10)[0]]
+field_names_with_outliers = [field_names[i] for i in np.where(unique_val_counts >= 10)[0]]
+field_cols_without_outliers = [field_cols[i] for i in np.where(unique_val_counts < 10)[0]]
+field_names_without_outliers = [field_names[i] for i in np.where(unique_val_counts < 10)[0]]
 
 bound_not_present = False
 if bound is None:
-    bound_not_present = True
-if len(field_cols[0]) < 1000 and bound_not_present:
-    bound = 90
-elif len(field_cols[0]) < 10000 and bound_not_present:
-    bound = 95
-elif len(field_cols[0]) < 100000 and bound_not_present:
-    bound = 97.5
-else:
-    bound = 99
+    bound = np.max([np.min([90 + 2.5*(np.log10(len(field_cols[0])) - 2), 99]), 90])
 print(bound)
 
 for i in tqdm(range(len(field_cols_with_outliers))):
