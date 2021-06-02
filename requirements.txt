@@ -1,0 +1,7 @@
+numpy
+pandas
+tqdm
+scipy
+statsmodels
+matplotlib
+rpy2
