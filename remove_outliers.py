@@ -15,8 +15,11 @@ parser.add_argument('--use_backup_tests ', type = str, action = "store",
 
 
 alt_tests = parser.parse_args().use_backup_tests
-if alt_tests is None:
+if alt_tests == "True":
+    alt_tests = True
+else:
     alt_tests = False
+
 input_file_name = parser.parse_args().input
 index_name = parser.parse_args().index
 bound = parser.parse_args().bound

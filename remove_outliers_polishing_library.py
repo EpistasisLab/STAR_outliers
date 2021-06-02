@@ -39,7 +39,7 @@ def remove_severe_outliers(x, name):
     message += name + ": " + str(np.unique(severe_outliers))
     if len(severe_outliers > 0):
         print(message)
-    return(x[np.isin(x, severe_outliers) == False])
+    return(x[np.isin(x, severe_outliers) == False], severe_outliers)
 
 def clean_data(x_spiked, name, prefix, count, 
                spikes, decreases, despike = True):
@@ -49,8 +49,8 @@ def clean_data(x_spiked, name, prefix, count,
                                              prefix, 0, [], [])
         if len(spikes) > 3:
             return(backup_test(x_spiked, name, prefix, gmean(decreases)))
-    x = remove_severe_outliers(x, name) 
-    return(x)
+    x, severe_outliers = remove_severe_outliers(x, name) 
+    return(x, severe_outliers)
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------

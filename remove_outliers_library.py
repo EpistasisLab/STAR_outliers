@@ -54,16 +54,14 @@ def estimate_tukey_params(W, name, bound):
 
     """
 
-    body = np.logical_and(W <= np.percentile(W, 99), W >= np.percentile(W, 1))
-    W_main = W[body]
-    W_unique = np.unique(W_main)
+    W_unique = np.unique(W)
     dists = W_unique[1:] - W_unique[:-1]
     try:
         if dists[0] > dists[1]:
-            W = W_main[W_main != W_unique[0]]
+            W = W[W != W_unique[0]]
             W_ignored = W_unique[0:1]
         elif dists[1] > dists[2] and dists[1] > dists[0]:
-            W = W_main[W_main != W_unique[0]]
+            W = W[W != W_unique[0]]
             W = W[W != W_unique[1]]
             W_ignored = W_unique[0:2]
         else:
@@ -173,15 +171,19 @@ def compute_w(x):
     return(W)
 
 def run_backup_test(x, x_spiked, name, prefix):
-    x_geo = clean_data(x_spiked, name, prefix, 0, [], [], False)
+    x_geo, severe_outliers = clean_data(x_spiked, name, prefix,
+                                        0, [], [], False)
     num_main_values, gmean_decrease = get_geometric_info(x_geo)
     if num_main_values > 10:
-        return(backup_test(x, x_spiked, name, prefix))
+        return(backup_test(x, x_spiked, name, prefix,
+                           severe_outliers))
     else:
-        return(backup_test(x_geo, x_spiked, name, prefix, gmean_decrease))
+        return(backup_test(x_geo, x_spiked, name, prefix,
+                           severe_outliers, gmean_decrease))
 
 def attempt_exponential_fit(x, x_spiked, name, alt_tests, 
-                            prefix, bw_coef, exp_status):
+                            prefix, bw_coef,
+                            exp_status, severe_outliers):
     spike_vals = np.array([])
     alpha_body = 0.05
     alpha_tail = (.9973 - (1 - alpha_body))/alpha_body
@@ -206,11 +208,14 @@ def attempt_exponential_fit(x, x_spiked, name, alt_tests,
     if r_sq < 0.6 and alt_tests == True:
         return(run_backup_test(x, x_spiked, name, prefix))
     plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
-    x_spiked[np.isin(x_spiked, x_outliers)] = np.nan
+    all_outliers = np.union1d(severe_outliers, x_outliers)
+    x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked)
 
 def attempt_tukey_fit(x, x_spiked, name, alt_tests, 
-                      prefix, bound, bw_coef, exp_status):
+                      prefix, bound, bw_coef,
+                      exp_status, severe_outliers):
+
     spike_vals = np.array([])
     W = compute_w(x)
     A, B, g, h, W_ignored = estimate_tukey_params(W, name, bound)
@@ -229,13 +234,14 @@ def attempt_tukey_fit(x, x_spiked, name, alt_tests,
     if r_sq < 0.8 and alt_tests == True:
         return(run_backup_test(x, x_spiked, name, prefix))
     plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
-    x_spiked[np.isin(x_spiked, x_outliers)] = np.nan
+    all_outliers = np.union1d(severe_outliers, x_outliers)
+    x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked)
 
 def compute_outliers(x_spiked, name, prefix, bound, alt_tests):
 
     x_spiked = x_spiked.astype(float)
-    x = clean_data(x_spiked, name, prefix, 0, [], [])
+    x, severe_outliers = clean_data(x_spiked, name, prefix, 0, [], [])
     x_unique, x_counts = np.unique(x, return_counts = True)
     bw_coef = 0.3
    
@@ -244,10 +250,11 @@ def compute_outliers(x_spiked, name, prefix, bound, alt_tests):
     #TODO: something for this
     if exp_status == True: 
         return(attempt_exponential_fit(x, x_spiked, name, alt_tests,
-                                       prefix, bw_coef, exp_status))
+                                       prefix, bw_coef,
+                                       exp_status, severe_outliers))
     else:
         return(attempt_tukey_fit(x, x_spiked, name, alt_tests, prefix, 
-                                 bound, bw_coef, exp_status))
+                                 bound, bw_coef, exp_status, severe_outliers))
 
 
 

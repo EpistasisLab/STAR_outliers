@@ -144,7 +144,7 @@ def get_geometric_info(x):
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 
-def adjusted_IQR(x, x_spiked, name):
+def adjusted_IQR(x, x_spiked, name, severe_outliers):
     message = "The adjusted IQR test is being used for feature "
     message += name + " because the main test fit the data poorly."
     print(message)
@@ -157,10 +157,11 @@ def adjusted_IQR(x, x_spiked, name):
     ub = Q13[1] + C*IQR*np.exp(3.87*MC)
     lb = Q13[0] - C*IQR*np.exp(-3.79*MC)
     outliers = x[np.logical_or(x < lb, x > ub)]
-    x_spiked[np.isin(x_spiked, outliers)] = np.nan
+    all_outliers = np.union1d(severe_outliers, outliers)
+    x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked, outliers)
 
-def geometric_test(x, x_spiked, name, mean_decrease):
+def geometric_test(x, x_spiked, name, mean_decrease, severe_outliers):
     message = "The geometric test is being used for feature "
     message += name + " because the main test fit the data poorly."
     print(message)
@@ -169,16 +170,19 @@ def geometric_test(x, x_spiked, name, mean_decrease):
     cdf = 1 - np.cumprod([mean_decrease]*len(x_unique))
     cutoff_index = np.where(cdf <= 0.9973)[0][-1] + 2
     outliers = x_unique[sorted_indices[cutoff_index:]]
-    x_spiked[np.isin(x_spiked, outliers)] = np.nan
+    all_outliers = np.union1d(severe_outliers, outliers)
+    x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked, outliers)
 
-def backup_test(x, x_spiked, name, prefix, mean_decrease = None):
+def backup_test(x, x_spiked, name, prefix,
+                severe_outliers, mean_decrease = None):
 
     if mean_decrease is None:
-        x_spiked, outliers = adjusted_IQR(x, x_spiked, name)
+        x_spiked, outliers = adjusted_IQR(x, x_spiked, name, severe_outliers)
         test = " (adjusted IQR)"
     else:
-        x_spiked, outliers = geometric_test(x, x_spiked, name, mean_decrease)
+        x_spiked, outliers = geometric_test(x, x_spiked, name,
+                                            mean_decrease, severe_outliers)
         test = " (geometric test)"
 
     label2 = "outliers (n = " + str(len(outliers)) + ")"
