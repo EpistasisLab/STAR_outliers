@@ -26,7 +26,6 @@ jobs:
       - name: Install R dependencies
         run: |
           install.packages("OpVaR")
-          OpVaR::install_deps(dependencies = TRUE)
         shell: Rscript {0}
         
       - name: Install python dependencies
