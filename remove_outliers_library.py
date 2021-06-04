@@ -18,14 +18,20 @@ from remove_outliers_testing_library import backup_test
 from remove_outliers_testing_library import get_geometric_info
 from remove_outliers_polishing_library import approximate_quantiles
 from remove_outliers_polishing_library import clean_data
+from remove_outliers_polishing_library import remove_worst_continuity_violations
+from remove_outliers_polishing_library import adjust_median_values
 
 # requires "module load R/3.5.3"
 # If that is insufficient, then use install.packages("OpVaR") in an R environment before running this
 # install.packages("OpVaR")
 from rpy2.robjects.packages import importr
-TGH = importr('OpVaR')
- 
-def estimate_tukey_params(W, name, bound):
+OpVaR_path = 'R-3.5.2/library'
+TGH = importr('OpVaR', lib_loc = OpVaR_path)
+
+# source title: Outlier identification for skewed and/or 
+#               heavy-tailed unimodal multivariate distributions
+
+def estimate_tukey_params(W, bound):
 
     """
     Purpose
@@ -36,7 +42,6 @@ def estimate_tukey_params(W, name, bound):
     Parameters
     ----------
     W: the distribution of deviation scores
-    name: the feature's name
     bound: the highest percentile on which to fit the tukey parameters
            also, 100 - bound is the corresponding lowest percentile. 
 
@@ -54,29 +59,14 @@ def estimate_tukey_params(W, name, bound):
 
     """
 
-    W_unique = np.unique(W)
-    dists = W_unique[1:] - W_unique[:-1]
-    try:
-        if dists[0] > dists[1]:
-            W = W[W != W_unique[0]]
-            W_ignored = W_unique[0:1]
-        elif dists[1] > dists[2] and dists[1] > dists[0]:
-            W = W[W != W_unique[0]]
-            W = W[W != W_unique[1]]
-            W_ignored = W_unique[0:2]
-        else:
-            W_ignored = np.array([])
-    except:
-        pdb.set_trace()
+    W, W_ignored = remove_worst_continuity_violations(W)
 
     Q_vec = np.percentile(W, [10, 25, 50, 75, 90])
     if len(np.unique(Q_vec)) != 5:
         Q_vec = approximate_quantiles(W, [10, 25, 50, 75, 90])
-    if not np.all(Q_vec[1:] > Q_vec[:4]):
-        pdb.set_trace()
 
     A = Q_vec[2]
-
+    
     IQR = Q_vec[3] - Q_vec[1]
     SK = (Q_vec[4] + Q_vec[0] - 2*Q_vec[2])/(Q_vec[4] - Q_vec[0])
     T = (Q_vec[4] - Q_vec[0])/(Q_vec[3] - Q_vec[1])
@@ -86,23 +76,17 @@ def estimate_tukey_params(W, name, bound):
     Q_vec2 = np.percentile(W, [100 - bound, 25, 50, 75, bound])
     if len(np.unique(Q_vec2)) != 5:
         Q_vec2 = approximate_quantiles(W, [100 - bound, 25, 50, 75, bound])
-    if not np.all(Q_vec2[1:] > Q_vec2[:4]):
-        pdb.set_trace()
 
     zv = norm.ppf(bound/100, 0, 1)
     UHS = Q_vec2[4] - Q_vec2[2]
     LHS = Q_vec2[2] - Q_vec2[0]
     g = (1/zv)*np.log(UHS/LHS)
 
-    y = (W - A)/B
-    if np.any(y == np.inf):
-        pdb.set_trace()
-        
+    y = (W - A)/B        
     Q_vec3 = np.percentile(y, [100 - bound, 25, 50, 75, bound])
     if len(np.unique(Q_vec3)) != 5:
         Q_vec3 = approximate_quantiles(y, [100 - bound, 25, 50, 75, bound])
-    if not np.all(Q_vec3[1:] > Q_vec3[:4]):
-        pdb.set_trace()
+
     Q_ratio = (Q_vec3[4]*Q_vec3[0])/(Q_vec3[4] + Q_vec3[0])
     h = (2/(zv**2))*np.log(-g*Q_ratio)
     if np.isnan(h):
@@ -118,8 +102,7 @@ def compute_w(x):
     -------
     To convert x values into a statistic that quantifies
     deviation from the mean relative to skew and tail heaviness
-    source title: Outlier identification for skewed and/or 
-                  heavy-tailed unimodal multivariate distributions
+
     
     Parameters
     ----------
@@ -133,36 +116,15 @@ def compute_w(x):
 
     """
 
-
-    # values that equal the median get a w of -inf
-    # this messes up the fit with a spike at a high negative location.
-    # hence, each median value is randomly converted to
-    # either the next smallest or next largest existing value
-
     Q_vec = np.percentile(x, [10, 25, 50, 75, 90])
     if len(np.unique(Q_vec)) != 5:
         Q_vec = approximate_quantiles(x, [10, 25, 50, 75, 90])
-    if not np.all(Q_vec[1:] > Q_vec[:4]):
-        pdb.set_trace()
-    dists_sub50, dists_sup50 = x - Q_vec[2],  x - Q_vec[2]
-    dists_sub50[dists_sub50 >= 0] = -np.inf
-    dists_sup50[dists_sup50 <= 0] = np.inf
-    x_sub50 = x[np.argmax(dists_sub50)]
-    x_sup50 = x[np.argmin(dists_sup50)]
-    n_sub50 = np.sum(x == x_sub50)
-    n_sup50 = np.sum(x == x_sup50)
-    p_sup50 = n_sup50/(n_sup50 + n_sub50)
-
-    x2 = COPY(x)
-    n_50 =  np.sum(x == Q_vec[2])
-    choices = [x_sub50, x_sup50]
-    p_vec = [1 - p_sup50, p_sup50]
-    x2[x == Q_vec[2]] = np.random.choice(choices, n_50, True, p_vec)
-
+    x2 = adjust_median_values(x, Q_vec)
+    
     c = 0.7413
     ASO_high = (x2 - Q_vec[2])/(2*c*(Q_vec[3] - Q_vec[2]))
     ASO_low = (Q_vec[2] - x2)/(2*c*(Q_vec[2] - Q_vec[1]))
-    
+
     ASO = np.zeros(len(x2))
     ASO[x2 >= Q_vec[2]] = ASO_high[x2 >= Q_vec[2]]
     ASO[x2 < Q_vec[2]] = ASO_low[x2 < Q_vec[2]]
@@ -171,8 +133,8 @@ def compute_w(x):
     return(W)
 
 def run_backup_test(x, x_spiked, name, prefix):
-    x_geo, severe_outliers = clean_data(x_spiked, name, prefix,
-                                        0, [], [], False)
+    content = clean_data(x_spiked, name, prefix, 0, [], [], False)
+    x_geo, severe_outliers = content[0], content[1]
     num_main_values, gmean_decrease = get_geometric_info(x_geo)
     if num_main_values > 10:
         return(backup_test(x, x_spiked, name, prefix,
@@ -182,9 +144,13 @@ def run_backup_test(x, x_spiked, name, prefix):
                            severe_outliers, gmean_decrease))
 
 def attempt_exponential_fit(x, x_spiked, name, alt_tests, 
-                            prefix, bw_coef,
+                            prefix, bw_coef, spike_vals,
                             exp_status, severe_outliers):
-    spike_vals = np.array([])
+
+    p50 = np.percentile(x, 50)
+    left_to_right = p50 - np.min(x) < np.max(x) - p50
+    if not left_to_right:
+        x = np.max(x) - x
     alpha_body = 0.05
     alpha_tail = (.9973 - (1 - alpha_body))/alpha_body
     x_tail = x[x >= np.percentile(x, 100*(1 - alpha_body))]
@@ -199,10 +165,9 @@ def attempt_exponential_fit(x, x_spiked, name, alt_tests,
     curve = [curve_dist, curve_range]
     fitted_curve = expon.pdf(range0, loc, scale)
     cutoff = expon.ppf(alpha_tail, loc, scale)
-    if cutoff > np.percentile(x, 50):
-        x_outliers = x[x > cutoff]
-    else:
-        x_outliers = x[x < cutoff]
+    x_outliers = x[x > cutoff]
+    if not left_to_right:
+        x_outliers = np.max(x) - x_outliers
     r_sq = plot_test(x_tail, fitted_curve, range0, exp_status, bw_coef, 
                      prefix, cutoff, x_outliers, name, curve)
     if r_sq < 0.6 and alt_tests == True:
@@ -213,14 +178,11 @@ def attempt_exponential_fit(x, x_spiked, name, alt_tests,
     return(x_spiked)
 
 def attempt_tukey_fit(x, x_spiked, name, alt_tests, 
-                      prefix, bound, bw_coef,
+                      prefix, bound, bw_coef, spike_vals,
                       exp_status, severe_outliers):
 
-    spike_vals = np.array([])
     W = compute_w(x)
-    A, B, g, h, W_ignored = estimate_tukey_params(W, name, bound)
-    if A == B == g == h == W_ignored == 0:
-        return([])
+    A, B, g, h, W_ignored = estimate_tukey_params(W, bound)
     fitted_TGH = TGH.rgh(len(x), float(A), float(B), float(g), float(h))
     delta = (np.percentile(W, 99) - np.percentile(W, 1))/2
     xlims = [np.percentile(W, 1) - delta, np.percentile(W, 99) + delta]
@@ -241,7 +203,8 @@ def attempt_tukey_fit(x, x_spiked, name, alt_tests,
 def compute_outliers(x_spiked, name, prefix, bound, alt_tests):
 
     x_spiked = x_spiked.astype(float)
-    x, severe_outliers = clean_data(x_spiked, name, prefix, 0, [], [])
+    x, severe_outliers, spike_vals = clean_data(x_spiked, name,
+                                                prefix, 0, [], [])
     x_unique, x_counts = np.unique(x, return_counts = True)
     bw_coef = 0.3
    
@@ -250,11 +213,12 @@ def compute_outliers(x_spiked, name, prefix, bound, alt_tests):
     #TODO: something for this
     if exp_status == True: 
         return(attempt_exponential_fit(x, x_spiked, name, alt_tests,
-                                       prefix, bw_coef,
+                                       prefix, bw_coef, spike_vals,
                                        exp_status, severe_outliers))
     else:
-        return(attempt_tukey_fit(x, x_spiked, name, alt_tests, prefix, 
-                                 bound, bw_coef, exp_status, severe_outliers))
+        return(attempt_tukey_fit(x, x_spiked, name, alt_tests,
+                                 prefix, bound, bw_coef, spike_vals,
+                                 exp_status, severe_outliers))
 
 
 
