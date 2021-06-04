@@ -7,6 +7,7 @@ import pdb
 import platform
 from copy import deepcopy as COPY
 from scipy import stats
+pdb.set_trace()
 from rpy2.robjects.packages import importr
 from rpy2.robjects import r
 
@@ -35,7 +36,6 @@ sys.path.insert(1, os.getcwd())
 import remove_outliers_library as main_lib
 system = platform.uname()[0]
 if system == "Linux":
-    exit()
     OpVaR_path = '/home/runner/work/_temp/Library'
     TGH = importr('OpVaR', lib_loc = OpVaR_path)
 
