@@ -10,9 +10,27 @@ from rpy2.robjects.packages import importr
 from rpy2.robjects import r
 TGH = importr('OpVaR')
 
-os.chdir("..\\")
+#path finding code start
+next_dir = os.getcwd()
+main_folder = "outlier_removal"
+next_folder = ""
+count = 0
+paths = [next_dir]
+folders = [next_folder]
+while next_folder != main_folder and count < 4:
+    next_dir, next_folder = os.path.split(next_dir)
+    paths.append(next_dir)
+    folders.append(next_folder)
+    count += 1
+if count >= 4:
+    message = "error: important paths have been renamed or reorganized. "
+    message += "If this was intentional, then change the path "
+    message += "finding code in test_main_library.py"
+    print(message)
+os.chdir(paths[count - 1])
 sys.path.insert(1, os.getcwd())
 import remove_outliers_library as main_lib
+#path finding code end
 
 class test_main_library(unittest.TestCase):
     np.random.seed(0)
