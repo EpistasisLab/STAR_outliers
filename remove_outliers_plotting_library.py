@@ -100,7 +100,7 @@ def plot_data(data_dist, cutoff, outliers, spike_vals, name, prefix):
     deltas = np.min(vals[1:] - vals[:-1])
     halfmax = 0.5*(np.max(counts)/np.sum(counts))/np.min(deltas)
     if len(spike_vals) > 0:
-        label0 += "\n removed vals: " + str(vals_to_isolate)
+        label0 += "\n removed vals: " + str(spike_vals)
     if len(outliers) == 0:
         label0 += " (no outliers)"
     plt.hist(data_dist, bins = nbins, density = True, label = label0)

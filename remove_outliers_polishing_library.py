@@ -49,16 +49,57 @@ def clean_data(x_spiked, name, prefix, count,
                                              prefix, 0, [], [])
         if len(spikes) > 3:
             return(backup_test(x_spiked, name, prefix, gmean(decreases)))
-    x, severe_outliers = remove_severe_outliers(x, name) 
+    x, severe_outliers = remove_severe_outliers(x, name)
+    if despike:
+        return(x, severe_outliers, spikes)
     return(x, severe_outliers)
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
-# SECTION 2: code that computes quantiles from the continuous
-#            approximation of a problematically discrete distribution
+# SECTION 2: code that corrects for real-world continuity violations
+#            in computing W and the relevant parameter estimates
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 
+def adjust_median_values(x, Q_vec):
+
+    dists_sub50, dists_sup50 = x - Q_vec[2],  x - Q_vec[2]
+    dists_sub50[dists_sub50 >= 0] = -np.inf
+    dists_sup50[dists_sup50 <= 0] = np.inf
+    x_sub50 = x[np.argmax(dists_sub50)]
+    x_sup50 = x[np.argmin(dists_sup50)]
+    n_sub50 = np.sum(x == x_sub50)
+    n_sup50 = np.sum(x == x_sup50)
+    p_sup50 = n_sup50/(n_sup50 + n_sub50)
+
+    x2 = COPY(x)
+    n_50 =  np.sum(x == Q_vec[2])
+    choices = [x_sub50, x_sup50]
+    p_vec = [1 - p_sup50, p_sup50]
+    x2[x == Q_vec[2]] = np.random.choice(choices, n_50, True, p_vec)
+    return(x2)
+
+def remove_worst_continuity_violations(W):
+    W_unique = np.unique(W)
+    dists = W_unique[1:] - W_unique[:-1]
+    if dists[0] > dists[1]:
+        W = W[W != W_unique[0]]
+        W_ignored = W_unique[0:1]
+    elif dists[1] > dists[2] and dists[1] > dists[0]:
+        W = W[W != W_unique[0]]
+        W = W[W != W_unique[1]]
+        W_ignored = W_unique[0:2]
+    else:
+        W_ignored = np.array([])
+    return(W, W_ignored)
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+# SECTION 3: code that computes quantiles from the continuous
+#            approximation of a problematically discrete distribution
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+ 
 def get_fitted_quantiles(percentiles, fitted_cdf, range0, pstart, pend):
     Q_vec = np.zeros(5)
     if range0[np.where(fitted_cdf >= 0.25)[0][0]] <= pstart: 
