@@ -5,5 +5,4 @@ scipy
 statsmodels
 matplotlib
 rpy2
-unittest
 mock
