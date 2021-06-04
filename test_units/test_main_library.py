@@ -35,12 +35,9 @@ sys.path.insert(1, os.getcwd())
 import remove_outliers_library as main_lib
 system = platform.uname()[0]
 if system == "Linux":
-    try:
-        OpVaR_path = '/home/runner/work/_temp/Library'
-        TGH = importr('OpVaR', lib_loc = OpVaR_path)
-    except:
-        exit()
-        
+    OpVaR_path = '/home/runner/work/_temp/Library'
+    TGH = importr('OpVaR', lib_loc = OpVaR_path)
+
 if system == "Windows":
     try:
         OpVaR_path = 'D:/a/_temp/Library'
