@@ -7,8 +7,8 @@ import pdb
 import platform
 from copy import deepcopy as COPY
 from scipy import stats
-from rpy2.robjects.packages import importr
 exit()
+from rpy2.robjects.packages import importr
 from rpy2.robjects import r
 
 #path finding code start
