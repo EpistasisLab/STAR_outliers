@@ -12,6 +12,7 @@ TGH = importr('OpVaR')
 
 #path finding code start
 next_dir = os.getcwd()
+print("THING:\n" + next_dir + "\nTHING")
 main_folder = "outlier_removal"
 next_folder = ""
 count = 0
@@ -21,6 +22,8 @@ while next_folder != main_folder and count < 4:
     next_dir, next_folder = os.path.split(next_dir)
     paths.append(next_dir)
     folders.append(next_folder)
+    print("THING:\n" + next_dir + "\nTHING")
+    print("THING:\n" + next_folder + "\nTHING")
     count += 1
 if count >= 4:
     message = "error: important paths have been renamed or reorganized. "
