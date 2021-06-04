@@ -28,9 +28,8 @@ from remove_outliers_polishing_library import adjust_median_values
 from rpy2.robjects.packages import importr
 system = platform.uname()[0]
 if system == "Linux":
-    #OpVaR_path = '/home/runner/work/_temp/Library'
-    #TGH = importr('OpVaR', lib_loc = OpVaR_path)
-    TGH = importr('OpVaR')
+    OpVaR_path = '/home/runner/work/_temp/Library'
+    TGH = importr('OpVaR', lib_loc = OpVaR_path)
 if system == "Windows":
     try:
         OpVaR_path = 'D:/a/_temp/Library'
