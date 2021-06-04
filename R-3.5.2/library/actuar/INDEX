@@ -1,0 +1,89 @@
+BetaMoments             Raw and Limited Moments of the Beta
+                        Distribution
+Burr                    The Burr Distribution
+CTE                     Conditional Tail Expectation
+ChisqSupp               Moments and Moment Generating Function of the
+                        (non-central) Chi-Squared Distribution
+ExponentialSupp         Moments and Moment Generating Function of the
+                        Exponential Distribution
+Extract.grouped.data    Extract or Replace Parts of a Grouped Data
+                        Object
+GammaSupp               Moments and Moment Generating Function of the
+                        Gamma Distribution
+GeneralizedBeta         The Generalized Beta Distribution
+GeneralizedPareto       The Generalized Pareto Distribution
+Gumbel                  The Gumbel Distribution
+InverseBurr             The Inverse Burr Distribution
+InverseExponential      The Inverse Exponential Distribution
+InverseGamma            The Inverse Gamma Distribution
+InverseGaussian         The Inverse Gaussian Distribution
+InverseParalogistic     The Inverse Paralogistic Distribution
+InversePareto           The Inverse Pareto Distribution
+InverseTransformedGamma
+                        The Inverse Transformed Gamma Distribution
+InverseWeibull          The Inverse Weibull Distribution
+Logarithmic             The Logarithmic Distribution
+Loggamma                The Loggamma Distribution
+Loglogistic             The Loglogistic Distribution
+LognormalMoments        Raw and Limited Moments of the Lognormal
+                        Distribution
+NormalSupp              Moments and Moment generating function of the
+                        Normal Distribution
+Paralogistic            The Paralogistic Distribution
+Pareto                  The Pareto Distribution
+PoissonInverseGaussian
+                        The Poisson-Inverse Gaussian Distribution
+SingleParameterPareto   The Single-parameter Pareto Distribution
+TransformedBeta         The Transformed Beta Distribution
+TransformedGamma        The Transformed Gamma Distribution
+UniformSupp             Moments and Moment Generating Function of the
+                        Uniform Distribution
+VaR                     Value at Risk
+WeibullMoments          Raw and Limited Moments of the Weibull
+                        Distribution
+ZeroModifiedBinomial    The Zero-Modified Binomial Distribution
+ZeroModifiedGeometric   The Zero-Modified Geometric Distribution
+ZeroModifiedLogarithmic
+                        The Zero-Modified Logarithmic Distribution
+ZeroModifiedNegativeBinomial
+                        The Zero-Modified Negative Binomial
+                        Distribution
+ZeroModifiedPoisson     The Zero-Modified Poisson Distribution
+ZeroTruncatedBinomial   The Zero-Truncated Binomial Distribution
+ZeroTruncatedGeometric
+                        The Zero-Truncated Geometric Distribution
+ZeroTruncatedNegativeBinomial
+                        The Zero-Truncated Negative Binomial
+                        Distribution
+ZeroTruncatedPoisson    The Zero-Truncated Poisson Distribution
+actuar-deprecated       Deprecated Functions in Package 'actuar'
+adjCoef                 Adjustment Coefficient
+aggregateDist           Aggregate Claim Amount Distribution
+betaint                 The "Beta Integral"
+cm                      Credibility Models
+coverage                Density and Cumulative Distribution Function
+                        for Modified Data
+dental                  Individual Dental Claims Data Set
+discretize              Discretization of a Continuous Distribution
+dphtype                 The Phase-type Distribution
+elev                    Empirical Limited Expected Value
+emm                     Empirical Moments
+gdental                 Grouped Dental Claims Data Set
+grouped.data            Grouped data
+hachemeister            Hachemeister Data Set
+hist.grouped.data       Histogram for Grouped Data
+mde                     Minimum Distance Estimation
+mean.grouped.data       Arithmetic Mean
+ogive                   Ogive for Grouped Data
+quantile.aggregateDist
+                        Quantiles of Aggregate Claim Amount
+                        Distribution
+quantile.grouped.data   Quantiles of Grouped Data
+rcompound               Simulation from Compound Models
+rmixture                Simulation from Discrete Mixtures
+ruin                    Probability of Ruin
+severity                Manipulation of Individual Claim Amounts
+simul                   Simulation from Compound Hierarchical Models
+simul.summaries         Summary Statistics of a Portfolio
+unroll                  Display a Two-Dimension Version of a Matrix of
+                        Vectors

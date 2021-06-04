@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Goodness of fit tests for severity distributions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for goftest {OpVaR}"><tr><td>goftest {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Goodness of fit tests for severity distributions
+</h2>
+
+<h3>Description</h3>
+
+<p>Testing the goodness-of-fit of the distributions given in a sevdist or a freqdist object to the loss data.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  goftest(cell, object)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cell</code></td>
+<td>
+
+<p>A data frame giving the losses (cell$Loss) and the user-defined period (cell$Period) in which the loss occured.
+</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+
+<p>A loss severity model (sevdist object) or a loss frequency model (freqdist object)
+</p>
+</td></tr> 
+</table>
+
+
+<h3>Details</h3>
+
+<p>If object is of type sevdist, then the Kolmogorov-Smirnov test is performed on the loss data of a single cell and the respected fitted distribution given by the sevdist object.
+</p>
+<p>If object is of type freqdist, then a <i>&chi;^2</i> goodness-of-fit test will be performed.
+</p>
+
+
+<h3>Value</h3>
+
+<p>If object is of type sevdist, then the return is the test results from the Kolmogorow-Smirnov test. 
+</p>
+<p>If object is of type freqdist, then the functions returns the result of the <i>&chi;^2</i> test.
+</p>
+<p>Refer with $p.value to the p-values and $statistic to the test statistic of each of the tests. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Marius Pfeuffer, Christina Zou
+</p>
+
+
+<h3>References</h3>
+
+<p>Birnbaum, Z. W., and Fred H. Tingey. &quot;One-sided confidence contours for probability distribution functions&quot;. The Annals of Mathematical Statistics 22.4 (1951): 592-596.
+</p>
+<p>Conover, William Jay, and William Jay Conover. &quot;Practical nonparametric statistics&quot; (1980).
+</p>
+<p>Durbin, James. &quot;Distribution theory for tests based on the sample distribution function&quot;. Society for Industrial and Applied Mathematics, 1973.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>We use the <code><a href="../../stats/html/ks.test.html">ks.test</a></code> and <code><a href="../../stats/html/chisq.test.html">chisq.test</a></code> from <code><a href="../../stats/html/stats-package.html">stats</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("lossdat")
+opriskmodel = list()
+opriskmodel[[1]] = list()
+opriskmodel[[1]]$freqdist = fitFreqdist(lossdat[[1]],"pois")
+opriskmodel[[1]]$sevdist = fitPlain(lossdat[[1]],"gamma")
+
+# perform test on the sevdist object
+goftest(lossdat[[1]], opriskmodel[[1]]$sevdist)
+
+# show result p-value and test statistics the Kolmogorow-Smirnov test
+test = goftest(lossdat[[1]], opriskmodel[[1]]$sevdist)
+test$p.value
+test$statistic
+
+# perform test on the freqdist object
+goftest(lossdat[[1]], opriskmodel[[1]]$freqdist)
+
+# the p-value is given by 
+goftest(lossdat[[1]], opriskmodel[[1]]$freqdist)$p.value
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

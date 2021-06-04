@@ -8,7 +8,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         python-version: [3.6, 3.7, 3.8]
-        r-version: [3.5.2]
         
     steps:
       - uses: actions/checkout@v2
@@ -17,16 +16,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      
-      - name: set up all R versions
-        uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: ${{ matrix.r-version }}
-    
-      - name: Install R dependencies
-        run: |
-          install.packages("OpVaR")
-        shell: Rscript {0}
         
       - name: Install python dependencies
         run: pip install -r requirements.txt

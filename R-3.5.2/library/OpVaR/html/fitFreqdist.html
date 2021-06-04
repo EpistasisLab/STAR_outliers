@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Fitting the frequency distribution</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fitFreqdist {OpVaR}"><tr><td>fitFreqdist {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Fitting the frequency distribution
+</h2>
+
+<h3>Description</h3>
+
+<p>Fitting the frequency distribution of operational losses
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  fitFreqdist(cell, distr)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cell</code></td>
+<td>
+
+<p>A data frame giving the losses (cell$Loss) and the user-defined period (cell$Period) in which the loss occured.
+</p>
+</td></tr>
+<tr valign="top"><td><code>distr</code></td>
+<td>
+
+<p>The frequency distribution: either &quot;pois&quot; or &quot;nbinom&quot;
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>First, the number of losses per period is counted. With the results a Poisson or Negative Binomial distribution is fitted for the number of losses per period using a Maximum Likelihood estimator.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns a freqdist object with the given distribution fitted to the loss frequency.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christina Zou
+</p>
+
+
+<h3>See Also</h3>
+
+<p>To build a freqdist object independently, use <code><a href="buildFreqdist.html">buildFreqdist</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  data(lossdat)
+  fitFreqdist(lossdat[[1]],"pois")
+  fitFreqdist(lossdat[[2]],"nbinom")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Monte Carlo Simulation from opriskmodel objects for total...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mcSim {OpVaR}"><tr><td>mcSim {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Monte Carlo Simulation from opriskmodel objects for total loss estimation
+</h2>
+
+<h3>Description</h3>
+
+<p>Function for conducting Monte Carlo Simulation of complete opriskmodel objects (list of cells with (1) frequency model, (2) severity model and (3) dependencymodel)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mcSim(opriskmodel, n_sim, verbose=TRUE)
+VaR(mc_out, alpha)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>opriskmodel</code></td>
+<td>
+
+<p>an opriskmodel object
+</p>
+</td></tr>
+<tr valign="top"><td><code>n_sim</code></td>
+<td>
+
+<p>number of simulations
+</p>
+</td></tr>
+<tr valign="top"><td><code>mc_out</code></td>
+<td>
+
+<p>Monte Carlo simulation output
+</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+
+<p>significance level for quantile/value-at-risk
+</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+
+<p>verbose mode
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A mcsim object, which can be further processed by the VaR function to estimate empirical quantiles as value-at-risk measure
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Marius Pfeuffer
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sla.html">sla</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+### Load Example Data Set
+data(lossdat)
+
+### Estimation of Complete Risk Model
+opriskmodel1=list()
+for(i in 1:length(lossdat)){
+  opriskmodel1[[i]]=list()
+  opriskmodel1[[i]]$freqdist=fitFreqdist(lossdat[[i]],"pois")
+  opriskmodel1[[i]]$sevdist=fitPlain(lossdat[[i]],"lnorm")
+}
+
+### Cell 1: Gumbel Copula, Cell 2: Independence, Cell 3: Frank Copula, Cell 4: Independence
+opriskmodel1[[1]]$dependency=fitDependency(lossdat[[1]],6)
+opriskmodel1[[3]]$dependency=fitDependency(lossdat[[3]],4)
+
+### Monte Carlo Simulation
+mc_out=mcSim(opriskmodel1,100)
+
+### Evaluation of 95
+VaR(mc_out,.95)
+sla(opriskmodel1,.95)
+
+### Monte Carlo Simulation
+mc_out=mcSim(opriskmodel1,100)
+
+### Evaluation of 95% Value-at-Risk
+VaR(mc_out,.95)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,17 @@
+bibentry(bibtype = "Article",
+  title        = "{evmix}: An {R} package for Extreme Value Mixture Modeling, Threshold Estimation and Boundary Corrected Kernel Density Estimation",
+  author       = c(person(given = "Yang",
+                          family = "Hu"),
+                   person(given = "Carl",
+                          family = "Scarrott",
+                          email = "carl.scarrott@canterbury.ac.nz")),
+  journal      = "Journal of Statistical Software",
+  year         = "2018",
+  volume       = "84",
+  number       = "5",
+  pages        = "1--27",
+  doi          = "10.18637/jss.v084.i05",
+
+  header       = "To cite evmix in publications use:"
+)
+

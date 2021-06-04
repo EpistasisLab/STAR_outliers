@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extended Dynamic Weighted Mixture Model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Mixing {OpVaR}"><tr><td>Mixing {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Extended Dynamic Weighted Mixture Model 
+</h2>
+
+<h3>Description</h3>
+
+<p>Implementation of the dynamic weighted mixture model of Frigessi et al., 2001
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  dmixing(x,sevdist,log=FALSE)
+  pmixing(q,sevdist,lower.tail=TRUE)
+  qmixing(p,sevdist,lower.tail=TRUE)
+  rmixing(n,sevdist)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x,q</code></td>
+<td>
+
+<p>vector of quantiles
+</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+
+<p>vector of probabilities.
+</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+
+<p>positive integer, number of observations
+</p>
+</td></tr>
+<tr valign="top"><td><code>sevdist</code></td>
+<td>
+
+<p>sevdist object
+</p>
+</td></tr>
+<tr valign="top"><td><code>log</code></td>
+<td>
+
+<p>logical; if TRUE, probabilities p are given as log(p).
+</p>
+</td></tr>
+<tr valign="top"><td><code>lower.tail</code></td>
+<td>
+
+<p>logical; if TRUE (default), probabilities are P[X &lt;= x] otherwise, P[X &gt; x].
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The dynamic mixture pdf is given by <i>f(x)=1/r*((1-W(x))*g(x)+W(x)*h(x))</i>, where W(x) denotes a Cauchy cdf, <i>g</i> and <i>h</i> body and tail pdfs, r is a normalizing constant.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Marius Pfeuffer
+</p>
+
+
+<h3>References</h3>
+
+<p>A. Frigessi et al.: <em>A Dynamic Mixture Model for Unsupervised Tail Estimation without Threshold Selection</em>, Extremes 5(3):219-235, 2002
+</p>
+<p>Y. Hu: <em>User's Guide for evmix Package in R.</em>, Working Paper, 2013
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ### Create mixing sevdist object
+  sevdist=buildMixingSevdist("weibull", c(2,6), "gpd", c(0,4,-0.5), c(8,.8))
+  ### Evaluate pdf
+  dmixing(1,sevdist)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

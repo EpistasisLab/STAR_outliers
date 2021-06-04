@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Nile overflow data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nile {pracma}"><tr><td>nile {pracma}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Nile overflow data
+</h2>
+
+<h3>Description</h3>
+
+<p>Nile overflow data 1871&ndash;1984, gathered mostly by H. E. Hurst.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data("nile")</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 114 years of observations during the months Jan to Dec.
+</p>
+
+
+<h3>Details</h3>
+
+<p>Monthly flow data taken at the Dongola measurement station just upstream
+from the high dam at Aswan.
+</p>
+
+
+<h3>References</h3>
+
+<p>R. Weron (2001). Estimating long range dependence: finite sample properties and
+confidence intervals. arXiv.org:cond-mat0103510.pdf .
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(nile)                      # loads "nile" data frame
+## Not run: 
+nile_dt &lt;- nile[, 2:13]         # erase the "years" column
+
+# plot all years in one figure
+plot(ts(nile_dt), plot.type="single")
+
+# merge all years in one time series
+nile_ts &lt;- ts( c(t(nile[, 2:13])), frequency = 12, start = c(1871, 1) )
+
+# aggregated flow per year
+nile_flow &lt;- apply(nile_dt, 1, sum)
+
+plot(ts(nile_flow, frequency = 1, start = 1871) / 1000,
+     col = "darkblue", lwd = 2.0,
+     main = "Nile flows 1871 - 1984", ylab = "Flow / 1000")
+grid()
+
+# Hurst exponent of yearly Nile flow
+hurstexp(nile_flow)
+# Simple R/S Hurst estimation:         0.7348662 
+# Corrected R over S Hurst exponent:   1.041862 
+# Empirical Hurst exponent:            0.6975531 
+# Corrected empirical Hurst exponent:  0.7136607 
+# Theoretical Hurst exponent:          0.5244148 
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pracma</em> version 2.3.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

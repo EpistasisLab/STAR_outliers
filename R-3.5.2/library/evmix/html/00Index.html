@@ -1,0 +1,953 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Extreme Value Mixture Modelling, Threshold Estimation and
+Boundary Corrected Kernel Density Estimation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+<h1> Extreme Value Mixture Modelling, Threshold Estimation and
+Boundary Corrected Kernel Density Estimation
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;evmix&rsquo; version 2.12</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="# "> </a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#K">K</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#T">T</a>
+<a href="#W">W</a>
+</p>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="evmix-package.html">evmix-package</a></td>
+<td>Extreme Value Mixture Modelling, Threshold Estimation and Boundary Corrected Kernel Density Estimation</td></tr>
+</table>
+
+<h2><a name="B">-- B --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="bckden.html">bckden</a></td>
+<td>Boundary Corrected Kernel Density Estimation Using a Variety of Approaches</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpd.html">bckdengpd</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpdcon.html">bckdengpdcon</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxbeta1</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxbeta2</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxcopula</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxcutnorm</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxgamma1</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxgamma2</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxreflect</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxrenorm</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">bckdenxsimple</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="betagpd.html">betagpd</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="betagpdcon.html">betagpdcon</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+</table>
+
+<h2><a name="C">-- C --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="checking.html">check.bcmethod</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.control</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.design.knots</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.inputn</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="kfun.html">check.kbw</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="kfun.html">check.kernel</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="kfun.html">check.kinputs</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.logic</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.n</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.nn</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.nparam</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.offset</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.optim</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.param</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.phiu</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.posparam</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.prob</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.quant</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">check.text</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="checking.html">checking</a></td>
+<td>Internal functions for checking function input arguments</td></tr>
+<tr><td style="width: 25%;"><a href="fpsden.html">cvpsden</a></td>
+<td>MLE Fitting of P-splines Density Estimator</td></tr>
+</table>
+
+<h2><a name="D">-- D --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="bckden.html">dbckden</a></td>
+<td>Boundary Corrected Kernel Density Estimation Using a Variety of Approaches</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpd.html">dbckdengpd</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpdcon.html">dbckdengpdcon</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="betagpd.html">dbetagpd</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="betagpdcon.html">dbetagpdcon</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="dwm.html">ddwm</a></td>
+<td>Dynamically Weighted Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="evmix.diag.html">densplot</a></td>
+<td>Diagnostic Plots for Extreme Value Mixture Models</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpd.html">dgammagpd</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpdcon.html">dgammagpdcon</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="gkg.html">dgkg</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gkgcon.html">dgkgcon</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model With Single Continuity Constraint at Both</td></tr>
+<tr><td style="width: 25%;"><a href="gng.html">dgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gngcon.html">dgngcon</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model with Single Continuity Constraint at Thresholds</td></tr>
+<tr><td style="width: 25%;"><a href="gpd.html">dgpd</a></td>
+<td>Generalised Pareto Distribution (GPD)</td></tr>
+<tr><td style="width: 25%;"><a href="hpd.html">dhpd</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="hpdcon.html">dhpdcon</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="itmgng.html">ditmgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmnormgpd.html">ditmnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmweibullgpd.html">ditmweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kden.html">dkden</a></td>
+<td>Kernel Density Estimation, With Variety of Kernels</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpd.html">dkdengpd</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpdcon.html">dkdengpdcon</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpd.html">dlognormgpd</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpdcon.html">dlognormgpdcon</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="mgamma.html">dmgamma</a></td>
+<td>Mixture of Gammas Distribution</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpd.html">dmgammagpd</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpdcon.html">dmgammagpdcon</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="normgpd.html">dnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="normgpdcon.html">dnormgpdcon</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="psden.html">dpsden</a></td>
+<td>P-Splines probability density function</td></tr>
+<tr><td style="width: 25%;"><a href="psdengpd.html">dpsdengpd</a></td>
+<td>P-Splines Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpd.html">dweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpdcon.html">dweibullgpdcon</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="dwm.html">dwm</a></td>
+<td>Dynamically Weighted Mixture Model</td></tr>
+</table>
+
+<h2><a name="E">-- E --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="evmix-package.html">evmix</a></td>
+<td>Extreme Value Mixture Modelling, Threshold Estimation and Boundary Corrected Kernel Density Estimation</td></tr>
+<tr><td style="width: 25%;"><a href="evmix.diag.html">evmix.diag</a></td>
+<td>Diagnostic Plots for Extreme Value Mixture Models</td></tr>
+</table>
+
+<h2><a name="F">-- F --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="fbckden.html">fbckden</a></td>
+<td>Cross-validation MLE Fitting of Boundary Corrected Kernel Density Estimation Using a Variety of Approaches</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpd.html">fbckdengpd</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpdcon.html">fbckdengpdcon</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpd.html">fbetagpd</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpdcon.html">fbetagpdcon</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fdwm.html">fdwm</a></td>
+<td>MLE Fitting of Dynamically Weighted Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpd.html">fgammagpd</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpdcon.html">fgammagpdcon</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fgkg.html">fgkg</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgkgcon.html">fgkgcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgng.html">fgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgngcon.html">fgngcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgpd.html">fgpd</a></td>
+<td>MLE Fitting of Generalised Pareto Distribution (GPD)</td></tr>
+<tr><td style="width: 25%;"><a href="fhpd.html">fhpd</a></td>
+<td>MLE Fitting of Hybrid Pareto Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fhpdcon.html">fhpdcon</a></td>
+<td>MLE Fitting of Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fitmgng.html">fitmgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmnormgpd.html">fitmnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmweibullgpd.html">fitmweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkden.html">fkden</a></td>
+<td>Cross-validation MLE Fitting of Kernel Density Estimator, With Variety of Kernels</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpd.html">fkdengpd</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpdcon.html">fkdengpdcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpd.html">flognormgpd</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpdcon.html">flognormgpdcon</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fmgamma.html">fmgamma</a></td>
+<td>MLE Fitting of Mixture of Gammas Using EM Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpd.html">fmgammagpd</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpdcon.html">fmgammagpdcon</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpd.html">fnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpdcon.html">fnormgpdcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fpsden.html">fpsden</a></td>
+<td>MLE Fitting of P-splines Density Estimator</td></tr>
+<tr><td style="width: 25%;"><a href="fpsdengpd.html">fpsdengpd</a></td>
+<td>MLE Fitting of P-splines Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpd.html">fweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpdcon.html">fweibullgpdcon</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+</table>
+
+<h2><a name="G">-- G --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="gammagpd.html">gammagpd</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpdcon.html">gammagpdcon</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="gkg.html">gkg</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gkgcon.html">gkgcon</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model With Single Continuity Constraint at Both</td></tr>
+<tr><td style="width: 25%;"><a href="gng.html">gng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gngcon.html">gngcon</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model with Single Continuity Constraint at Thresholds</td></tr>
+<tr><td style="width: 25%;"><a href="gpd.html">gpd</a></td>
+<td>Generalised Pareto Distribution (GPD)</td></tr>
+</table>
+
+<h2><a name="H">-- H --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="hillplot.html">hillplot</a></td>
+<td>Hill Plot</td></tr>
+<tr><td style="width: 25%;"><a href="hpd.html">hpd</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="hpdcon.html">hpdcon</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+</table>
+
+<h2><a name="I">-- I --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="internal.html">internal</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="itmgng.html">itmgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmnormgpd.html">itmnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmweibullgpd.html">itmweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fpsden.html">iwlspsden</a></td>
+<td>MLE Fitting of P-splines Density Estimator</td></tr>
+</table>
+
+<h2><a name="K">-- K --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="kfun.html">ka0</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="kfun.html">ka1</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="kfun.html">ka2</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="kfun.html">kbw</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdbiweight</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdcosine</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kden.html">kden</a></td>
+<td>Kernel Density Estimation, With Variety of Kernels</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpd.html">kdengpd</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpdcon.html">kdengpdcon</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">kdenx</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdepanechnikov</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdgaussian</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdoptcosine</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdparzen</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdtriangular</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdtricube</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdtriweight</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kduniform</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kdz</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kernels</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kfun.html">kfun</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="kfun.html">klambda</a></td>
+<td>Various subsidiary kernel function, conversion of bandwidths and evaluating certain kernel integrals.</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kpbiweight</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kpcosine</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kpepanechnikov</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kpgaussian</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kpoptcosine</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kpparzen</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kptriangular</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kptricube</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kptriweight</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kpuniform</a></td>
+<td>Kernel functions</td></tr>
+<tr><td style="width: 25%;"><a href="kernels.html">kpz</a></td>
+<td>Kernel functions</td></tr>
+</table>
+
+<h2><a name="L">-- L --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="fbckden.html">lbckden</a></td>
+<td>Cross-validation MLE Fitting of Boundary Corrected Kernel Density Estimation Using a Variety of Approaches</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpd.html">lbckdengpd</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpdcon.html">lbckdengpdcon</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpd.html">lbetagpd</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpdcon.html">lbetagpdcon</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fdwm.html">ldwm</a></td>
+<td>MLE Fitting of Dynamically Weighted Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpd.html">lgammagpd</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpdcon.html">lgammagpdcon</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fgkg.html">lgkg</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgkgcon.html">lgkgcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgng.html">lgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgngcon.html">lgngcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgpd.html">lgpd</a></td>
+<td>MLE Fitting of Generalised Pareto Distribution (GPD)</td></tr>
+<tr><td style="width: 25%;"><a href="fhpd.html">lhpd</a></td>
+<td>MLE Fitting of Hybrid Pareto Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fhpdcon.html">lhpdcon</a></td>
+<td>MLE Fitting of Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fitmgng.html">litmgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmnormgpd.html">litmnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmweibullgpd.html">litmweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkden.html">lkden</a></td>
+<td>Cross-validation MLE Fitting of Kernel Density Estimator, With Variety of Kernels</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpd.html">lkdengpd</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpdcon.html">lkdengpdcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpd.html">llognormgpd</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpdcon.html">llognormgpdcon</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fmgamma.html">lmgamma</a></td>
+<td>MLE Fitting of Mixture of Gammas Using EM Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpd.html">lmgammagpd</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpdcon.html">lmgammagpdcon</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpd.html">lnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpdcon.html">lnormgpdcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpd.html">lognormgpd</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpdcon.html">lognormgpdcon</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fpsden.html">lpsden</a></td>
+<td>MLE Fitting of P-splines Density Estimator</td></tr>
+<tr><td style="width: 25%;"><a href="fpsdengpd.html">lpsdengpd</a></td>
+<td>MLE Fitting of P-splines Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpd.html">lweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpdcon.html">lweibullgpdcon</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+</table>
+
+<h2><a name="M">-- M --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="mgamma.html">mgamma</a></td>
+<td>Mixture of Gammas Distribution</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpd.html">mgammagpd</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpdcon.html">mgammagpdcon</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="mrlplot.html">mrlplot</a></td>
+<td>Mean Residual Life Plot</td></tr>
+</table>
+
+<h2><a name="N">-- N --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="fbckden.html">nlbckden</a></td>
+<td>Cross-validation MLE Fitting of Boundary Corrected Kernel Density Estimation Using a Variety of Approaches</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpd.html">nlbckdengpd</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpdcon.html">nlbckdengpdcon</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpd.html">nlbetagpd</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpdcon.html">nlbetagpdcon</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fdwm.html">nldwm</a></td>
+<td>MLE Fitting of Dynamically Weighted Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fmgamma.html">nlEMmgamma</a></td>
+<td>MLE Fitting of Mixture of Gammas Using EM Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpd.html">nlEMmgammagpd</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpdcon.html">nlEMmgammagpdcon</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fitmgng.html">nleuitmgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmnormgpd.html">nleuitmnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmweibullgpd.html">nleuitmweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpd.html">nlgammagpd</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpdcon.html">nlgammagpdcon</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fgkg.html">nlgkg</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgkgcon.html">nlgkgcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgng.html">nlgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgngcon.html">nlgngcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgpd.html">nlgpd</a></td>
+<td>MLE Fitting of Generalised Pareto Distribution (GPD)</td></tr>
+<tr><td style="width: 25%;"><a href="fhpd.html">nlhpd</a></td>
+<td>MLE Fitting of Hybrid Pareto Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fhpdcon.html">nlhpdcon</a></td>
+<td>MLE Fitting of Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fitmgng.html">nlitmgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmnormgpd.html">nlitmnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmweibullgpd.html">nlitmweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkden.html">nlkden</a></td>
+<td>Cross-validation MLE Fitting of Kernel Density Estimator, With Variety of Kernels</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpd.html">nlkdengpd</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpdcon.html">nlkdengpdcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpd.html">nllognormgpd</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpdcon.html">nllognormgpdcon</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fmgamma.html">nlmgamma</a></td>
+<td>MLE Fitting of Mixture of Gammas Using EM Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpd.html">nlmgammagpd</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpdcon.html">nlmgammagpdcon</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpd.html">nlnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpdcon.html">nlnormgpdcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fpsden.html">nlpsden</a></td>
+<td>MLE Fitting of P-splines Density Estimator</td></tr>
+<tr><td style="width: 25%;"><a href="fpsdengpd.html">nlpsdengpd</a></td>
+<td>MLE Fitting of P-splines Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpd.html">nlubckdengpd</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpdcon.html">nlubckdengpdcon</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpd.html">nlubetagpd</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpdcon.html">nlubetagpdcon</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpd.html">nluEMmgammagpd</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpdcon.html">nluEMmgammagpdcon</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpd.html">nlugammagpd</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpdcon.html">nlugammagpdcon</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fgkg.html">nlugkg</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgkgcon.html">nlugkgcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgng.html">nlugng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgngcon.html">nlugngcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fhpdcon.html">nluhpdcon</a></td>
+<td>MLE Fitting of Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fitmgng.html">nluitmgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmnormgpd.html">nluitmnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmweibullgpd.html">nluitmweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpd.html">nlukdengpd</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpdcon.html">nlukdengpdcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpd.html">nlulognormgpd</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpdcon.html">nlulognormgpdcon</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpd.html">nlumgammagpd</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpdcon.html">nlumgammagpdcon</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpd.html">nlunormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpdcon.html">nlunormgpdcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fpsdengpd.html">nlupsdengpd</a></td>
+<td>MLE Fitting of P-splines Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpd.html">nluweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpdcon.html">nluweibullgpdcon</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpd.html">nlweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpdcon.html">nlweibullgpdcon</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="normgpd.html">normgpd</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="normgpdcon.html">normgpdcon</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+</table>
+
+<h2><a name="P">-- P --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="bckden.html">pbckden</a></td>
+<td>Boundary Corrected Kernel Density Estimation Using a Variety of Approaches</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpd.html">pbckdengpd</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpdcon.html">pbckdengpdcon</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxbeta1</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxbeta2</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxcopula</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxcutnorm</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxgamma1</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxgamma2</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxlog</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxnn</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxreflect</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxrenorm</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pbckdenxsimple</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="betagpd.html">pbetagpd</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="betagpdcon.html">pbetagpdcon</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="dwm.html">pdwm</a></td>
+<td>Dynamically Weighted Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpd.html">pgammagpd</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpdcon.html">pgammagpdcon</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="gkg.html">pgkg</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gkgcon.html">pgkgcon</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model With Single Continuity Constraint at Both</td></tr>
+<tr><td style="width: 25%;"><a href="gng.html">pgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gngcon.html">pgngcon</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model with Single Continuity Constraint at Thresholds</td></tr>
+<tr><td style="width: 25%;"><a href="gpd.html">pgpd</a></td>
+<td>Generalised Pareto Distribution (GPD)</td></tr>
+<tr><td style="width: 25%;"><a href="hpd.html">phpd</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="hpdcon.html">phpdcon</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="pickandsplot.html">pickandsplot</a></td>
+<td>Pickands Plot</td></tr>
+<tr><td style="width: 25%;"><a href="itmgng.html">pitmgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmnormgpd.html">pitmnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmweibullgpd.html">pitmweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kden.html">pkden</a></td>
+<td>Kernel Density Estimation, With Variety of Kernels</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpd.html">pkdengpd</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpdcon.html">pkdengpdcon</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pkdenx</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpd.html">plognormgpd</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpdcon.html">plognormgpdcon</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="mgamma.html">pmgamma</a></td>
+<td>Mixture of Gammas Distribution</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpd.html">pmgammagpd</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpdcon.html">pmgammagpdcon</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="normgpd.html">pnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="normgpdcon.html">pnormgpdcon</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="evmix.diag.html">pplot</a></td>
+<td>Diagnostic Plots for Extreme Value Mixture Models</td></tr>
+<tr><td style="width: 25%;"><a href="psden.html">ppsden</a></td>
+<td>P-Splines probability density function</td></tr>
+<tr><td style="width: 25%;"><a href="psdengpd.html">ppsdengpd</a></td>
+<td>P-Splines Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmgng.html">profleuitmgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmnormgpd.html">profleuitmnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmweibullgpd.html">profleuitmweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpd.html">proflubckdengpd</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbckdengpdcon.html">proflubckdengpdcon</a></td>
+<td>MLE Fitting of Boundary Corrected Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpd.html">proflubetagpd</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fbetagpdcon.html">proflubetagpdcon</a></td>
+<td>MLE Fitting of beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpd.html">proflugammagpd</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgammagpdcon.html">proflugammagpdcon</a></td>
+<td>MLE Fitting of Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fgkg.html">proflugkg</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgkgcon.html">proflugkgcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgng.html">proflugng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fgngcon.html">proflugngcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails with Single Continuity Constraint at Both Thresholds Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fhpdcon.html">profluhpdcon</a></td>
+<td>MLE Fitting of Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fitmgng.html">profluitmgng</a></td>
+<td>MLE Fitting of Normal Bulk and GPD for Both Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmnormgpd.html">profluitmnormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fitmweibullgpd.html">profluitmweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpd.html">proflukdengpd</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fkdengpdcon.html">proflukdengpdcon</a></td>
+<td>MLE Fitting of Kernel Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpd.html">proflulognormgpd</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="flognormgpdcon.html">proflulognormgpdcon</a></td>
+<td>MLE Fitting of log-normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpd.html">proflumgammagpd</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fmgammagpdcon.html">proflumgammagpdcon</a></td>
+<td>MLE Fitting of Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint using the EM algorithm.</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpd.html">proflunormgpd</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fnormgpdcon.html">proflunormgpdcon</a></td>
+<td>MLE Fitting of Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="fpsdengpd.html">proflupsdengpd</a></td>
+<td>MLE Fitting of P-splines Density Estimate for Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpd.html">profluweibullgpd</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="fweibullgpdcon.html">profluweibullgpdcon</a></td>
+<td>MLE Fitting of Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pscounts</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="psden.html">psden</a></td>
+<td>P-Splines probability density function</td></tr>
+<tr><td style="width: 25%;"><a href="psdengpd.html">psdengpd</a></td>
+<td>P-Splines Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpd.html">pweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpdcon.html">pweibullgpdcon</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">pxb</a></td>
+<td>Internal Functions</td></tr>
+</table>
+
+<h2><a name="Q">-- Q --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="bckden.html">qbckden</a></td>
+<td>Boundary Corrected Kernel Density Estimation Using a Variety of Approaches</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpd.html">qbckdengpd</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpdcon.html">qbckdengpdcon</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="betagpd.html">qbetagpd</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="betagpdcon.html">qbetagpdcon</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="dwm.html">qdwm</a></td>
+<td>Dynamically Weighted Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpd.html">qgammagpd</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpdcon.html">qgammagpdcon</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">qgbgmix</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">qgbgmixprime</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="gkg.html">qgkg</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gkgcon.html">qgkgcon</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model With Single Continuity Constraint at Both</td></tr>
+<tr><td style="width: 25%;"><a href="gng.html">qgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gngcon.html">qgngcon</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model with Single Continuity Constraint at Thresholds</td></tr>
+<tr><td style="width: 25%;"><a href="gpd.html">qgpd</a></td>
+<td>Generalised Pareto Distribution (GPD)</td></tr>
+<tr><td style="width: 25%;"><a href="hpd.html">qhpd</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="hpdcon.html">qhpdcon</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="itmgng.html">qitmgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmnormgpd.html">qitmnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmweibullgpd.html">qitmweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kden.html">qkden</a></td>
+<td>Kernel Density Estimation, With Variety of Kernels</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpd.html">qkdengpd</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpdcon.html">qkdengpdcon</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpd.html">qlognormgpd</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpdcon.html">qlognormgpdcon</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="mgamma.html">qmgamma</a></td>
+<td>Mixture of Gammas Distribution</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpd.html">qmgammagpd</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpdcon.html">qmgammagpdcon</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">qmix</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="internal.html">qmixprime</a></td>
+<td>Internal Functions</td></tr>
+<tr><td style="width: 25%;"><a href="normgpd.html">qnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="normgpdcon.html">qnormgpdcon</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="evmix.diag.html">qplot</a></td>
+<td>Diagnostic Plots for Extreme Value Mixture Models</td></tr>
+<tr><td style="width: 25%;"><a href="psden.html">qpsden</a></td>
+<td>P-Splines probability density function</td></tr>
+<tr><td style="width: 25%;"><a href="psdengpd.html">qpsdengpd</a></td>
+<td>P-Splines Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpd.html">qweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpdcon.html">qweibullgpdcon</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+</table>
+
+<h2><a name="R">-- R --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="bckden.html">rbckden</a></td>
+<td>Boundary Corrected Kernel Density Estimation Using a Variety of Approaches</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpd.html">rbckdengpd</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="bckdengpdcon.html">rbckdengpdcon</a></td>
+<td>Boundary Corrected Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="betagpd.html">rbetagpd</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="betagpdcon.html">rbetagpdcon</a></td>
+<td>Beta Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="dwm.html">rdwm</a></td>
+<td>Dynamically Weighted Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpd.html">rgammagpd</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gammagpdcon.html">rgammagpdcon</a></td>
+<td>Gamma Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="gkg.html">rgkg</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gkgcon.html">rgkgcon</a></td>
+<td>Kernel Density Estimate and GPD Both Upper and Lower Tails Extreme Value Mixture Model With Single Continuity Constraint at Both</td></tr>
+<tr><td style="width: 25%;"><a href="gng.html">rgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="gngcon.html">rgngcon</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Extreme Value Mixture Model with Single Continuity Constraint at Thresholds</td></tr>
+<tr><td style="width: 25%;"><a href="gpd.html">rgpd</a></td>
+<td>Generalised Pareto Distribution (GPD)</td></tr>
+<tr><td style="width: 25%;"><a href="hpd.html">rhpd</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="hpdcon.html">rhpdcon</a></td>
+<td>Hybrid Pareto Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="itmgng.html">ritmgng</a></td>
+<td>Normal Bulk with GPD Upper and Lower Tails Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmnormgpd.html">ritmnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="itmweibullgpd.html">ritmweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Interval Transition Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kden.html">rkden</a></td>
+<td>Kernel Density Estimation, With Variety of Kernels</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpd.html">rkdengpd</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="kdengpdcon.html">rkdengpdcon</a></td>
+<td>Kernel Density Estimate and GPD Tail Extreme Value Mixture Model With Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpd.html">rlognormgpd</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="lognormgpdcon.html">rlognormgpdcon</a></td>
+<td>Log-Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="evmix.diag.html">rlplot</a></td>
+<td>Diagnostic Plots for Extreme Value Mixture Models</td></tr>
+<tr><td style="width: 25%;"><a href="mgamma.html">rmgamma</a></td>
+<td>Mixture of Gammas Distribution</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpd.html">rmgammagpd</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="mgammagpdcon.html">rmgammagpdcon</a></td>
+<td>Mixture of Gammas Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="normgpd.html">rnormgpd</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="normgpdcon.html">rnormgpdcon</a></td>
+<td>Normal Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+<tr><td style="width: 25%;"><a href="psden.html">rpsden</a></td>
+<td>P-Splines probability density function</td></tr>
+<tr><td style="width: 25%;"><a href="psdengpd.html">rpsdengpd</a></td>
+<td>P-Splines Density Estimate and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpd.html">rweibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpdcon.html">rweibullgpdcon</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+</table>
+
+<h2><a name="T">-- T --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="tcplot.html">tcplot</a></td>
+<td>Parameter Threshold Stability Plots</td></tr>
+<tr><td style="width: 25%;"><a href="tcplot.html">tscaleplot</a></td>
+<td>Parameter Threshold Stability Plots</td></tr>
+<tr><td style="width: 25%;"><a href="tcplot.html">tshapeplot</a></td>
+<td>Parameter Threshold Stability Plots</td></tr>
+</table>
+
+<h2><a name="W">-- W --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="weibullgpd.html">weibullgpd</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model</td></tr>
+<tr><td style="width: 25%;"><a href="weibullgpdcon.html">weibullgpdcon</a></td>
+<td>Weibull Bulk and GPD Tail Extreme Value Mixture Model with Single Continuity Constraint</td></tr>
+</table>
+</body></html>
