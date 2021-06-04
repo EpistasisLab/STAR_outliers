@@ -32,8 +32,16 @@ sys.path.insert(1, os.getcwd())
 
 #imports specific libraries from the correct path
 import remove_outliers_library as main_lib
-OpVaR_path = 'R-3.5.2/library'
-TGH = importr('OpVaR', lib_loc = OpVaR_path)
+try:
+    OpVaR_path = 'R-3.5.2/library'
+    TGH = importr('OpVaR', lib_loc = OpVaR_path)
+except:
+    try:
+        OpVaR_path = '/home/runner/work/_temp/Library'
+        TGH = importr('OpVaR', lib_loc = OpVaR_path)
+    except:
+        OpVaR_path = 'D:/a/_temp/Library'
+        TGH = importr('OpVaR', lib_loc = OpVaR_path)
 
 class test_main_library(unittest.TestCase):
     np.random.seed(0)

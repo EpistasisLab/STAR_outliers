@@ -25,8 +25,16 @@ from remove_outliers_polishing_library import adjust_median_values
 # If that is insufficient, then use install.packages("OpVaR") in an R environment before running this
 # install.packages("OpVaR")
 from rpy2.robjects.packages import importr
-OpVaR_path = 'R-3.5.2/library'
-TGH = importr('OpVaR', lib_loc = OpVaR_path)
+try:
+    OpVaR_path = 'R-3.5.2/library'
+    TGH = importr('OpVaR', lib_loc = OpVaR_path)
+except:
+    try:
+        OpVaR_path = '/home/runner/work/_temp/Library'
+        TGH = importr('OpVaR', lib_loc = OpVaR_path)
+    except:
+        OpVaR_path = 'D:/a/_temp/Library'
+        TGH = importr('OpVaR', lib_loc = OpVaR_path)
 
 # source title: Outlier identification for skewed and/or 
 #               heavy-tailed unimodal multivariate distributions
