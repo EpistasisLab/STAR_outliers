@@ -4,6 +4,7 @@ import numpy as np
 import os
 import sys
 import pdb
+import platform
 from copy import deepcopy as COPY
 from scipy import stats
 from rpy2.robjects.packages import importr
@@ -32,15 +33,20 @@ sys.path.insert(1, os.getcwd())
 
 #imports specific libraries from the correct path
 import remove_outliers_library as main_lib
-try:
-    OpVaR_path = 'R-3.5.2/library'
-    TGH = importr('OpVaR', lib_loc = OpVaR_path)
-except:
+system = platform.uname()[0]
+if system == "Linux":
     try:
         OpVaR_path = '/home/runner/work/_temp/Library'
         TGH = importr('OpVaR', lib_loc = OpVaR_path)
     except:
+        exit()
+        
+if system == "Windows":
+    try:
         OpVaR_path = 'D:/a/_temp/Library'
+        TGH = importr('OpVaR', lib_loc = OpVaR_path)
+    except:
+        OpVaR_path = 'R-3.5.2/library'
         TGH = importr('OpVaR', lib_loc = OpVaR_path)
 
 class test_main_library(unittest.TestCase):

@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import pdb
+import platform
 from copy import deepcopy as COPY
 from statsmodels.stats.stattools import medcouple 
 from matplotlib import pyplot as plt
@@ -25,15 +26,20 @@ from remove_outliers_polishing_library import adjust_median_values
 # If that is insufficient, then use install.packages("OpVaR") in an R environment before running this
 # install.packages("OpVaR")
 from rpy2.robjects.packages import importr
-try:
-    OpVaR_path = 'R-3.5.2/library'
-    TGH = importr('OpVaR', lib_loc = OpVaR_path)
-except:
+system = platform.uname()[0]
+if system == "Linux":
     try:
         OpVaR_path = '/home/runner/work/_temp/Library'
         TGH = importr('OpVaR', lib_loc = OpVaR_path)
     except:
+        exit()
+        
+if system == "Windows":
+    try:
         OpVaR_path = 'D:/a/_temp/Library'
+        TGH = importr('OpVaR', lib_loc = OpVaR_path)
+    except:
+        OpVaR_path = 'R-3.5.2/library'
         TGH = importr('OpVaR', lib_loc = OpVaR_path)
 
 # source title: Outlier identification for skewed and/or 
