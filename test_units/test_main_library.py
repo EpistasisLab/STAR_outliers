@@ -107,12 +107,12 @@ class test_main_library(unittest.TestCase):
         x2 = np.max(x) - x
         x_spiked = COPY(x)
         x_spiked2 = COPY(x2)
-        x_spiked = main_lib.attempt_exponential_fit(x, x_spiked, "fake",
-                                                    False, "fake", 0.3,
-                                                    [], True, [])
-        x_spiked2 = main_lib.attempt_exponential_fit(x2, x_spiked2, "fake",
-                                                     False, "fake", 0.3,
-                                                     [], True, [])
+        x_spiked = main_lib.attempt_exponential_fit(x, x_spiked,
+                                                    "fake", "fake",
+                                                    0.3, [], True, [])
+        x_spiked2 = main_lib.attempt_exponential_fit(x2, x_spiked2,
+                                                     "fake", "fake",
+                                                     0.3, [], True, [])
         bound = np.nanmax(x_spiked)
         bound2 = np.nanmin(x_spiked2)
         good_bound = 5.944200450024489
