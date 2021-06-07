@@ -86,8 +86,8 @@ class test_main_library(unittest.TestCase):
         sorted_indices = np.argsort(np.abs(x - 0.5))
         x = x[sorted_indices]
         x_spiked = COPY(x)
-        x_spiked = main_lib.attempt_tukey_fit(x, x_spiked, "fake", False, 
-                                              "fake", 95, 0.3, [], False, [])
+        x_spiked, void = main_lib.attempt_tukey_fit(x, x_spiked, "fake", "fake",
+                                                    95, 0.3, [], False, [])
         bounds = [np.nanmin(x_spiked), np.nanmax(x_spiked)]
         good_bounds = [0.0014237337435458741, 0.9985899705190592]
         is_correct1 = np.all(np.isclose(bounds, good_bounds))
@@ -107,12 +107,12 @@ class test_main_library(unittest.TestCase):
         x2 = np.max(x) - x
         x_spiked = COPY(x)
         x_spiked2 = COPY(x2)
-        x_spiked = main_lib.attempt_exponential_fit(x, x_spiked,
-                                                    "fake", "fake",
-                                                    0.3, [], True, [])
-        x_spiked2 = main_lib.attempt_exponential_fit(x2, x_spiked2,
-                                                     "fake", "fake",
-                                                     0.3, [], True, [])
+        x_spiked, void = main_lib.attempt_exponential_fit(x, x_spiked,
+                                                          "fake", "fake",
+                                                          0.3, [], True, [])
+        x_spiked2, void = main_lib.attempt_exponential_fit(x2, x_spiked2,
+                                                           "fake", "fake",
+                                                           0.3, [], True, [])
         bound = np.nanmax(x_spiked)
         bound2 = np.nanmin(x_spiked2)
         good_bound = 5.944200450024489
