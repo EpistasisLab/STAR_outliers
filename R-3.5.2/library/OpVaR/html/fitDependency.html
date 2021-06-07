@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Function for fitting bivariate Copulas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fitDependency {OpVaR}"><tr><td>fitDependency {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Function for fitting bivariate Copulas
+</h2>
+
+<h3>Description</h3>
+
+<p>Function for fitting bivariate dependency between loss frequencies and severities.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fitDependency(cell, copula_family, method = "mle")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cell</code></td>
+<td>
+
+<p>a lossdat cell
+</p>
+</td></tr>
+<tr valign="top"><td><code>copula_family</code></td>
+<td>
+
+<p>0: independence, 1: Gaussian, 2: t, 3: Clayton, 4: Gumbel, 5: Frank, 6: Joe, see Vine Copula Package ?BiCop encoding
+</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+
+<p>as in fitCopula of the copula package. The method &quot;itau&quot; should not be used as dependencies between a continuous and a discrete random variable are modeled.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A BiCop object
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Marius Pfeuffer
+</p>
+
+
+<h3>References</h3>
+
+<p>Schepsmeier et al.: VineCopula package, CRAN
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### Fit Joe Copula
+data(lossdat)
+fitDependency(lossdat[[1]],6)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

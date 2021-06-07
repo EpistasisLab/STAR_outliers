@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Fitting a spliced distribution over a given data set</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fitSplicedBestFit {OpVaR}"><tr><td>fitSplicedBestFit {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Fitting a spliced distribution over a given data set 
+</h2>
+
+<h3>Description</h3>
+
+<p>A spliced distribution is fitted based on given loss data and required distributions for the body and the tail using a best-fit method. The function returns a sevdist object with type &quot;spliced&quot;.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  fitSplicedBestFit(cell, body, tail, thresh0 = 0.7, thresh.max = 0.98)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cell</code></td>
+<td>
+
+<p>List containing the loss data in cell$Loss.</p>
+</td></tr>
+<tr valign="top"><td><code>body</code></td>
+<td>
+
+<p>Character string giving the name of the distribution in the body. Can be chosen between &quot;gamma&quot;, &quot;lnorm&quot;, &quot;weibull&quot; or &quot;erlang&quot;.
+</p>
+</td></tr>
+<tr valign="top"><td><code>tail</code></td>
+<td>
+
+<p>Character string giving the name of the distribution in the tail. Can be chosen between &quot;gpd&quot;, &quot;gamma&quot;, &quot;lnorm&quot;, &quot;weibull&quot; or &quot;gh&quot;.
+</p>
+</td></tr>
+<tr valign="top"><td><code>thresh0</code></td>
+<td>
+<p>Initial value for the quantile of the threshold between body and tail</p>
+</td></tr>
+<tr valign="top"><td><code>thresh.max</code></td>
+<td>
+<p>Terminal value for the quantile of the threshold between body and tail</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Starting with a spliced distribution with threshold given by the quantile thresh0, the respective parameters of the given body and tail distribution are fitted, as well as the weights of both parts. A list of possible thresholds is given by all loss values between all quantiles between thresh0 and thresh.max. For each of these thresholds a spliced distribution will be fitted and then the best fitting threshold with the corresponding parameters will be chosen with a Kolmogorow-Smirnov test and the result is returned in a sevdist object with type &quot;spliced&quot;. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christina Zou
+</p>
+
+
+<h3>See Also</h3>
+
+<p>fitSplicedPar, fitThreshold, fitSpliced
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+    data(lossdat)
+    
+    param&lt;-fitSplicedBestFit(lossdat[[1]], "lnorm", "gpd")
+    param[[1]] ## Parameters of the body distribution
+    param[[2]] ## Parameters of the tail distribution
+    
+  </pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

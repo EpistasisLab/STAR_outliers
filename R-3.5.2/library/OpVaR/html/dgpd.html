@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generalized Pareto Distribution</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for gpd {OpVaR}"><tr><td>gpd {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Generalized Pareto Distribution
+</h2>
+
+<h3>Description</h3>
+
+<p>Density, distribution function, quantile function, and random generation for generalized Pareto distribution.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dgpd(x, loc, scale, shape, log=FALSE)
+pgpd(q, loc, scale, shape) 
+qgpd(p, loc, scale, shape) 
+rgpd(n, loc, scale, shape) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x, q</code></td>
+<td>
+
+<p>vector of quantiles.
+</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+
+<p>vector of probabilities.
+</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+
+<p>number of observations.
+</p>
+</td></tr>
+<tr valign="top"><td><code>loc</code></td>
+<td>
+
+<p>location parameter.
+</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+
+<p>scale parameter.
+</p>
+</td></tr>
+<tr valign="top"><td><code>shape</code></td>
+<td>
+
+<p>shape parameter.
+</p>
+</td></tr>
+<tr valign="top"><td><code>log</code></td>
+<td>
+
+<p>logical; logarithm of output
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Generalized Pareto Distribution with density
+</p>
+<p style="text-align: center;"><i>f(x)=1/scale * (1 + shape * (x - loc)/scale)^(-1/shape - 1)</i></p>
+
+
+
+<h3>Value</h3>
+
+<p>dgpd gives the density, pgpd gives the distribution function, qgpd gives the quantile function, and rgpd generates random deviates.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+dgpd(110,100,2,4) # 0.01112233
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Estimation of the threshold, the body and the tail parameters...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fitSpliced {OpVaR}"><tr><td>fitSpliced {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Estimation of the threshold, the body and the tail parameters for a spliced distribution
+</h2>
+
+<h3>Description</h3>
+
+<p>Given a dataset with a chosen distribution for the data in the body and another distribution in the tail, the threshold, the parameters of the body and the tail distributions and the weights are estimated.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  fitSpliced(cell, body, tail, method, thresh = NULL)
+
+  fitSplicedPar(cell, thresh, body, tail)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cell</code></td>
+<td>
+
+<p>List containing the data in the component cell$Loss
+</p>
+</td></tr>
+<tr valign="top"><td><code>body</code></td>
+<td>
+
+<p>Distribution in the body. Can be chosen between &quot;gamma&quot;, &quot;lnorm&quot;, &quot;weibull&quot; or &quot;erlang&quot;
+</p>
+</td></tr>
+<tr valign="top"><td><code>tail</code></td>
+<td>
+
+<p>Distribution in the tail. Can be chosen between &quot;gpd&quot;, &quot;gamma&quot;, &quot;lnorm&quot;, &quot;weibull&quot; or &quot;gh&quot;
+</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+
+<p>Method for the threshold estimation. In case of a GPD tail, it can be chosen between &quot;BestFit&quot;, &quot;Fixed&quot;, &quot;dAMSE&quot;, &quot;danielsson&quot;, &quot;DK&quot;, &quot;hall&quot;, &quot;Himp&quot;, &quot;HW&quot;, &quot;mindist&quot; or &quot;RT&quot;
+</p>
+</td></tr>
+<tr valign="top"><td><code>thresh</code></td>
+<td>
+
+<p>Predetermined threshold quantile (if method=&quot;Fixed&quot;)
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>In the spliced model, the distribution of the data is spliced into two distributions, one in the body and another in the tail.
+The density <i>f(x)</i> for a spliced distribution with threshold <i>&tau;</i>, weights <i>w</i>, body distribution with density <i>g</i> and cumulative distribution function <i>G</i> and tail distribution with density <i>h</i> and cumulative distribution function <i>H</i> is given as below:
+</p>
+<p>If <i>x&le; &tau;</i>: <i>f(x) = w* g(x)/G(&tau;)</i>
+</p>
+<p>If <i>x&gt;&tau;</i>: <i>f(x) = (1-w)* h(x)/(1-H(&tau;))</i>
+</p>
+<p>The weight <i>w</i> is required to normalise the density function.
+The estimation of the spliced distribution consists of three steps.
+In the first step, the threshold for the selected body and tail distribution is estimated.
+For further details on the methods for the threshold estimation, see fitThreshold.
+In the second step, the parameters of the body and the tail distribution are obtained by maximum likelihood estimation. 
+For spliced distributions, truncated body distributions are fitted to truncated data. For the estimation of the parameters of the tail distribution, only the data points above the threshold are used.
+In the last step, the weight <i>w</i> is obtained.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns a sevdist object of type 'spliced' with the given body and tail distributions fitted to the loss data.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christina Zou, Leonie Wicht
+</p>
+
+
+<h3>See Also</h3>
+
+<p>fitSplicedBestFit, fitThreshold
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ data(lossdat)
+ fitSpliced(lossdat[[3]],"gamma","gpd",method="Fixed",thresh=2000)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

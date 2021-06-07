@@ -1,0 +1,153 @@
+CTE                     Conditional Tail Expectation
+EPD                     EPD estimator
+EPDfit                  Fit EPD using MLE
+EVTfit                  EVT fit
+ExcessEPD               Estimates for excess-loss premiums using EPD
+                        estimates
+ExcessGPD               Estimates for excess-loss premiums using
+                        GPD-MLE estimates
+ExcessPareto            Estimates for excess-loss premiums using a
+                        Pareto model
+ExcessSplice            Estimates for excess-loss premiums using
+                        splicing
+ExpQQ                   Exponential quantile plot
+GPDfit                  Fit GPD using MLE
+GPDmle                  GPD-ML estimator
+GPDresiduals            GPD residual plot
+Hill                    Hill estimator
+Hill.2oQV               Bias-reduced MLE (Quantile view)
+Hill.kopt               Select optimal threshold for Hill estimator
+KaplanMeier             Kaplan-Meier estimator
+LStail                  Least Squares tail estimator
+LognormalQQ             Log-normal quantile plot
+LognormalQQ_der         Derivative plot of the log-normal QQ-plot
+MEfit                   Mixed Erlang fit
+MeanExcess              Mean excess function
+MeanExcess_TB           Mean excess function using Turnbull estimator
+Moment                  Moment estimator
+ParetoQQ                Pareto quantile plot
+ParetoQQ_der            Derivative plot of the Pareto QQ-plot
+Prob                    Weissman estimator of small exceedance
+                        probabilities and large return periods
+ProbEPD                 Estimator of small exceedance probabilities and
+                        large return periods using EPD
+ProbGH                  Estimator of small exceedance probabilities and
+                        large return periods using generalised Hill
+ProbGPD                 Estimator of small exceedance probabilities and
+                        large return periods using GPD-MLE
+ProbMOM                 Estimator of small exceedance probabilities and
+                        large return periods using MOM
+ProbReg                 Estimator of small tail probability in
+                        regression
+Quant                   Weissman estimator of extreme quantiles
+Quant.2oQV              Second order refined Weissman estimator of
+                        extreme quantiles (QV)
+QuantGH                 Estimator of extreme quantiles using
+                        generalised Hill
+QuantGPD                Estimator of extreme quantiles using GPD-MLE
+QuantMOM                Estimator of extreme quantiles using MOM
+QuantReg                Estimator of extreme quantiles in regression
+Scale                   Scale estimator
+Scale.2o                Bias-reduced scale estimator using second order
+                        Hill estimator
+ScaleEPD                Bias-reduced scale estimator using EPD
+                        estimator
+ScaleReg                Scale estimator in regression
+SpliceECDF              Plot of fitted and empirical survival function
+SpliceFit               Splicing fit
+SpliceFitGPD            Splicing of mixed Erlang and GPD using POT-MLE
+SpliceFitPareto         Splicing of mixed Erlang and Pareto
+SpliceFiticPareto       Splicing of mixed Erlang and Pareto for
+                        interval censored data
+SpliceLL                LL-plot with fitted and empirical survival
+                        function
+SpliceLL_TB             LL-plot with fitted and Turnbull survival
+                        function
+SplicePP                PP-plot with fitted and empirical survival
+                        function
+SplicePP_TB             PP-plot with fitted and Turnbull survival
+                        function
+SpliceQQ                Splicing quantile plot
+SpliceQQ_TB             Splicing quantile plot using Turnbull estimator
+SpliceTB                Plot of fitted and Turnbull survival function
+Turnbull                Turnbull estimator
+VaR                     VaR of splicing fit
+WeibullQQ               Weibull quantile plot
+WeibullQQ_der           Derivative plot of the Weibull QQ-plot
+cEPD                    EPD estimator for right censored data
+cExpQQ                  Exponential quantile plot for right censored
+                        data
+cGPDmle                 GPD-ML estimator for right censored data
+cHill                   Hill estimator for right censored data
+cLognormalQQ            Log-normal quantile plot for right censored
+                        data
+cMoment                 MOM estimator for right censored data
+cParetoQQ               Pareto quantile plot for right censored data
+cProb                   Estimator of small exceedance probabilities and
+                        large return periods using censored Hill
+cProbEPD                Estimator of small exceedance probabilities and
+                        large return periods using censored EPD
+cProbGH                 Estimator of small exceedance probabilities and
+                        large return periods using censored generalised
+                        Hill
+cProbGPD                Estimator of small exceedance probabilities and
+                        large return periods using censored GPD-MLE
+cProbMOM                Estimator of small exceedance probabilities and
+                        large return periods using censored MOM
+cQuant                  Estimator of large quantiles using censored
+                        Hill
+cQuantGH                Estimator of large quantiles using censored
+                        Hill
+cQuantGPD               Estimator of large quantiles using censored
+                        GPD-MLE
+cQuantMOM               Estimator of large quantiles using censored MOM
+cWeibullQQ              Weibull quantile plot for right censored data
+cgenHill                Generalised Hill estimator for right censored
+                        data
+crHill                  Hill-type estimator for the conditional EVI
+crParetoQQ              Conditional Pareto quantile plot for right
+                        censored data
+crSurv                  Non-parametric estimator of conditional
+                        survival function
+dSplice                 Spliced distribution
+dburr                   The Burr distribution
+depd                    The Extended Pareto Distribution
+dfrechet                The Frechet distribution
+dgpd                    The generalised Pareto distribution
+dpareto                 The Pareto distribution
+dtburr                  The truncated Burr distribution
+dtexp                   The truncated exponential distribution
+dtfrechet               The truncated Frechet distribution
+dtgpd                   The truncated generalised Pareto distribution
+dtlnorm                 The truncated log-normal distribution
+dtpareto                The truncated Pareto distribution
+dtweibull               The truncated Weibull distribution
+genHill                 Generalised Hill estimator
+genQQ                   Generalised quantile plot
+icHill                  Hill estimator for interval censored data
+icParetoQQ              Pareto quantile plot for interval censored data
+norwegianfire           Norwegian fire insurance data
+pClas                   Classical estimators for the CDF
+pEdge                   Edgeworth approximation
+pGC                     Gram-Charlier approximation
+secura                  Secura dataset
+soa                     SOA Group Medical Insurance Large Claims
+                        Database
+stdf                    Non-parametric estimators of the STDF
+trDT                    Truncation odds
+trDTMLE                 Truncation odds
+trEndpoint              Estimator of endpoint
+trEndpointMLE           Estimator of endpoint
+trHill                  Hill estimator for upper truncated data
+trMLE                   MLE estimator for upper truncated data
+trParetoQQ              Truncated Pareto quantile plot
+trProb                  Estimator of small exceedance probabilities
+                        using truncated Hill
+trProbMLE               Estimator of small exceedance probabilities
+                        using truncated MLE
+trQuant                 Estimator of large quantiles using truncated
+                        Hill
+trQuantMLE              Estimator of large quantiles using truncated
+                        MLE
+trTest                  Test for truncated Pareto-type tails
+trTestMLE               Test for truncated GPD tails

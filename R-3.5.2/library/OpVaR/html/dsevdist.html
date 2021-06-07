@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Evaluating Plain, Spliced or Mixing Severity Distributions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dsevdist {OpVaR}"><tr><td>dsevdist {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Evaluating Plain, Spliced or Mixing Severity Distributions
+</h2>
+
+<h3>Description</h3>
+
+<p>Functions for evaluating pdf, cdf, quantile function and random number generation given a loss severity model (sevdist object)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dsevdist(x, sevdist)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+
+</td></tr>
+<tr valign="top"><td><code>sevdist</code></td>
+<td>
+
+
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Marius Pfeuffer
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+##---- Should be DIRECTLY executable !! ----
+##-- ==&gt;  Define data, use random,
+##--	or do  help(data=index)  for the standard data sets.
+
+## The function is currently defined as
+function (x, sevdist) 
+{
+    if (sevdist$type == "plain") 
+        return(sevdist$par[[1]](x))
+    if (sevdist$type == "spliced") 
+        return(dspliced(x, sevdist))
+    if (sevdist$type == "mixing") 
+        return(dmixing(x, sevdist))
+  }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

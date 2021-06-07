@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Tukey's gh Distribution</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for gh {OpVaR}"><tr><td>gh {OpVaR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Tukey's gh Distribution
+</h2>
+
+<h3>Description</h3>
+
+<p>Density, distribution function, quantile function, and random generation for Tukey's gh distribution.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dgh(x, A, B, g, h, log = FALSE)
+pgh(q, A, B, g, h, log.p = FALSE)
+qgh(q, A, B, g, h, log.p =FALSE)
+rgh(n, A, B, g, h)
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x, q</code></td>
+<td>
+
+<p>vector of quantiles.
+</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+
+<p>vector of probabilities.
+</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+
+<p>number of observations.
+</p>
+</td></tr>
+<tr valign="top"><td><code>A</code></td>
+<td>
+
+<p>location parameter.
+</p>
+</td></tr>
+<tr valign="top"><td><code>B</code></td>
+<td>
+
+<p>scale parameter, has to be positive.
+</p>
+</td></tr>
+<tr valign="top"><td><code>g</code></td>
+<td>
+
+<p>skewness parameter.
+</p>
+</td></tr>
+<tr valign="top"><td><code>h</code></td>
+<td>
+
+<p>kurtosis parameter.
+</p>
+</td></tr>
+<tr valign="top"><td><code>log, log.p</code></td>
+<td>
+
+<p>logical; if TRUE, probabilities p are given as log(p)
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Tukey's gh distribution with location parameter A, scale parameter B, skewness parameter g, and kurtosis parameter h is obtained by transforming a standard normal variable X by
+</p>
+<p style="text-align: center;"><i>T(X)=A+B exp(h/2 X^2)(exp(gX)-1)/g</i></p>
+
+<p>if g is not equal to zero, and else by 
+</p>
+<p style="text-align: center;"><i>T(X)=A+B exp(h/2 X^2) X.</i></p>
+
+
+
+<h3>Value</h3>
+
+<p>dgh gives the density, pgh gives the distribution function, qgh gives the quantile function, and rgh generates random deviates.
+</p>
+<p>The length of the result is determined by n for rgh, and is the length of the numerical arguments for the other function.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Linda Moestel
+</p>
+
+
+<h3>References</h3>
+
+<p>Tukey, J. W. (1960): The Practical Relationship between the Common Transformations of Counts of Amounts.
+Technical Report 36, Princeton University Statistical Techniques Research Group, Princeton. 
+</p>
+<p>Klein, I. and Fischer, M. (2002): Symmetrical gh-transformed Distributions. in S. Mittnek and I. Klein: <em>Contributions to Modern Econometrics, Kluwer Academic Publishers.</em>
+</p>
+<p>Pfaelzner, F. (2017): Einsatz von Tukey-type Verteilungen bei der Quantifizierung von operationellen Risiken. MMasterthesis Friedrich-Alexander-University Erlangen-Nueremberg.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+##Parameters  for a gh distribution
+  A=500 
+  B=3
+  g=0.2
+  h=0.5 
+  
+  hist(rgh(n=1000,A,B,g,h))
+  curve(dgh(x,A,B,g,h),480,520)
+  curve(pgh(x,A,B,g,h),480,520)
+  curve(qgh(x,A,B,g,h),0,1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>OpVaR</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>
