@@ -7,9 +7,6 @@ import pdb
 import platform
 from copy import deepcopy as COPY
 from scipy import stats
-exit()
-from rpy2.robjects.packages import importr
-from rpy2.robjects import r
 
 #path finding code start
 next_dir = os.getcwd()
@@ -32,20 +29,7 @@ os.chdir(paths[count - 1])
 sys.path.insert(1, os.getcwd())
 #path finding code end
 
-#imports specific libraries from the correct path
 import remove_outliers_library as main_lib
-system = platform.uname()[0]
-if system == "Linux":
-    OpVaR_path = '/home/runner/work/_temp/Library'
-    TGH = importr('OpVaR', lib_loc = OpVaR_path)
-
-if system == "Windows":
-    try:
-        OpVaR_path = 'D:/a/_temp/Library'
-        TGH = importr('OpVaR', lib_loc = OpVaR_path)
-    except:
-        OpVaR_path = 'R-3.5.2/library'
-        TGH = importr('OpVaR', lib_loc = OpVaR_path)
 
 class test_main_library(unittest.TestCase):
     np.random.seed(0)
@@ -59,12 +43,12 @@ class test_main_library(unittest.TestCase):
     @mock.patch(f_name2, return_value = 0.99)
     @mock.patch(f_name3, side_effect = lambda W: (W, []))
     def test_estimate_tukey_params(self, mock1, mock2, mock3):
-        set_seed = r('set.seed')
-        set_seed(0)
-        W = TGH.rgh(1000000, float(-1.5), float(0.4), float(0.5), float(0.1))
+        A, B, g, h = -1.5, 0.4, 0.5, 0.1
+        z = np.random.normal(0, 1, 1000000)
+        W  = A + B*(1/(g + 1E-10))*(np.exp((g + 1E-10)*z)-1)*np.exp(h*(z**2)/2)        
         A, B, g, h, W_ignored = main_lib.estimate_tukey_params(np.array(W), 99.9)
-        good_estimates = [-1.499795576559748, 0.3968692002989624,
-                          0.5033067615247887, 0.10111509207361158]
+        good_estimates = [-1.4999650708545083, 0.3972813163571714,
+                           0.500692190277438, 0.1010689364692585]
         is_correct = np.all(np.isclose([A, B, g, h], good_estimates))
         self.assertTrue(is_correct, "test_estimate_tukey_params may have a math error")
     
@@ -95,8 +79,6 @@ class test_main_library(unittest.TestCase):
     @mock.patch(f_name4, side_effect = lambda *args: print())
     def test_attempt_tukey_fit(self, mock1, mock2, mock3, mock4):
         np.random.seed(0)
-        set_seed = r('set.seed')
-        set_seed(0)
         # leverages the fact that W is a monotonic transformation of
         # the ASO statistic, and is also a monotonic transformation of
         # np.abs(x - np.mean(x)) in symetric distributions. 
@@ -107,7 +89,7 @@ class test_main_library(unittest.TestCase):
         x_spiked = main_lib.attempt_tukey_fit(x, x_spiked, "fake", False, 
                                               "fake", 95, 0.3, [], False, [])
         bounds = [np.nanmin(x_spiked), np.nanmax(x_spiked)]
-        good_bounds = [0.0013688675359021518, 0.9986369268602082]
+        good_bounds = [0.0014237337435458741, 0.9985899705190592]
         is_correct1 = np.all(np.isclose(bounds, good_bounds))
         is_correct2 = np.all(len(x_spiked) == len(x))
         message1 = "attempt_tukey_fit did not produce correct outlier bounds"

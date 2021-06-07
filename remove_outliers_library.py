@@ -22,22 +22,6 @@ from remove_outliers_polishing_library import clean_data
 from remove_outliers_polishing_library import remove_worst_continuity_violations
 from remove_outliers_polishing_library import adjust_median_values
 
-# requires "module load R/3.5.3"
-# If that is insufficient, then use install.packages("OpVaR") in an R environment before running this
-# install.packages("OpVaR")
-from rpy2.robjects.packages import importr
-system = platform.uname()[0]
-if system == "Linux":
-    OpVaR_path = '/home/runner/work/_temp/Library'
-    TGH = importr('OpVaR', lib_loc = OpVaR_path)
-if system == "Windows":
-    try:
-        OpVaR_path = 'D:/a/_temp/Library'
-        TGH = importr('OpVaR', lib_loc = OpVaR_path)
-    except:
-        OpVaR_path = 'R-3.5.2/library'
-        TGH = importr('OpVaR', lib_loc = OpVaR_path)
-
 # source title: Outlier identification for skewed and/or 
 #               heavy-tailed unimodal multivariate distributions
 
@@ -193,7 +177,8 @@ def attempt_tukey_fit(x, x_spiked, name, alt_tests,
 
     W = compute_w(x)
     A, B, g, h, W_ignored = estimate_tukey_params(W, bound)
-    fitted_TGH = TGH.rgh(len(x), float(A), float(B), float(g), float(h))
+    z = np.random.normal(0, 1, len(x))
+    fitted_TGH  = A + B*(1/(g + 1E-10))*(np.exp((g + 1E-10)*z)-1)*np.exp(h*(z**2)/2)
     delta = (np.percentile(W, 99) - np.percentile(W, 1))/2
     xlims = [np.percentile(W, 1) - delta, np.percentile(W, 99) + delta]
     range0 = np.linspace(xlims[0] - delta, xlims[1] + delta, 
