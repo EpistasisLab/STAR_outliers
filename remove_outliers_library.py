@@ -15,8 +15,6 @@ from scipy.stats.mstats import gmean
 from remove_outliers_plotting_library import plot_data
 from remove_outliers_plotting_library import plot_test
 from remove_outliers_testing_library import detect_exponential_data
-from remove_outliers_testing_library import backup_test
-from remove_outliers_testing_library import get_geometric_info
 from remove_outliers_polishing_library import approximate_quantiles
 from remove_outliers_polishing_library import clean_data
 from remove_outliers_polishing_library import remove_worst_continuity_violations
@@ -126,18 +124,7 @@ def compute_w(x):
     W = norm.ppf((ASO + 1E-10)/(np.min(ASO) + np.max(ASO) + 2E-10))
     return(W)
 
-def run_backup_test(x, x_spiked, name, prefix):
-    content = clean_data(x_spiked, name, prefix, 0, [], [], False)
-    x_geo, severe_outliers = content[0], content[1]
-    num_main_values, gmean_decrease = get_geometric_info(x_geo)
-    if num_main_values > 10:
-        return(backup_test(x, x_spiked, name, prefix,
-                           severe_outliers))
-    else:
-        return(backup_test(x_geo, x_spiked, name, prefix,
-                           severe_outliers, gmean_decrease))
-
-def attempt_exponential_fit(x, x_spiked, name, alt_tests, 
+def attempt_exponential_fit(x, x_spiked, name, 
                             prefix, bw_coef, spike_vals,
                             exp_status, severe_outliers):
 
@@ -164,15 +151,14 @@ def attempt_exponential_fit(x, x_spiked, name, alt_tests,
         x_outliers = np.max(x) - x_outliers
     r_sq = plot_test(x_tail, fitted_curve, range0, exp_status, bw_coef, 
                      prefix, cutoff, x_outliers, name, curve)
-    if r_sq < 0.6 and alt_tests == True:
-        return(run_backup_test(x, x_spiked, name, prefix))
+
     plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
     all_outliers = np.union1d(severe_outliers, x_outliers)
     x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
-    return(x_spiked)
+    return(x_spiked, r_sq)
 
-def attempt_tukey_fit(x, x_spiked, name, alt_tests, 
-                      prefix, bound, bw_coef, spike_vals,
+def attempt_tukey_fit(x, x_spiked, name, prefix,
+                      bound, bw_coef, spike_vals,
                       exp_status, severe_outliers):
 
     W = compute_w(x)
@@ -188,14 +174,13 @@ def attempt_tukey_fit(x, x_spiked, name, alt_tests,
     x_outliers = np.unique(x[W > cutoff])
     r_sq = plot_test(W, smooth_TGH, range0, exp_status, bw_coef, prefix, 
                      cutoff, x_outliers, name, ignored_values = W_ignored)
-    if r_sq < 0.8 and alt_tests == True:
-        return(run_backup_test(x, x_spiked, name, prefix))
+    
     plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
     all_outliers = np.union1d(severe_outliers, x_outliers)
     x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
-    return(x_spiked)
+    return(x_spiked, r_sq)
 
-def compute_outliers(x_spiked, name, prefix, bound, alt_tests):
+def compute_outliers(x_spiked, name, prefix, bound):
 
     x_spiked = x_spiked.astype(float)
     x, severe_outliers, spike_vals = clean_data(x_spiked, name,
@@ -205,15 +190,16 @@ def compute_outliers(x_spiked, name, prefix, bound, alt_tests):
    
     exp_status = detect_exponential_data(x, np.max([10, int(len(x)/300)]))
 
-    #TODO: something for this
-    if exp_status == True: 
-        return(attempt_exponential_fit(x, x_spiked, name, alt_tests,
-                                       prefix, bw_coef, spike_vals,
-                                       exp_status, severe_outliers))
+    if exp_status == True:
+        x_spiked, r_sq = attempt_exponential_fit(x, x_spiked, name, prefix,
+                                                 bw_coef, spike_vals,
+                                                 exp_status, severe_outliers)
+        return(x_spiked, r_sq, severe_outliers)
     else:
-        return(attempt_tukey_fit(x, x_spiked, name, alt_tests,
-                                 prefix, bound, bw_coef, spike_vals,
-                                 exp_status, severe_outliers))
+        x_spiked, r_sq = attempt_tukey_fit(x, x_spiked, name, prefix,
+                                           bound, bw_coef, spike_vals,
+                                           exp_status, severe_outliers)
+        return(x_spiked, r_sq, severe_outliers)
 
 
 

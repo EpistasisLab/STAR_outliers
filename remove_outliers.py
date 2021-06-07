@@ -10,15 +10,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--input ', type = str, action = "store", dest = "input")
 parser.add_argument('--bound ', type = float, action = "store", dest = "bound")
 parser.add_argument('--index ', type = str, action = "store", dest = "index")
-parser.add_argument('--use_backup_tests ', type = str, action = "store", 
-                       dest = "use_backup_tests")
-
-
-alt_tests = parser.parse_args().use_backup_tests
-if alt_tests == "True":
-    alt_tests = True
-else:
-    alt_tests = False
 
 input_file_name = parser.parse_args().input
 index_name = parser.parse_args().index
@@ -65,15 +56,39 @@ if bound is None:
     bound = np.max([np.min([90 + 2.5*(np.log10(len(field_cols[0])) - 2), 99]), 90])
 print(bound)
 
+names = []
+r_sq_vals = []
+fields_with_poor_fits = []
+poor_r_sq_values = []
+severe_outlier_sets = []
 for i in tqdm(range(len(field_cols_with_outliers))):
 
     field = field_cols_with_outliers[i]
     name = field_names_with_outliers[i]
-    cleaned_field = compute_outliers(field, name, name_prefix, 
-                                     bound, alt_tests)
+    cleaned_field, r_sq, severe_outliers = compute_outliers(field, name,
+                                                            name_prefix,
+                                                            bound)
+    names.append(name)
+    r_sq_vals.append(r_sq)
+    severe_outlier_sets.append(severe_outliers)
+    if r_sq < 0.8:
+        fields_with_poor_fits.append(name)
+        poor_r_sq_values.append(r_sq)
     path = name_prefix + "_cleaned_cols/" + name + ".txt"
     DF = pd.DataFrame(cleaned_field)
     DF.to_csv(path, sep = "\t", header = False, index = False)
+
+all_fits = pd.DataFrame(np.transpose([names, r_sq_vals]))
+bad_fits = pd.DataFrame(np.transpose([fields_with_poor_fits, poor_r_sq_values]))
+all_fits.to_csv(input_file_name[:-4] + "_all_fits.txt",
+                sep = "\t", header = False, index = False)
+bad_fits.to_csv(input_file_name[:-4] + "_possible_bad_fits.txt",
+                sep = "\t", header = False, index = False)
+
+outlier_file = open(input_file_name[:-4] + "_severe_outliers.txt", "w")
+for name, set in zip(names, severe_outlier_sets):
+    outlier_file.write(name + ": " + str(set) + "\n")
+outlier_file.close()
 
 for i in range(len(field_cols_without_outliers)):
 

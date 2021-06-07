@@ -35,10 +35,6 @@ def remove_severe_outliers(x, name):
     lb = p_low - 5*range0
     ub = p_high + 5*range0
     severe_outliers = x[np.logical_or(x < lb, x > ub)]
-    message = "The following severe outliers were removed for feature "
-    message += name + ": " + str(np.unique(severe_outliers))
-    if len(severe_outliers > 0):
-        print(message)
     return(x[np.isin(x, severe_outliers) == False], severe_outliers)
 
 def clean_data(x_spiked, name, prefix, count, 
