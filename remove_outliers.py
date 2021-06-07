@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np 
 import os
 import pdb
-from tqdm import tqdm
-from remove_outliers_library import compute_outliers
+from remove_outliers_library import remove_all_outliers
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -20,91 +19,28 @@ message += 'which must preceed the filename extension'
 if len(split_name) != 2:
     print(message)
     exit()
-name_prefix = split_name[0]
+file_name_prefix = split_name[0]
 
-if not os.path.isdir(name_prefix + "_cols"):
-    os.mkdir(name_prefix + "_cols")
-present_filenames = np.array(os.listdir(name_prefix + "_cols"))
-present_field_names = [name[:-4] for name in present_filenames]
-field_names = pd.read_csv(input_file_name, delimiter = "\t", 
-                          header = 0, nrows = 0).columns
-if not index_name is None:
-    field_names = field_names[field_names != index_name]
-if len(np.setdiff1d(field_names, present_field_names)) > 0:
-    fields = pd.read_csv(input_file_name, delimiter = "\t", header = 0)
-    for i, name in enumerate(field_names):
-        file_name = name_prefix + "_cols/" + name + ".txt"
-        fields[[name]].to_csv(file_name, sep = "\t", header = False, index = False)
-
-if not os.path.isdir(name_prefix + "_cleaned_cols"):
-    os.mkdir(name_prefix + "_cleaned_cols")
-
-filenames = np.array(os.listdir(name_prefix + "_cols"))
-field_names = [name[:-4] for name in filenames]
-path_names = [name_prefix + "_cols/" + name for name in filenames]
-field_cols = [pd.read_csv(path, delimiter = "\t", header = None) 
-              for path in path_names]
-field_cols = [col[0].to_numpy() for col in field_cols]
-unique_val_counts = np.array([len(np.unique(field[np.isnan(field) == False])) for field in field_cols])
-field_cols_with_outliers = [field_cols[i] for i in np.where(unique_val_counts >= 10)[0]]
-field_names_with_outliers = [field_names[i] for i in np.where(unique_val_counts >= 10)[0]]
-field_cols_without_outliers = [field_cols[i] for i in np.where(unique_val_counts < 10)[0]]
-field_names_without_outliers = [field_names[i] for i in np.where(unique_val_counts < 10)[0]]
-
-bound_not_present = False
-if bound is None:
-    bound = np.max([np.min([90 + 2.5*(np.log10(len(field_cols[0])) - 2), 99]), 90])
-print(bound)
-
-names = []
-r_sq_vals = []
-fields_with_poor_fits = []
-poor_r_sq_values = []
-severe_outlier_sets = []
-for i in tqdm(range(len(field_cols_with_outliers))):
-
-    field = field_cols_with_outliers[i]
-    name = field_names_with_outliers[i]
-    cleaned_field, r_sq, severe_outliers = compute_outliers(field, name,
-                                                            name_prefix,
-                                                            bound)
-    names.append(name)
-    r_sq_vals.append(r_sq)
-    severe_outlier_sets.append(severe_outliers)
-    if r_sq < 0.8:
-        fields_with_poor_fits.append(name)
-        poor_r_sq_values.append(r_sq)
-    path = name_prefix + "_cleaned_cols/" + name + ".txt"
-    DF = pd.DataFrame(cleaned_field)
-    DF.to_csv(path, sep = "\t", header = False, index = False)
+output = remove_all_outliers(input_file_name, index_name, bound)
+cleaned_data = output[0]
+r_sq_vals = output[1]
+names = output[2]
+fields_with_poor_fits = output[3]
+poor_r_sq_values = output[4]
+severe_outlier_sets = output[5]
+cleaned_field_cols = output[6]
 
 all_fits = pd.DataFrame(np.transpose([names, r_sq_vals]))
 bad_fits = pd.DataFrame(np.transpose([fields_with_poor_fits, poor_r_sq_values]))
-all_fits.to_csv(input_file_name[:-4] + "_all_fits.txt",
+all_fits.to_csv(file_name_prefix + "_all_fits.txt",
                 sep = "\t", header = False, index = False)
-bad_fits.to_csv(input_file_name[:-4] + "_possible_bad_fits.txt",
+bad_fits.to_csv(file_name_prefix  + "_possible_bad_fits.txt",
                 sep = "\t", header = False, index = False)
 
-outlier_file = open(input_file_name[:-4] + "_severe_outliers.txt", "w")
+outlier_file = open(file_name_prefix  + "_severe_outliers.txt", "w")
 for name, set in zip(names, severe_outlier_sets):
     outlier_file.write(name + ": " + str(set) + "\n")
 outlier_file.close()
 
-for i in range(len(field_cols_without_outliers)):
-
-    field = field_cols_without_outliers[i]
-    name = field_names_without_outliers[i]
-    path = name_prefix + "_cleaned_cols/" + name + ".txt"
-    DF = pd.DataFrame(field)
-    DF.to_csv(path, sep = "\t", header = False, index = False)
-
-cleaned_filenames = np.array(os.listdir(name_prefix + "_cleaned_cols"))
-cleaned_fieldnames = [name[:-4] for name in cleaned_filenames]
-cleaned_path_names = [name_prefix + "_cleaned_cols/" + name 
-                      for name in cleaned_filenames]
-cleaned_field_cols = [pd.read_csv(path, delimiter = "\t", header = None) 
-                      for path in cleaned_path_names]
-cleaned_data = pd.concat(cleaned_field_cols, axis = 1)
-cleaned_data.columns = cleaned_fieldnames
-out = name_prefix + "_cleaned_data.txt"
+out = file_name_prefix + "_cleaned_data.txt"
 cleaned_data.to_csv(out, sep = "\t", header = True, index = False)

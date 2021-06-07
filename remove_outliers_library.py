@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import os
 import pdb
 from copy import deepcopy as COPY
@@ -8,6 +9,7 @@ from scipy.stats import pearsonr
 from scipy.stats import gaussian_kde as smooth
 from scipy.stats import expon
 from scipy.stats import norm
+from tqdm import tqdm
 
 from remove_outliers_plotting_library import plot_data
 from remove_outliers_plotting_library import plot_test
@@ -199,7 +201,46 @@ def compute_outliers(x_spiked, name, prefix, bound):
         return(x_spiked, r_sq, severe_outliers)
 
 
+def remove_all_outliers(input_file_name, index_name = None, bound = None):
+    fields = pd.read_csv(input_file_name, delimiter = "\t", header = 0)
+    field_names = fields.columns
+    if not index_name is None:
+        field_names = field_names[field_names != index_name]
+        fields = fields[field_names]
+    field_cols = [fields.loc[:, name].to_numpy() for name in field_names]
 
-    
+    if bound is None:
+        bound = np.max([np.min([90 + 2.5*(np.log10(len(field_cols[0])) - 2), 99]), 90])
 
+    r_sq_vals = []
+    names = []
+    fields_with_poor_fits = []
+    poor_r_sq_values = []
+    severe_outlier_sets = []
+    cleaned_field_cols = []
+    for i in tqdm(range(len(field_names))):
+        field = field_cols[i]
+        unique_vals = np.unique(field)
+        if len(unique_vals[np.isnan(unique_vals) == False]) >= 10:
+            name = field_names[i]
+            names.append(name)
+            prefix = input_file_name.split(".")[0]
+            output = compute_outliers(field, name, prefix, bound)
+            cleaned_field_cols.append(output[0])
+            r_sq_vals.append(output[1])
+            severe_outlier_sets.append(output[2])
+            if output[1] < 0.8:
+                fields_with_poor_fits.append(name)
+                poor_r_sq_values.append(output[1])
+        else:
+            cleaned_field_cols.append(field)
+
+    cleaned_data = pd.DataFrame(np.transpose(cleaned_field_cols))
+    cleaned_data.columns = field_names
+    return(cleaned_data,
+           r_sq_vals, names,
+           fields_with_poor_fits,
+           poor_r_sq_values,
+           severe_outlier_sets,
+           cleaned_field_cols)
    
