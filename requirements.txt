@@ -4,5 +4,4 @@ tqdm
 scipy
 statsmodels
 matplotlib
-rpy2
 mock
