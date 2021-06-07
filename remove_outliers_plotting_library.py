@@ -63,8 +63,8 @@ def plot_test(test_dist, fitted_curve, range0, exp_status, bw_coef, prefix,
     plt.xlabel('test statistic')
     plt.ylabel('density')
     p1, p99 = np.percentile(main_dist, 1), np.percentile(main_dist, 99)
-    delta = (p99 - p1)/2
-    plt.xlim([p1 - delta, p99 + delta])
+    delta = (p99 - p1)/4
+    plt.xlim([p1 - delta, cutoff + delta])
     plt.title(title)
     plt.legend()
     if not os.path.exists(prefix + "_outlier_plots"):
@@ -74,23 +74,35 @@ def plot_test(test_dist, fitted_curve, range0, exp_status, bw_coef, prefix,
     return(r_sq)
 
 def plot_highliers(plot_object, y_vec, data_dist, outliers, p50):
-    min_highlier = np.min(outliers[outliers > p50])
-    high_cutoff = np.max(data_dist[data_dist < min_highlier]) 
-    num_highliers = np.sum(outliers > p50)
-    label = "upper bound: " +  str(num_highliers) 
-    label += " values > " + str(high_cutoff)[0:6]
-    plt.plot(np.repeat(high_cutoff, 2), y_vec, "k-", label = label)
-
+    if len(outliers[outliers > p50]) > 0:
+        min_highlier = np.min(outliers[outliers > p50])
+        high_cutoff = np.max(data_dist[data_dist < min_highlier]) 
+        num_highliers = np.sum(outliers > p50)
+        label = "upper bound: " +  str(num_highliers) 
+        label += " values > " + str(high_cutoff)[0:6]
+        plt.plot(np.repeat(high_cutoff, 2), y_vec, "k-", label = label)
+    else:
+        high_cutoff = np.max(data_dist)
+        label = "no high outliers (max value: " + str(high_cutoff) + ")"
+        plt.plot([high_cutoff], [0], "ko", label = label)
+    return(high_cutoff)
+        
 def plot_lowliers(plot_object, y_vec, data_dist, outliers, p50):
     label = ""
-    if len(outliers[outliers > p50]) > 0:
-        label += "\n"
-    max_lowlier = np.max(outliers[outliers < p50])
-    low_cutoff = np.min(data_dist[data_dist > max_lowlier])
-    num_lowliers = np.sum(outliers < p50)
-    label += "lower bound: " + str(num_lowliers) 
-    label += " values < " + str(low_cutoff)[0:6]
-    plt.plot(np.repeat(low_cutoff, 2),  y_vec, "k-", label = label)
+    if len(outliers[outliers < p50]) > 0:
+        if len(outliers[outliers > p50]) > 0:
+            label += "\n"
+        max_lowlier = np.max(outliers[outliers < p50])
+        low_cutoff = np.min(data_dist[data_dist > max_lowlier])
+        num_lowliers = np.sum(outliers < p50)
+        label += "lower bound: " + str(num_lowliers) 
+        label += " values < " + str(low_cutoff)[0:6]
+        plt.plot(np.repeat(low_cutoff, 2),  y_vec, "k-", label = label)
+    else:
+        low_cutoff = np.min(data_dist)
+        label += "no low outliers (min value: " + str(low_cutoff) + ")"
+        plt.plot([low_cutoff], [0], "ko", label = label)
+    return(low_cutoff)
 
 def plot_data(data_dist, cutoff, outliers, spike_vals, name, prefix):
     num_outliers = len(outliers)
@@ -105,15 +117,14 @@ def plot_data(data_dist, cutoff, outliers, spike_vals, name, prefix):
         label0 += " (no outliers)"
     plt.hist(data_dist, bins = nbins, density = True, label = label0)
     p50 = np.percentile(data_dist, 50)
-    if len(outliers[outliers > p50]) > 0:
-        plot_highliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)
-    if len(outliers[outliers < p50]) > 0:
-        plot_lowliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)        
+
+    high_cutoff = plot_highliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)
+    low_cutoff = plot_lowliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)        
     plt.xlabel('feature_value')
     plt.ylabel('density')
     p1, p99 = np.percentile(data_dist, 1), np.percentile(data_dist, 99)
-    delta = (p99 - p1)/2
-    plt.xlim([p1 - delta, p99 + delta])
+    delta = (p99 - p1)/4
+    plt.xlim([low_cutoff - delta, high_cutoff + delta])
     plt.title("field " + name + " outlier cutoffs")
     plt.legend()
     if not os.path.exists(prefix + "_outlier_plots_untransformed"):
