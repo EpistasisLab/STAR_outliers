@@ -2,14 +2,12 @@ import numpy as np
 import os
 import pdb
 from copy import deepcopy as COPY
-from statsmodels.stats.stattools import medcouple 
 from matplotlib import pyplot as plt
 from scipy.stats import norm
 from scipy.stats import pearsonr
 from scipy.stats import gaussian_kde as smooth
 from scipy.stats import expon
 from scipy.stats import norm
-from scipy.stats.mstats import gmean
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
