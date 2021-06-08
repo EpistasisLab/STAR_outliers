@@ -9,7 +9,7 @@ from scipy.stats import gaussian_kde as smooth
 from scipy.stats import expon
 from scipy.stats import norm
 
-from remove_outliers_testing_library import bin_data
+from STAR_outliers_testing_library import bin_data
 
 def smooth_tail_subsection(curve, range0, bw_coef, cutoff, main_dist):
     smoothed_curve = smooth(curve[0], bw_method = bw_coef)(curve[1])
