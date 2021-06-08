@@ -11,13 +11,13 @@ from scipy.stats import expon
 from scipy.stats import norm
 from tqdm import tqdm
 
-from remove_outliers_plotting_library import plot_data
-from remove_outliers_plotting_library import plot_test
-from remove_outliers_testing_library import detect_exponential_data
-from remove_outliers_polishing_library import approximate_quantiles
-from remove_outliers_polishing_library import clean_data
-from remove_outliers_polishing_library import remove_worst_continuity_violations
-from remove_outliers_polishing_library import adjust_median_values
+from STAR_outliers_plotting_library import plot_data
+from STAR_outliers_plotting_library import plot_test
+from STAR_outliers_testing_library import detect_exponential_data
+from STAR_outliers_polishing_library import approximate_quantiles
+from STAR_outliers_polishing_library import clean_data
+from STAR_outliers_polishing_library import remove_worst_continuity_violations
+from STAR_outliers_polishing_library import adjust_median_values
 
 # source title: Outlier identification for skewed and/or 
 #               heavy-tailed unimodal multivariate distributions
