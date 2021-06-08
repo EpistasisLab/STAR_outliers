@@ -61,6 +61,14 @@ class test_main_library(unittest.TestCase):
         error_message = "The confidence interval for percent of data removed"
         error_message += " is not correct. There may be a mathematical error."
         self.assertTrue(np.all(np.isclose(CI, good_CI)), error_message)
+
+        expected_equal_vals = np.sum(np.isnan(new_data) == False)
+        actual_equal_vals = np.sum(raw_data == new_data)
+        labels_preserved = expected_equal_vals == actual_equal_vals
+        error_message = "The number of equivalent elements before and after "
+        error_message += "processing is not the expected numnber. This might "
+        error_message += "mean that the column order was not preserved."
+        self.assertTrue(labels_preserved, error_message)
         
 if __name__ == '__main__':
     unittest.main()
