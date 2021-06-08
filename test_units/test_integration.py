@@ -37,8 +37,15 @@ class test_main_library(unittest.TestCase):
     def test_outlier_removal(self):
         np.random.seed(0)
         raw_data = pd.read_csv("all_2018_processed.txt",
-                               delimiter = "\t", header = 0).to_numpy()
-        new_data = remove_all_outliers("all_2018_processed.txt")[0].to_numpy()
+                               delimiter = "\t", header = 0)
+        new_data = pd.read_csv("all_2018_processed_cleaned_data.txt",
+                               delimiter = "\t", header = 0)
+        label_order_preserved = np.all(raw_data.columns == new_data.columns)
+        error_message = "The label order was not preserved."
+        self.assertTrue(label_order_preserved, error_message)
+
+        raw_data = raw_data.to_numpy()
+        new_data = new_data.to_numpy()
         counts = np.array([len(np.unique(col[np.isnan(col) == False]))
                            for col in raw_data.T])
         raw_data = raw_data[:, counts >= 10]
@@ -64,11 +71,11 @@ class test_main_library(unittest.TestCase):
 
         expected_equal_vals = np.sum(np.isnan(new_data) == False)
         actual_equal_vals = np.sum(raw_data == new_data)
-        labels_preserved = expected_equal_vals == actual_equal_vals
+        col_order_preserved = expected_equal_vals == actual_equal_vals
         error_message = "The number of equivalent elements before and after "
         error_message += "processing is not the expected numnber. This might "
         error_message += "mean that the column order was not preserved."
-        self.assertTrue(labels_preserved, error_message)
+        self.assertTrue(col_order_preserved, error_message)
         
 if __name__ == '__main__':
     unittest.main()
