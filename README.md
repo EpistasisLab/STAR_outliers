@@ -12,5 +12,5 @@ STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open 
 6. Once in your outliers environment (repeat step 5 if you close and reopen the conda terminal), enter ```conda install -c conda-forge matplotlib```
 7. after installint matplotlib, enter ```pip install STAR-outliers```
 8. Run python ```-m STAR_outliers --input [path_to_input_file]``` to remove outliers from every column.
-9. If one column is a sample index, then specify that with ```-m STAR_outliers --input [path_to_input_file] --index [index column name]```
-10. For example, with the ```all_2018_processed.txt``` file, the full input command looks like this: ```python -m STAR_outliers --input all_2018_processed.txt```
+9. For example, with the ```all_2018_processed.txt``` file, the full input command looks like this: ```python -m STAR_outliers --input all_2018_processed.txt```
+10. If one column is a sample index, then specify that with ```-m STAR_outliers --input [path_to_input_file] --index [index column name]```
