@@ -9,12 +9,11 @@ from copy import deepcopy as COPY
 from scipy import stats
 
 #path finding code start
-next_dir = os.getcwd()
-main_folder = "outlier_removal"
-next_folder = ""
-count = 0
-paths = [next_dir]
-folders = [next_folder]
+next_dir, next_folder = os.path.split(os.getcwd())
+main_folder = "STAR_outliers"
+count = 1
+paths = [os.getcwd(), next_dir]
+folders = ["", next_folder]
 while next_folder != main_folder and count < 4:
     next_dir, next_folder = os.path.split(next_dir)
     paths.append(next_dir)
@@ -28,16 +27,15 @@ if count >= 4:
 os.chdir(paths[count - 1])
 sys.path.insert(1, os.getcwd())
 #path finding code end
-
-import remove_outliers_library as main_lib
+import STAR_outliers_library as main_lib
 
 class test_main_library(unittest.TestCase):
     np.random.seed(0)
 
        
-    f_name1 = 'remove_outliers_library.approximate_quantiles'
-    f_name2 = 'remove_outliers_library.plot_test'
-    f_name3 = 'remove_outliers_library.remove_worst_continuity_violations'
+    f_name1 = 'STAR_outliers_library.approximate_quantiles'
+    f_name2 = 'STAR_outliers_library.plot_test'
+    f_name3 = 'STAR_outliers_library.remove_worst_continuity_violations'
     def f_alt1(W, percentiles): return(np.percentile(W, percentiles))
     @mock.patch(f_name1, side_effect = f_alt1)
     @mock.patch(f_name2, return_value = 0.99)
@@ -52,8 +50,8 @@ class test_main_library(unittest.TestCase):
         is_correct = np.all(np.isclose([A, B, g, h], good_estimates))
         self.assertTrue(is_correct, "test_estimate_tukey_params may have a math error")
     
-    f_name1 = 'remove_outliers_library.approximate_quantiles'
-    f_name2 = 'remove_outliers_library.adjust_median_values'
+    f_name1 = 'STAR_outliers_library.approximate_quantiles'
+    f_name2 = 'STAR_outliers_library.adjust_median_values'
     def f_alt1(W, percentiles): return(np.percentile(W, percentiles))
     @mock.patch(f_name1, side_effect = f_alt1)
     @mock.patch(f_name2, side_effect = lambda x, Q_vec: x)
@@ -67,10 +65,10 @@ class test_main_library(unittest.TestCase):
         is_correct = np.all(np.isclose(moments, good_estimates))
         self.assertTrue(is_correct, "compute_w may have a math error")
 
-    f_name1 = 'remove_outliers_library.compute_w'
-    f_name2 = 'remove_outliers_library.estimate_tukey_params'
-    f_name3 = 'remove_outliers_library.plot_test'
-    f_name4 = 'remove_outliers_library.plot_data'
+    f_name1 = 'STAR_outliers_library.compute_w'
+    f_name2 = 'STAR_outliers_library.estimate_tukey_params'
+    f_name3 = 'STAR_outliers_library.plot_test'
+    f_name4 = 'STAR_outliers_library.plot_data'
     fake_W = np.sort(np.random.normal(0, 1, 200000))
     fake_params = [0, 1, 0, 0, []]
     @mock.patch(f_name1, return_value = fake_W)
@@ -97,8 +95,8 @@ class test_main_library(unittest.TestCase):
         self.assertTrue(is_correct1, message1)
         self.assertTrue(is_correct2, message2)
 
-    f_name1 = 'remove_outliers_library.plot_test'
-    f_name2 = 'remove_outliers_library.plot_data'
+    f_name1 = 'STAR_outliers_library.plot_test'
+    f_name2 = 'STAR_outliers_library.plot_data'
     @mock.patch(f_name1, return_value = 0.99)
     @mock.patch(f_name2, side_effect = lambda *args: print())
     def test_attempt_exponential_fit(self, mock1, mock2):

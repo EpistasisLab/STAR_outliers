@@ -13,7 +13,7 @@ from scipy import stats
 
 #path finding code start
 next_dir, next_folder = os.path.split(os.getcwd())
-main_folder = "outlier_removal"
+main_folder = "STAR_outliers"
 count = 1
 paths = [os.getcwd(), next_dir]
 folders = ["", next_folder]
@@ -29,7 +29,8 @@ if count >= 4:
     print(message)
 os.chdir(paths[count - 1])
 sys.path.insert(1, os.getcwd())
-from remove_outliers_library import remove_all_outliers
+#path finding code end
+from STAR_outliers_library import remove_all_outliers
 
 class test_main_library(unittest.TestCase):
 
