@@ -25,7 +25,7 @@ setup(
     packages = find_packages(),
     version = "0.1.0",
     python_requires = ">=3.6,<=3.9",
-    name = "remove_outliers",
+    name = "STAR_outliers",
     entry_points = ep_val,
     py_modules=["STAR_outliers", "STAR_outliers_library",
                 "STAR_outliers_plotting_library",
