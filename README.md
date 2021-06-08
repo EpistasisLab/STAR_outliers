@@ -13,3 +13,4 @@ STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open 
 7. after installint matplotlib, enter ```pip install STAR-outliers```
 8. Run python ```-m STAR_outliers --input [path_to_input_file]``` to remove outliers from every column.
 9. If one column is a sample index, then specify that with ```-m STAR_outliers --input [path_to_input_file] --index [index column name]```
+10. For example, with the ```all_2018_processed.txt``` file, the full input command looks like this: ```python -m STAR_outliers --input all_2018_processed.txt```
