@@ -9,7 +9,7 @@ STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open 
 3. Click the "Anaconda Prompt" app (left) to open the black terminal (right). The terminal's top must say "Anaconda prompt"
 4. Enter ```conda create --name outliers python=3.7``` in the terminal to create a new environment called outliers with python version 3.7
 5. Enter ```conda activate outliers``` in the terminal to enter your new environment. If that doesn't work, enter ```source activate outliers```
-6. Once in your outliers environment (repeat step 5 if you close and reopen the conda terminal), enter conda install -c conda-forge matplotlib
+6. Once in your outliers environment (repeat step 5 if you close and reopen the conda terminal), enter ```conda install -c conda-forge matplotlib```
 7. after installint matplotlib, enter ```pip install STAR-outliers```
 8. Run python ```-m STAR_outliers --input [path_to_input_file]``` to remove outliers from every column.
 9. If one column is a sample index, then specify that with ```-m STAR_outliers --input [path_to_input_file] --index [index column name]```
