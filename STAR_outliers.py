@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np 
 import os
 import pdb
-from remove_outliers_library import remove_all_outliers
+from STAR_outliers_library import remove_all_outliers
 import argparse
 
 parser = argparse.ArgumentParser()
