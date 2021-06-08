@@ -31,13 +31,10 @@ os.chdir(paths[count - 1])
 sys.path.insert(1, os.getcwd())
 from remove_outliers_library import remove_all_outliers
 
-def bootstrap_mean(x):
-    np.random.choice(x, (len(x), 100000))
-
 class test_main_library(unittest.TestCase):
-    np.random.seed(0)
 
     def test_outlier_removal(self):
+        np.random.seed(0)
         raw_data = pd.read_csv("all_2018_processed.txt",
                                delimiter = "\t", header = 0).to_numpy()
         new_data = remove_all_outliers("all_2018_processed.txt")[0].to_numpy()
@@ -59,7 +56,7 @@ class test_main_library(unittest.TestCase):
         bootstraps = np.random.choice(percents, (len(percents), 1000000))
         bs_means = np.mean(bootstraps, axis = 0)
         CI = np.percentile(bs_means, [2.5, 97.5])
-        good_CI = np.array([0.99406369, 0.99529648])
+        good_CI = np.array([0.99406645, 0.9952961])
         error_message = "The confidence interval for percent of data removed"
         error_message += " is not correct. There may be a mathematical error."
         self.assertTrue(np.all(np.isclose(CI, good_CI)), error_message)
