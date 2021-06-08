@@ -23,7 +23,7 @@ setup(
     long_description_content_type = "text/markdown",
     packages = find_packages(),
     version = "0.1.0",
-    python_requires = ">=3.6,<=3.9"
+    python_requires = ">=3.6,<=3.9",
     name = "remove_outliers",
     entry_points = ep_val,
     py_modules=["remove_outliers", "remove_outliers_library",
