@@ -31,10 +31,10 @@ setup(
                 "STAR_outliers_plotting_library",
                 "STAR_outliers_polishing_library",
                 "STAR_outliers_testing_library"],
+    setup_requires=["matplotlib"],
     install_requires=["numpy",
                       "pandas",
                       "tqdm",
                       "scipy",
-                      "matplotlib",
-                      "mock"],
+                      "mock"]
 )

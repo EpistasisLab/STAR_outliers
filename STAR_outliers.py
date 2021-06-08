@@ -5,42 +5,46 @@ import pdb
 from STAR_outliers_library import remove_all_outliers
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--input ', type = str, action = "store", dest = "input")
-parser.add_argument('--bound ', type = float, action = "store", dest = "bound")
-parser.add_argument('--index ', type = str, action = "store", dest = "index")
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input ', type = str, action = "store", dest = "input")
+    parser.add_argument('--bound ', type = float, action = "store", dest = "bound")
+    parser.add_argument('--index ', type = str, action = "store", dest = "index")
 
-input_file_name = parser.parse_args().input
-index_name = parser.parse_args().index
-bound = parser.parse_args().bound
-split_name = input_file_name.split(".")
-message = 'error: input file name must have exactly 1 "." character, '
-message += 'which must preceed the filename extension'
-if len(split_name) != 2:
-    print(message)
-    exit()
-file_name_prefix = split_name[0]
+    input_file_name = parser.parse_args().input
+    index_name = parser.parse_args().index
+    bound = parser.parse_args().bound
+    split_name = input_file_name.split(".")
+    message = 'error: input file name must have exactly 1 "." character, '
+    message += 'which must preceed the filename extension'
+    if len(split_name) != 2:
+        print(message)
+        exit()
+    file_name_prefix = split_name[0]
 
-output = remove_all_outliers(input_file_name, index_name, bound)
-cleaned_data = output[0]
-r_sq_vals = output[1]
-names = output[2]
-fields_with_poor_fits = output[3]
-poor_r_sq_values = output[4]
-severe_outlier_sets = output[5]
-cleaned_field_cols = output[6]
+    output = remove_all_outliers(input_file_name, index_name, bound)
+    cleaned_data = output[0]
+    r_sq_vals = output[1]
+    names = output[2]
+    fields_with_poor_fits = output[3]
+    poor_r_sq_values = output[4]
+    severe_outlier_sets = output[5]
+    cleaned_field_cols = output[6]
 
-all_fits = pd.DataFrame(np.transpose([names, r_sq_vals]))
-bad_fits = pd.DataFrame(np.transpose([fields_with_poor_fits, poor_r_sq_values]))
-all_fits.to_csv(file_name_prefix + "_all_fits.txt",
-                sep = "\t", header = False, index = False)
-bad_fits.to_csv(file_name_prefix  + "_possible_bad_fits.txt",
-                sep = "\t", header = False, index = False)
+    all_fits = pd.DataFrame(np.transpose([names, r_sq_vals]))
+    bad_fits = pd.DataFrame(np.transpose([fields_with_poor_fits, poor_r_sq_values]))
+    all_fits.to_csv(file_name_prefix + "_all_fits.txt",
+                    sep = "\t", header = False, index = False)
+    bad_fits.to_csv(file_name_prefix  + "_possible_bad_fits.txt",
+                    sep = "\t", header = False, index = False)
 
-outlier_file = open(file_name_prefix  + "_severe_outliers.txt", "w")
-for name, set in zip(names, severe_outlier_sets):
-    outlier_file.write(name + ": " + str(set) + "\n")
-outlier_file.close()
+    outlier_file = open(file_name_prefix  + "_severe_outliers.txt", "w")
+    for name, set in zip(names, severe_outlier_sets):
+        outlier_file.write(name + ": " + str(set) + "\n")
+    outlier_file.close()
 
-out = file_name_prefix + "_cleaned_data.txt"
-cleaned_data.to_csv(out, sep = "\t", header = True, index = False)
+    out = file_name_prefix + "_cleaned_data.txt"
+    cleaned_data.to_csv(out, sep = "\t", header = True, index = False)
+
+if __name__ == "__main__":
+    main()
