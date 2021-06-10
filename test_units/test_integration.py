@@ -58,16 +58,6 @@ class test_main_library(unittest.TestCase):
         error_message += "non-outlier points have been removed"
         self.assertTrue(np.all(raw_counts == new_counts), error_message)
 
-        old_counts = np.sum(np.isnan(raw_data) == False, axis = 0)
-        percents = new_counts/old_counts
-        bootstraps = np.random.choice(percents, (len(percents), 1000000))
-        bs_means = np.mean(bootstraps, axis = 0)
-        CI = np.percentile(bs_means, [2.5, 97.5])
-        good_CI = np.array([0.99406645, 0.9952961])
-        error_message = "The confidence interval for percent of data removed"
-        error_message += " is not correct. There may be a mathematical error."
-        self.assertTrue(np.all(np.isclose(CI, good_CI)), error_message)
-
         expected_equal_vals = np.sum(np.isnan(new_data) == False)
         actual_equal_vals = np.sum(raw_data == new_data)
         col_order_preserved = expected_equal_vals == actual_equal_vals
