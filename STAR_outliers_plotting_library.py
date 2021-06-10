@@ -102,7 +102,8 @@ def plot_lowliers(plot_object, y_vec, data_dist, outliers, p50):
         plt.plot([low_cutoff], [0], "ko", label = label)
     return(low_cutoff)
 
-def plot_data(data_dist, cutoff, outliers, spike_vals, name, prefix):
+def plot_data(data_dist, outliers, spike_vals, name, prefix):
+    
     num_outliers = len(outliers)
     label0 = "feature distribution"
     nbins = np.max([int(len(data_dist)/300), 100])
@@ -113,16 +114,20 @@ def plot_data(data_dist, cutoff, outliers, spike_vals, name, prefix):
         label0 += "\n removed vals: " + str(spike_vals)
     if len(outliers) == 0:
         label0 += " (no outliers)"
-    plt.hist(data_dist, bins = nbins, density = True, label = label0)
+    
     p50 = np.percentile(data_dist, 50)
-
     high_cutoff = plot_highliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)
-    low_cutoff = plot_lowliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)        
+    low_cutoff = plot_lowliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)
+    p1, p99 = np.percentile(data_dist, 1), np.percentile(data_dist, 99)
+    delta = (np.min([p99, high_cutoff]) - np.max([p1, low_cutoff]))/4
+    x_lims = [low_cutoff - delta, high_cutoff + delta]
+    plot_condition = np.logical_and(data_dist >= x_lims[0],
+                                    data_dist <= x_lims[1])
+    plt.hist(data_dist[plot_condition], bins = nbins, density = True, label = label0)
+    
     plt.xlabel('feature_value')
     plt.ylabel('density')
-    p1, p99 = np.percentile(data_dist, 1), np.percentile(data_dist, 99)
-    delta = (p99 - p1)/4
-    plt.xlim([low_cutoff - delta, high_cutoff + delta])
+    plt.xlim(x_lims)
     plt.title("field " + name + " outlier cutoffs")
     plt.legend()
     if not os.path.exists(prefix + "_outlier_plots_untransformed"):

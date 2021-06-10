@@ -30,6 +30,13 @@ def main():
     poor_r_sq_values = output[4]
     severe_outlier_sets = output[5]
     cleaned_field_cols = output[6]
+    outlier_info_sets = output[7]
+
+    outlier_info = pd.DataFrame(outlier_info_sets)
+    outlier_info.columns = ["name", "percent_inliers",
+                            "lower_bound", "upper_bound"]
+    outlier_info.to_csv(file_name_prefix + "_outlier_info.txt",
+                        sep = "\t", header = True, index = False)
 
     all_fits = pd.DataFrame(np.transpose([names, r_sq_vals]))
     bad_fits = pd.DataFrame(np.transpose([fields_with_poor_fits, poor_r_sq_values]))

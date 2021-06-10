@@ -50,10 +50,14 @@ def estimate_tukey_params(W, bound):
 
     """
 
+    # pdb.set_trace()
+    
     W, W_ignored = remove_worst_continuity_violations(W)
+    if len(np.unique(W)) < 30:
+        bound = 90
 
     Q_vec = np.percentile(W, [10, 25, 50, 75, 90])
-    if len(np.unique(Q_vec)) != 5:
+    if len(np.unique(Q_vec)) != 5 or len(np.unique(W) < 10):
         Q_vec = approximate_quantiles(W, [10, 25, 50, 75, 90])
 
     A = Q_vec[2]
@@ -65,7 +69,7 @@ def estimate_tukey_params(W, bound):
     B = (0.7413*IQR)/phi
 
     Q_vec2 = np.percentile(W, [100 - bound, 25, 50, 75, bound])
-    if len(np.unique(Q_vec2)) != 5:
+    if len(np.unique(Q_vec2)) != 5 or len(np.unique(W) < 10):
         Q_vec2 = approximate_quantiles(W, [100 - bound, 25, 50, 75, bound])
 
     zv = norm.ppf(bound/100, 0, 1)
@@ -75,15 +79,13 @@ def estimate_tukey_params(W, bound):
 
     y = (W - A)/B        
     Q_vec3 = np.percentile(y, [100 - bound, 25, 50, 75, bound])
-    if len(np.unique(Q_vec3)) != 5:
+    if len(np.unique(Q_vec3)) != 5 or len(np.unique(W) < 10):
         Q_vec3 = approximate_quantiles(y, [100 - bound, 25, 50, 75, bound])
 
     Q_ratio = (Q_vec3[4]*Q_vec3[0])/(Q_vec3[4] + Q_vec3[0])
     h = (2/(zv**2))*np.log(-g*Q_ratio)
     if np.isnan(h):
-        h = 0
-    else:
-        h = np.max([h, 0])    
+        h = 0   
     return((A, B, g, h, W_ignored))
 
 def compute_w(x):
@@ -131,9 +133,13 @@ def attempt_exponential_fit(x, x_spiked, name,
     left_to_right = p50 - np.min(x) < np.max(x) - p50
     if not left_to_right:
         x = np.max(x) - x
-    alpha_body = 0.05
+    alpha_body = np.min([0.05, np.max([0.005, 500/len(x)])])
     alpha_tail = (.9973 - (1 - alpha_body))/alpha_body
     x_tail = x[x >= np.percentile(x, 100*(1 - alpha_body))]
+    if len(np.unique(x_tail < 3)):
+        alpha_body = 0.05
+        alpha_tail = (.9973 - (1 - alpha_body))/alpha_body
+        x_tail = x[x >= np.percentile(x, 100*(1 - alpha_body))]
     loc = np.min(x_tail)
     scale = np.mean(x_tail) - loc
     tail_unique, tail_counts = np.unique(x_tail, return_counts = True)
@@ -151,7 +157,7 @@ def attempt_exponential_fit(x, x_spiked, name,
     r_sq = plot_test(x_tail, fitted_curve, range0, exp_status, bw_coef, 
                      prefix, cutoff, x_outliers, name, curve)
 
-    plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
+    plot_data(x, x_outliers, spike_vals, name, prefix)
     all_outliers = np.union1d(severe_outliers, x_outliers)
     x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked, r_sq)
@@ -174,10 +180,28 @@ def attempt_tukey_fit(x, x_spiked, name, prefix,
     r_sq = plot_test(W, smooth_TGH, range0, exp_status, bw_coef, prefix, 
                      cutoff, x_outliers, name, ignored_values = W_ignored)
     
-    plot_data(x, cutoff, x_outliers, spike_vals, name, prefix)
+    plot_data(x, x_outliers, spike_vals, name, prefix)
     all_outliers = np.union1d(severe_outliers, x_outliers)
     x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked, r_sq)
+
+def get_constrained_min(x_spiked, disallowed_vals):
+    x = COPY(x_spiked)
+    x_min = np.nanmin(x)
+    if x_min in disallowed_vals:
+        x = x[x != x_min]
+        return(get_constrained_min(x, disallowed_vals))
+    else:
+        return(x_min)
+
+def get_constrained_max(x_spiked, disallowed_vals):
+    x = COPY(x_spiked)
+    x_max = np.nanmax(x)
+    if x_max in disallowed_vals:
+        x = x[x != x_max]
+        return(get_constrained_max(x, disallowed_vals))
+    else:
+        return(x_max)
 
 def compute_outliers(x_spiked, name, prefix, bound):
 
@@ -189,16 +213,25 @@ def compute_outliers(x_spiked, name, prefix, bound):
    
     exp_status = detect_exponential_data(x, np.max([10, int(len(x)/300)]))
 
+    outlier_info = [name]
+    old_count = np.sum(np.isnan(x_spiked)==False)
+
     if exp_status == True:
-        x_spiked, r_sq = attempt_exponential_fit(x, x_spiked, name, prefix,
-                                                 bw_coef, spike_vals,
-                                                 exp_status, severe_outliers)
-        return(x_spiked, r_sq, severe_outliers)
+        x_spiked_new, r_sq = attempt_exponential_fit(x, x_spiked, name, prefix,
+                                                     bw_coef, spike_vals,
+                                                     exp_status, severe_outliers)
+        outlier_info.append(np.sum(np.isnan(x_spiked_new)==False)/old_count)
+        outlier_info.append(get_constrained_min(x_spiked_new, spike_vals))
+        outlier_info.append(get_constrained_max(x_spiked_new, spike_vals))
+        return(x_spiked_new, r_sq, severe_outliers, outlier_info)
     else:
-        x_spiked, r_sq = attempt_tukey_fit(x, x_spiked, name, prefix,
-                                           bound, bw_coef, spike_vals,
-                                           exp_status, severe_outliers)
-        return(x_spiked, r_sq, severe_outliers)
+        x_spiked_new, r_sq = attempt_tukey_fit(x, x_spiked, name, prefix,
+                                               bound, bw_coef, spike_vals,
+                                               exp_status, severe_outliers)
+        outlier_info.append(np.sum(np.isnan(x_spiked_new)==False)/old_count)
+        outlier_info.append(get_constrained_min(x_spiked_new, spike_vals))
+        outlier_info.append(get_constrained_max(x_spiked_new, spike_vals))
+        return(x_spiked_new, r_sq, severe_outliers, outlier_info)
 
 
 def remove_all_outliers(input_file_name, index_name = None, bound = None):
@@ -218,6 +251,7 @@ def remove_all_outliers(input_file_name, index_name = None, bound = None):
     poor_r_sq_values = []
     severe_outlier_sets = []
     cleaned_field_cols = []
+    outlier_info_sets = []
     for i in tqdm(range(len(field_names))):
         field = field_cols[i]
         unique_vals = np.unique(field)
@@ -229,6 +263,7 @@ def remove_all_outliers(input_file_name, index_name = None, bound = None):
             cleaned_field_cols.append(output[0])
             r_sq_vals.append(output[1])
             severe_outlier_sets.append(output[2])
+            outlier_info_sets.append(output[3])
             if output[1] < 0.8:
                 fields_with_poor_fits.append(name)
                 poor_r_sq_values.append(output[1])
@@ -242,5 +277,6 @@ def remove_all_outliers(input_file_name, index_name = None, bound = None):
            fields_with_poor_fits,
            poor_r_sq_values,
            severe_outlier_sets,
-           cleaned_field_cols)
+           cleaned_field_cols,
+           outlier_info_sets)
    
