@@ -168,12 +168,12 @@ def attempt_tukey_fit(x, x_spiked, name, prefix,
 
     W = compute_w(x)
     A, B, g, h, W_ignored = estimate_tukey_params(W, bound)
-    z = np.random.normal(0, 1, len(x))
+    z = np.random.normal(0, 1, 200000)
     fitted_TGH  = A + B*(1/(g + 1E-10))*(np.exp((g + 1E-10)*z)-1)*np.exp(h*(z**2)/2)
     delta = (np.percentile(W, 99) - np.percentile(W, 1))/2
     xlims = [np.percentile(W, 1) - delta, np.percentile(W, 99) + delta]
     range0 = np.linspace(xlims[0] - delta, xlims[1] + delta, 
-                        np.max([100, int(len(W)/300)]))
+                        np.max([250, int(len(W)/300)]))
     smooth_TGH = smooth(fitted_TGH, bw_method =  bw_coef)(range0)
     cutoff = np.percentile(fitted_TGH, 99.73)
     x_outliers = np.unique(x[W > cutoff])
@@ -209,7 +209,16 @@ def compute_outliers(x_spiked, name, prefix, bound):
     x, severe_outliers, spike_vals = clean_data(x_spiked, name,
                                                 prefix, 0, [], [])
     x_unique, x_counts = np.unique(x, return_counts = True)
-    bw_coef = 0.3
+    q5, q95 = np.percentile(x, [5, 95])
+    x_main = x[np.logical_and(x <= q95, x >= q5)]
+    bw_coef = 0.075
+    if len(np.unique(x_main)) < 1000:
+        bw_coef = 0.3
+    if len(np.unique(x_main)) < 100:
+        bw_coef = 0.5
+    if len(np.unique(x_main)) < 30:
+        bw_coef = 0.7
+    
    
     exp_status = detect_exponential_data(x, np.max([10, int(len(x)/300)]))
 

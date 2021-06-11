@@ -32,7 +32,8 @@ def plot_test(test_dist, fitted_curve, range0, exp_status, bw_coef, prefix,
         main_dist = test_dist
      
     if curve != None:
-        smoothed_curve = smooth_tail_subsection(curve, range0, bw_coef,
+        smoothed_curve = smooth_tail_subsection(curve, range0,
+                                                np.max([1.5*bw_coef, 0.3]),
                                                 cutoff, main_dist)
     else:
         smoothed_curve = smooth(main_dist, bw_method =  bw_coef)(range0)
