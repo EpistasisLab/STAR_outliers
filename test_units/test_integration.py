@@ -38,7 +38,8 @@ class test_main_library(unittest.TestCase):
         np.random.seed(0)
         raw_data = pd.read_csv("all_2018_processed.txt",
                                delimiter = "\t", header = 0)
-        new_data = remove_all_outliers("all_2018_processed.txt")[0]
+        new_data = remove_all_outliers("all_2018_processed.txt", None,
+                                       bound = 95, pcutoff = 0.993)[0]
         label_order_preserved = np.all(raw_data.columns == new_data.columns)
         error_message = "The label order was not preserved."
         self.assertTrue(label_order_preserved, error_message)

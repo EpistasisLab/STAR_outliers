@@ -45,6 +45,7 @@ class test_main_library(unittest.TestCase):
         z = np.random.normal(0, 1, 1000000)
         W  = A + B*(1/(g + 1E-10))*(np.exp((g + 1E-10)*z)-1)*np.exp(h*(z**2)/2)        
         A, B, g, h, W_ignored = main_lib.estimate_tukey_params(np.array(W), 99.9)
+        pdb.set_trace()
         good_estimates = [-1.4999650708545083, 0.3972813163571714,
                            0.500692190277438, 0.1010689364692585]
         is_correct = np.all(np.isclose([A, B, g, h], good_estimates))
@@ -60,6 +61,7 @@ class test_main_library(unittest.TestCase):
         x = np.random.uniform(0, 1, 1000000)
         W = main_lib.compute_w(x)
         moments = [np.mean(W), np.var(W), stats.skew(W), stats.kurtosis(W)]
+        pdb.set_trace()
         good_estimates = [-0.00204834457408487, 0.9923094167368567,
                           -0.01794709589991156, -0.04215819324267711]
         is_correct = np.all(np.isclose(moments, good_estimates))
@@ -84,10 +86,10 @@ class test_main_library(unittest.TestCase):
         sorted_indices = np.argsort(np.abs(x - 0.5))
         x = x[sorted_indices]
         x_spiked = COPY(x)
-        x_spiked, void = main_lib.attempt_tukey_fit(x, x_spiked, "fake", "fake",
-                                                    95, 0.3, [], False, [])
+        x_spiked, void = main_lib.attempt_tukey_fit(x, x_spiked, "fake", 0.993,
+                                                    "fake", 95, 0.3, [], False, [])
         bounds = [np.nanmin(x_spiked), np.nanmax(x_spiked)]
-        good_bounds = [0.0014237337435458741, 0.9985899705190592]
+        good_bounds = [0.0035642542211430372, 0.9964330320181707]
         is_correct1 = np.all(np.isclose(bounds, good_bounds))
         is_correct2 = np.all(len(x_spiked) == len(x))
         message1 = "attempt_tukey_fit did not produce correct outlier bounds"
@@ -105,16 +107,16 @@ class test_main_library(unittest.TestCase):
         x2 = np.max(x) - x
         x_spiked = COPY(x)
         x_spiked2 = COPY(x2)
-        x_spiked, void = main_lib.attempt_exponential_fit(x, x_spiked,
-                                                          "fake", "fake",
+        x_spiked, void = main_lib.attempt_exponential_fit(x, x_spiked, "fake",
+                                                          0.993, "fake",
                                                           0.3, [], True, [])
         x_spiked2, void = main_lib.attempt_exponential_fit(x2, x_spiked2,
-                                                           "fake", "fake",
+                                                           "fake", 0.993, "fake",
                                                            0.3, [], True, [])
         bound = np.nanmax(x_spiked)
         bound2 = np.nanmin(x_spiked2)
-        good_bound = 5.944200450024489
-        good_bound2 = 7.883414460787689
+        good_bound = 4.984992612063639
+        good_bound2 = 8.84262229874854
         is_correct = np.isclose(bound, good_bound)
         is_correct2 = np.isclose(bound2, good_bound2)
         message = "attempt_exponential_fit did not produce correct left facing bound"
