@@ -9,6 +9,7 @@ from scipy.stats import pearsonr
 from scipy.stats import gaussian_kde as smooth
 from scipy.stats import expon
 from scipy.stats import norm
+from scipy.stats import yeojohnson
 from tqdm import tqdm
 
 from STAR_outliers_plotting_library import plot_data
@@ -57,7 +58,8 @@ def estimate_tukey_params(W, bound):
         bound = 90
 
     Q_vec = np.percentile(W, [10, 25, 50, 75, 90])
-    if len(np.unique(Q_vec)) != 5 or len(np.unique(W) < 10):
+    W_main = W[np.logical_and(W <= Q_vec[4], W >= Q_vec[0])]
+    if len(np.unique(Q_vec)) != 5 or len(np.unique(W_main) < 30):
         Q_vec = approximate_quantiles(W, [10, 25, 50, 75, 90])
 
     A = Q_vec[2]
@@ -69,7 +71,7 @@ def estimate_tukey_params(W, bound):
     B = (0.7413*IQR)/phi
 
     Q_vec2 = np.percentile(W, [100 - bound, 25, 50, 75, bound])
-    if len(np.unique(Q_vec2)) != 5 or len(np.unique(W) < 10):
+    if len(np.unique(Q_vec2)) != 5 or len(np.unique(W_main) < 30):
         Q_vec2 = approximate_quantiles(W, [100 - bound, 25, 50, 75, bound])
 
     zv = norm.ppf(bound/100, 0, 1)
@@ -79,7 +81,7 @@ def estimate_tukey_params(W, bound):
 
     y = (W - A)/B        
     Q_vec3 = np.percentile(y, [100 - bound, 25, 50, 75, bound])
-    if len(np.unique(Q_vec3)) != 5 or len(np.unique(W) < 10):
+    if len(np.unique(Q_vec3)) != 5 or len(np.unique(W_main) < 30):
         Q_vec3 = approximate_quantiles(y, [100 - bound, 25, 50, 75, bound])
 
     Q_ratio = (Q_vec3[4]*Q_vec3[0])/(Q_vec3[4] + Q_vec3[0])
@@ -110,7 +112,8 @@ def compute_w(x):
     """
 
     Q_vec = np.percentile(x, [10, 25, 50, 75, 90])
-    if len(np.unique(Q_vec)) != 5:
+    x_main = x[np.logical_and(x <= Q_vec[4], x >= Q_vec[0])]
+    if len(np.unique(Q_vec)) != 5 or len(np.unique(x_main) < 30):
         Q_vec = approximate_quantiles(x, [10, 25, 50, 75, 90])
     x2 = adjust_median_values(x, Q_vec)
     
@@ -125,7 +128,7 @@ def compute_w(x):
     W = norm.ppf((ASO + 1E-10)/(np.min(ASO) + np.max(ASO) + 2E-10))
     return(W)
 
-def attempt_exponential_fit(x, x_spiked, name, 
+def attempt_exponential_fit(x, x_spiked, name, pcutoff,
                             prefix, bw_coef, spike_vals,
                             exp_status, severe_outliers):
 
@@ -134,39 +137,42 @@ def attempt_exponential_fit(x, x_spiked, name,
     if not left_to_right:
         x = np.max(x) - x
     alpha_body = np.min([0.05, np.max([0.005, 500/len(x)])])
-    alpha_tail = (.9973 - (1 - alpha_body))/alpha_body
+    alpha_tail = (pcutoff - (1 - alpha_body))/alpha_body
     x_tail = x[x >= np.percentile(x, 100*(1 - alpha_body))]
     if len(np.unique(x_tail < 3)):
         alpha_body = 0.05
-        alpha_tail = (.9973 - (1 - alpha_body))/alpha_body
+        alpha_tail = (pcutoff - (1 - alpha_body))/alpha_body
         x_tail = x[x >= np.percentile(x, 100*(1 - alpha_body))]
     loc = np.min(x_tail)
     scale = np.mean(x_tail) - loc
     tail_unique, tail_counts = np.unique(x_tail, return_counts = True)
     if np.max(tail_counts)/np.sum(tail_counts) < 0.05:
         scale = (np.percentile(x_tail, 50) - loc)/np.log(2)
-    range0 = expon.ppf(np.linspace(0, 0.9973, len(x_tail)), loc, scale)
+    range0 = expon.ppf(np.linspace(0, pcutoff, len(x_tail)), loc, scale)
     curve_dist = x[x >= np.percentile(x, 100*(1 - 2*alpha_body))]
-    curve_range = expon.ppf(np.linspace(0, 0.9973, len(curve_dist)), loc, scale)
+    curve_range = expon.ppf(np.linspace(0, pcutoff, len(curve_dist)), loc, scale)
     curve = [curve_dist, curve_range]
     fitted_curve = expon.pdf(range0, loc, scale)
     cutoff = expon.ppf(alpha_tail, loc, scale)
     x_outliers = x[x > cutoff]
-    if not left_to_right:
-        x_outliers = np.max(x) - x_outliers
     r_sq = plot_test(x_tail, fitted_curve, range0, exp_status, bw_coef, 
                      prefix, cutoff, x_outliers, name, curve)
-
+    if not left_to_right:
+        x_outliers = np.max(x) - x_outliers
+        x = np.max(x) - x
     plot_data(x, x_outliers, spike_vals, name, prefix)
     all_outliers = np.union1d(severe_outliers, x_outliers)
     x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked, r_sq)
 
-def attempt_tukey_fit(x, x_spiked, name, prefix,
+def attempt_tukey_fit(x, x_spiked, name, pcutoff, prefix, 
                       bound, bw_coef, spike_vals,
                       exp_status, severe_outliers):
 
-    W = compute_w(x)
+    if bw_coef == 0.075:
+        W = compute_w(yeojohnson(x)[0])
+    else:
+        W = compute_w(x)
     A, B, g, h, W_ignored = estimate_tukey_params(W, bound)
     z = np.random.normal(0, 1, 200000)
     fitted_TGH  = A + B*(1/(g + 1E-10))*(np.exp((g + 1E-10)*z)-1)*np.exp(h*(z**2)/2)
@@ -175,7 +181,7 @@ def attempt_tukey_fit(x, x_spiked, name, prefix,
     range0 = np.linspace(xlims[0] - delta, xlims[1] + delta, 
                         np.max([250, int(len(W)/300)]))
     smooth_TGH = smooth(fitted_TGH, bw_method =  bw_coef)(range0)
-    cutoff = np.percentile(fitted_TGH, 99.73)
+    cutoff = np.percentile(fitted_TGH, pcutoff*100)
     x_outliers = np.unique(x[W > cutoff])
     r_sq = plot_test(W, smooth_TGH, range0, exp_status, bw_coef, prefix, 
                      cutoff, x_outliers, name, ignored_values = W_ignored)
@@ -203,11 +209,12 @@ def get_constrained_max(x_spiked, disallowed_vals):
     else:
         return(x_max)
 
-def compute_outliers(x_spiked, name, prefix, bound):
+def compute_outliers(x_spiked, name, prefix, bound, pcutoff):
 
     x_spiked = x_spiked.astype(float)
     x, severe_outliers, spike_vals = clean_data(x_spiked, name,
                                                 prefix, 0, [], [])
+
     x_unique, x_counts = np.unique(x, return_counts = True)
     q5, q95 = np.percentile(x, [5, 95])
     x_main = x[np.logical_and(x <= q95, x >= q5)]
@@ -219,31 +226,36 @@ def compute_outliers(x_spiked, name, prefix, bound):
     if len(np.unique(x_main)) < 30:
         bw_coef = 0.7
     
-   
     exp_status = detect_exponential_data(x, np.max([10, int(len(x)/300)]))
 
     outlier_info = [name]
     old_count = np.sum(np.isnan(x_spiked)==False)
 
     if exp_status == True:
-        x_spiked_new, r_sq = attempt_exponential_fit(x, x_spiked, name, prefix,
-                                                     bw_coef, spike_vals,
+        x_spiked_new, r_sq = attempt_exponential_fit(x, x_spiked, name, pcutoff,
+                                                     prefix, bw_coef, spike_vals,
                                                      exp_status, severe_outliers)
         outlier_info.append(np.sum(np.isnan(x_spiked_new)==False)/old_count)
+        outlier_info.append(np.nanmin(x))
         outlier_info.append(get_constrained_min(x_spiked_new, spike_vals))
+        outlier_info.append(np.nanpercentile(x, 50))
         outlier_info.append(get_constrained_max(x_spiked_new, spike_vals))
+        outlier_info.append(np.nanmax(x))
         return(x_spiked_new, r_sq, severe_outliers, outlier_info)
     else:
-        x_spiked_new, r_sq = attempt_tukey_fit(x, x_spiked, name, prefix,
+        x_spiked_new, r_sq = attempt_tukey_fit(x, x_spiked, name, pcutoff, prefix,
                                                bound, bw_coef, spike_vals,
                                                exp_status, severe_outliers)
         outlier_info.append(np.sum(np.isnan(x_spiked_new)==False)/old_count)
+        outlier_info.append(np.nanmin(x))
         outlier_info.append(get_constrained_min(x_spiked_new, spike_vals))
+        outlier_info.append(np.nanpercentile(x, 50))
         outlier_info.append(get_constrained_max(x_spiked_new, spike_vals))
+        outlier_info.append(np.nanmax(x))
         return(x_spiked_new, r_sq, severe_outliers, outlier_info)
 
 
-def remove_all_outliers(input_file_name, index_name = None, bound = None):
+def remove_all_outliers(input_file_name, index_name, bound, pcutoff):
     fields = pd.read_csv(input_file_name, delimiter = "\t", header = 0)
     field_names = fields.columns
     if not index_name is None:
@@ -252,7 +264,7 @@ def remove_all_outliers(input_file_name, index_name = None, bound = None):
     field_cols = [fields.loc[:, name].to_numpy() for name in field_names]
 
     if bound is None:
-        bound = np.max([np.min([90 + 2.5*(np.log10(len(field_cols[0])) - 2), 99]), 90])
+        bound = pcutoff*100
 
     r_sq_vals = []
     names = []
@@ -268,7 +280,7 @@ def remove_all_outliers(input_file_name, index_name = None, bound = None):
             name = field_names[i]
             names.append(name)
             prefix = input_file_name.split(".")[0]
-            output = compute_outliers(field, name, prefix, bound)
+            output = compute_outliers(field, name, prefix, bound, pcutoff)
             cleaned_field_cols.append(output[0])
             r_sq_vals.append(output[1])
             severe_outlier_sets.append(output[2])

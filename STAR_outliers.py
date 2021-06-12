@@ -10,7 +10,11 @@ def main():
     parser.add_argument('--input ', type = str, action = "store", dest = "input")
     parser.add_argument('--bound ', type = float, action = "store", dest = "bound")
     parser.add_argument('--index ', type = str, action = "store", dest = "index")
+    parser.add_argument('--pcutoff ', type = float, action = "store", dest = "pcutoff")
 
+    pcutoff = parser.parse_args().pcutoff
+    if pcutoff is None:
+        pcutoff == 0.993
     input_file_name = parser.parse_args().input
     index_name = parser.parse_args().index
     bound = parser.parse_args().bound
@@ -22,7 +26,7 @@ def main():
         exit()
     file_name_prefix = split_name[0]
 
-    output = remove_all_outliers(input_file_name, index_name, bound)
+    output = remove_all_outliers(input_file_name, index_name, bound, pcutoff)
     cleaned_data = output[0]
     r_sq_vals = output[1]
     names = output[2]
@@ -34,7 +38,9 @@ def main():
 
     outlier_info = pd.DataFrame(outlier_info_sets)
     outlier_info.columns = ["name", "percent_inliers",
-                            "lower_bound", "upper_bound"]
+                            "min_val", "lower_bound",
+                            "median", "upper_bound",
+                            "max_val"]
     outlier_info.to_csv(file_name_prefix + "_outlier_info.txt",
                         sep = "\t", header = True, index = False)
 

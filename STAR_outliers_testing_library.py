@@ -8,6 +8,7 @@ from scipy.stats import pearsonr
 from scipy.stats import gaussian_kde as smooth
 from scipy.stats import expon
 from scipy.stats import norm
+from scipy.stats import skew
 
 def bin_data(x, n_bins):
 
@@ -95,8 +96,8 @@ def detect_exponential_data(x_unadjusted, n_bins):
     est_log_range = B0 + B1*real_domain[nonzeros]
     real_log_range = np.log(real_range[nonzeros])
 
-    exp_status1 =  pearsonr(est_log_range, real_log_range)[0] > 0.95 
     monotonicity = detect_monotonic_data(x, np.max([10, int(len(x)/150)]))
+    exp_status1 =  pearsonr(est_log_range, real_log_range)[0] > 0.95 and monotonicity > 0.8
     exp_status2 = monotonicity > 0.9
     exp_status = exp_status1 or exp_status2
 
