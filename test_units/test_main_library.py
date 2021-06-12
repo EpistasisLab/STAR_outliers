@@ -45,7 +45,6 @@ class test_main_library(unittest.TestCase):
         z = np.random.normal(0, 1, 1000000)
         W  = A + B*(1/(g + 1E-10))*(np.exp((g + 1E-10)*z)-1)*np.exp(h*(z**2)/2)        
         A, B, g, h, W_ignored = main_lib.estimate_tukey_params(np.array(W), 99.9)
-        pdb.set_trace()
         good_estimates = [-1.4999650708545083, 0.3972813163571714,
                            0.500692190277438, 0.1010689364692585]
         is_correct = np.all(np.isclose([A, B, g, h], good_estimates))
@@ -61,7 +60,6 @@ class test_main_library(unittest.TestCase):
         x = np.random.uniform(0, 1, 1000000)
         W = main_lib.compute_w(x)
         moments = [np.mean(W), np.var(W), stats.skew(W), stats.kurtosis(W)]
-        pdb.set_trace()
         good_estimates = [-0.00204834457408487, 0.9923094167368567,
                           -0.01794709589991156, -0.04215819324267711]
         is_correct = np.all(np.isclose(moments, good_estimates))
