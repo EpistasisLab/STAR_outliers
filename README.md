@@ -11,6 +11,6 @@ STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open 
 5. Enter ```conda activate outliers``` in the terminal to enter your new environment. If that doesn't work, enter ```source activate outliers```
 6. Once in your outliers environment (repeat step 5 if you close and reopen the conda terminal), enter ```conda install -c conda-forge matplotlib```
 7. after installint matplotlib, enter ```pip install STAR-outliers```
-8. Run python ```-m STAR_outliers --input [path_to_input_file]``` to remove outliers from every column.
-9. For example, with the ```all_2018_processed.txt``` file, the full input command looks like this: ```python -m STAR_outliers --input all_2018_processed.txt```
-10. If one column is a sample index, then specify that with ```-m STAR_outliers --input [path_to_input_file] --index [index column name]```
+8. Run ```python -m STAR_outliers --input [path_to_input_file] --pcutoff [fitted distribution probability bound for outliers] --bound [high percentile for parameter estimation]``` to remove outliers from every column.
+9. For example, with the ```all_2018_processed.txt``` file, the full input command looks like this: ```python -m STAR_outliers --input all_2018_processed.txt --pcutoff 0.993 --bound 95```. A ```bound``` value of 95 suggests that there will be very few outliers influencing the value of the 95th percentile. We suggest making this higher for larger or cleaner datasets, though we do not reccomend going above 99. A ```pcutoff``` value of 0.993 means that all real datapoints outside of the fitted distributions's main 99.3% probability mass will be declared as outlier, which is analogous to the standard IQR test for outliers. 
+10. If one column is a sample index, then specify that with ```path -m STAR_outliers --input [path_to_input_file] --index [index column name] ...```
