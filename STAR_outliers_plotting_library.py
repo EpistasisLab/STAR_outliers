@@ -53,7 +53,7 @@ def plot_test(test_dist, fitted_curve, range0, exp_status, bw_coef, prefix,
     num_outliers = len(outliers)
     outlier_label = "outlier threshold: " + str(cutoff) 
     outlier_label += " (" + str(num_outliers) + " outliers detected)"
-    nbins = np.max([int(len(main_dist)/300), 100])
+    nbins = np.max([int(len(np.unique(main_dist))/300), 100])
     vals, counts = bin_data(main_dist, nbins)
     deltas = np.min(vals[1:] - vals[:-1])
     halfmax = 0.5*(np.max(counts)/np.sum(counts))/np.min(deltas)
@@ -107,7 +107,7 @@ def plot_data(data_dist, outliers, spike_vals, name, prefix):
     
     num_outliers = len(outliers)
     label0 = "feature distribution"
-    nbins = np.max([int(len(data_dist)/300), 100])
+    nbins = np.max([int(len(np.unique(data_dist))/300), 100])
     vals, counts = bin_data(data_dist, nbins)
     deltas = np.min(vals[1:] - vals[:-1])
     halfmax = 0.5*(np.max(counts)/np.sum(counts))/np.min(deltas)

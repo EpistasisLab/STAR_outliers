@@ -94,22 +94,23 @@ def remove_worst_continuity_violations(W):
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
  
-def get_fitted_quantiles(percentiles, fitted_cdf, range0, pstart, pend):
+def get_fitted_quantiles(percentiles, fitted_cdf, range0, 
+                         qstart, qend, good_cdf_tails):
     Q_vec = np.zeros(5)
-    if range0[np.where(fitted_cdf >= 0.25)[0][0]] <= pstart: 
+    if good_cdf_tails == True: 
         Q_vec[0] = range0[np.where(fitted_cdf >= percentiles[0]/100)[0][0]]
     else:
-        Q_vec[0] = pstart
+        Q_vec[0] = qstart
     Q_vec[1] = range0[np.where(fitted_cdf >= 0.25)[0][0]]  
     Q_vec[2] = range0[np.where(fitted_cdf >= 0.5)[0][0]] 
     Q_vec[3] = range0[np.where(fitted_cdf >= 0.75)[0][0]]  
-    if range0[np.where(fitted_cdf >= 0.75)[0][0]] >= pend: 
+    if good_cdf_tails == True: 
         Q_vec[4] = range0[np.where(fitted_cdf >= percentiles[4]/100)[0][0]]
     else:
-        Q_vec[4] = pend   
+        Q_vec[4] = qend   
     return(Q_vec)
 
-def approximate_quantiles(x, percentiles, bw_coef = 0.3):
+def approximate_quantiles(x, percentiles):
 
     """
     Purpose
@@ -131,45 +132,49 @@ def approximate_quantiles(x, percentiles, bw_coef = 0.3):
            quantiles are taken from x when possible. 
 
     """
+    q5, q95 = np.percentile(x, [5, 95])
+    x_main = x[np.logical_and(x <= q95, x >= q5)]
+    bw_coef = 0.075
+    if len(np.unique(x_main)) < 1000:
+        bw_coef = 0.3
+    if len(np.unique(x_main)) < 100:
+        bw_coef = 0.5
+    if len(np.unique(x_main)) < 30:
+        bw_coef = 0.7
 
-    pstart = np.percentile(x, percentiles[0])
-    p1, p20, p35, p65, p80, p99 = np.percentile(x, [0.5, 20, 35, 65, 80, 99.5])
-    spacer = (p99 - p1)/2.75
-    pend = np.percentile(x, percentiles[-1])
-    range1 = np.linspace(p1 - spacer, p35, 200)
-    range2 = np.linspace(p35, p65, 200)
-    range3 = np.linspace(p65, p99 + spacer, 200)
+    qstart = np.percentile(x, percentiles[0])
+    q1, q20, q35, q65, q80, q99 = np.percentile(x, [0.5, 20, 35, 65, 80, 99.5])
+    spacer = (q99 - q1)/2.75
+    qend = np.percentile(x, percentiles[-1])
+    range1 = np.linspace(q1 - spacer, q35, 200)
+    range2 = np.linspace(q35, q65, 200)
+    range3 = np.linspace(q65, q99 + spacer, 200)
     range0 = np.concatenate([range1[:-1], range2[:-1], range3])
-    x0 = np.where(range0 >= p20)[0][0]
-    x1 = np.where(range0 <= p80)[0][-1]
-    x_bounded = x[np.logical_and(x >= p1, x <= p99)]
+    x0 = np.where(range0 >= q20)[0][0]
+    x1 = np.where(range0 <= q80)[0][-1]
+    x_bounded = x[np.logical_and(x >= q1, x <= q99)]
     smooth_x = smooth(x_bounded, bw_method = bw_coef)(range0)
     mid_x = (smooth_x[:-1] + smooth_x[1:])/2
 
-    # If there are too few unique values to uniquely define p20 from nearby 
-    # percentiles, then this method works if the distribution isn't too wierd.
     integrand1 = (mid_x*(range0[1:] - range0[:-1]))
     cdf1 = np.cumsum(integrand1)
     lb_is_good = np.min(cdf1) < 0.05 and np.min(cdf1) > -0.05
     ub_is_good = np.max(cdf1) < 1.05 and np.max(cdf1) > 0.95
     if lb_is_good and ub_is_good:
-        Q_vec = get_fitted_quantiles(percentiles, cdf1, range0, pstart, pend)
+        Q_vec = get_fitted_quantiles(percentiles, cdf1, range0, 
+                                     qstart, qend, True)
         return(Q_vec)
 
-    # if there are many unique values but the distribution is wierd
-    # then this method works by focusing only on the middle
+    # This is a reasonable backup method if the cdf fits the tails poorly
     integrand2 = (mid_x*(range0[1:] - range0[:-1]))[x0:(x1 + 1)]
     cdf2 = np.cumsum(integrand2) + 0.2
     lb_is_good = np.min(cdf2) < 0.25 and np.min(cdf2) > 0.15
     ub_is_good = np.max(cdf2) < 0.85 and np.max(cdf2) > 0.75
     if lb_is_good and ub_is_good:
-        Q_vec = get_fitted_quantiles(percentiles, cdf2, range0, pstart, pend)
+        Q_vec = get_fitted_quantiles(percentiles, cdf2, range0, 
+                                     qstart, qend, False)
         return(Q_vec)
 
-    # Rarely, a smaller smoothing parameter helps. 
-    # TODO: implement backup test if this fails
-    if bw_coef == 0.3:
-        approximate_quantiles(x, percentiles, bw_coef = 0.03)
     else:
         pdb.set_trace()
 

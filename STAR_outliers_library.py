@@ -59,7 +59,7 @@ def estimate_tukey_params(W, bound):
 
     Q_vec = np.percentile(W, [10, 25, 50, 75, 90])
     W_main = W[np.logical_and(W <= Q_vec[4], W >= Q_vec[0])]
-    if len(np.unique(Q_vec)) != 5 or len(np.unique(W_main) < 30):
+    if len(np.unique(Q_vec)) != 5 or len(np.unique(W_main)) < 30:
         Q_vec = approximate_quantiles(W, [10, 25, 50, 75, 90])
 
     A = Q_vec[2]
@@ -71,7 +71,7 @@ def estimate_tukey_params(W, bound):
     B = (0.7413*IQR)/phi
 
     Q_vec2 = np.percentile(W, [100 - bound, 25, 50, 75, bound])
-    if len(np.unique(Q_vec2)) != 5 or len(np.unique(W_main) < 30):
+    if len(np.unique(Q_vec2)) != 5 or len(np.unique(W_main)) < 30:
         Q_vec2 = approximate_quantiles(W, [100 - bound, 25, 50, 75, bound])
 
     zv = norm.ppf(bound/100, 0, 1)
@@ -81,7 +81,7 @@ def estimate_tukey_params(W, bound):
 
     y = (W - A)/B        
     Q_vec3 = np.percentile(y, [100 - bound, 25, 50, 75, bound])
-    if len(np.unique(Q_vec3)) != 5 or len(np.unique(W_main) < 30):
+    if len(np.unique(Q_vec3)) != 5 or len(np.unique(W_main)) < 30:
         Q_vec3 = approximate_quantiles(y, [100 - bound, 25, 50, 75, bound])
 
     Q_ratio = (Q_vec3[4]*Q_vec3[0])/(Q_vec3[4] + Q_vec3[0])
@@ -113,7 +113,7 @@ def compute_w(x):
 
     Q_vec = np.percentile(x, [10, 25, 50, 75, 90])
     x_main = x[np.logical_and(x <= Q_vec[4], x >= Q_vec[0])]
-    if len(np.unique(Q_vec)) != 5 or len(np.unique(x_main) < 30):
+    if len(np.unique(Q_vec)) != 5 or len(np.unique(x_main)) < 30:
         Q_vec = approximate_quantiles(x, [10, 25, 50, 75, 90])
     x2 = adjust_median_values(x, Q_vec)
     
@@ -170,7 +170,7 @@ def attempt_tukey_fit(x, x_spiked, name, pcutoff, prefix,
                       exp_status, severe_outliers):
 
     if bw_coef == 0.075:
-        W = compute_w(yeojohnson(x)[0])
+        W = compute_w(yeojohnson((x - np.mean(x))/np.std(x))[0])
     else:
         W = compute_w(x)
     A, B, g, h, W_ignored = estimate_tukey_params(W, bound)
@@ -182,7 +182,7 @@ def attempt_tukey_fit(x, x_spiked, name, pcutoff, prefix,
                         np.max([250, int(len(W)/300)]))
     smooth_TGH = smooth(fitted_TGH, bw_method =  bw_coef)(range0)
     cutoff = np.percentile(fitted_TGH, pcutoff*100)
-    x_outliers = np.unique(x[W > cutoff])
+    x_outliers = x[W > cutoff]
     r_sq = plot_test(W, smooth_TGH, range0, exp_status, bw_coef, prefix, 
                      cutoff, x_outliers, name, ignored_values = W_ignored)
     
@@ -264,7 +264,7 @@ def remove_all_outliers(input_file_name, index_name, bound, pcutoff):
     field_cols = [fields.loc[:, name].to_numpy() for name in field_names]
 
     if bound is None:
-        bound = pcutoff*100
+        bound = np.min([pcutoff*100, 99])
 
     r_sq_vals = []
     names = []
