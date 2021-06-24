@@ -260,6 +260,7 @@ def remove_all_outliers(input_file_name, index_name, bound, pcutoff):
     field_names = fields.columns
     if not index_name is None:
         field_names = field_names[field_names != index_name]
+        index_col = fields[index_name]
         fields = fields[field_names]
     field_cols = [fields.loc[:, name].to_numpy() for name in field_names]
 
@@ -293,6 +294,8 @@ def remove_all_outliers(input_file_name, index_name, bound, pcutoff):
 
     cleaned_data = pd.DataFrame(np.transpose(cleaned_field_cols))
     cleaned_data.columns = field_names
+    if not index_name is None:
+        cleaned_data[index_name] = index_col
     return(cleaned_data,
            r_sq_vals, names,
            fields_with_poor_fits,
