@@ -23,7 +23,7 @@ setup(
     long_description = summary,
     long_description_content_type = "text/markdown",
     packages = find_packages(),
-    version = "0.1.2",
+    version = "0.1.3",
     python_requires = ">=3.6,<=3.9",
     name = "STAR_outliers",
     entry_points = ep_val,

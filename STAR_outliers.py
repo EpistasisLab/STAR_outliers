@@ -9,8 +9,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input ', type = str, action = "store", dest = "input")
     parser.add_argument('--index ', type = str, action = "store", dest = "index")
-    parser.add_argument('--bound ', type = float, nargs = '*', action = "store", dest = "bound")
-    parser.add_argument('--pcutoff ', type = float,  nargs = '*', action = "store", dest = "pcutoff")
+    parser.add_argument('--bound ', type = float, action = "store", dest = "bound")
+    parser.add_argument('--pcutoff ', type = float, action = "store", dest = "pcutoff")
 
     pcutoff = parser.parse_args().pcutoff
     if pcutoff is None:
