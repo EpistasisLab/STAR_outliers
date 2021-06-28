@@ -137,11 +137,11 @@ def attempt_exponential_fit(x, x_spiked, name, pcutoff,
     if not left_to_right:
         x = np.max(x) - x
     alpha_body = np.min([0.05, np.max([0.005, 500/len(x)])])
-    alpha_tail = (pcutoff - (1 - alpha_body))/alpha_body
+    tail_cutoff = (pcutoff - (1 - alpha_body))/alpha_body
     x_tail = x[x >= np.percentile(x, 100*(1 - alpha_body))]
     if len(np.unique(x_tail < 3)):
         alpha_body = 0.05
-        alpha_tail = (pcutoff - (1 - alpha_body))/alpha_body
+        tail_cutoff = (pcutoff - (1 - alpha_body))/alpha_body
         x_tail = x[x >= np.percentile(x, 100*(1 - alpha_body))]
     loc = np.min(x_tail)
     scale = np.mean(x_tail) - loc
@@ -153,15 +153,16 @@ def attempt_exponential_fit(x, x_spiked, name, pcutoff,
     curve_range = expon.ppf(np.linspace(0, pcutoff, len(curve_dist)), loc, scale)
     curve = [curve_dist, curve_range]
     fitted_curve = expon.pdf(range0, loc, scale)
-    cutoff = expon.ppf(alpha_tail, loc, scale)
-    x_outliers = x[x > cutoff]
+    cutoff = expon.ppf(tail_cutoff, loc, scale)
+    x_outliers = np.union1d(severe_outliers, x[x > cutoff])
+    all_outliers = np.concatenate([severe_outliers, x_outliers])
     r_sq = plot_test(x_tail, fitted_curve, range0, exp_status, bw_coef, 
-                     prefix, cutoff, x_outliers, name, curve)
+                     prefix, cutoff, all_outliers, name, curve)
     if not left_to_right:
         x_outliers = np.max(x) - x_outliers
+        all_outliers = np.concatenate([severe_outliers, x_outliers])
         x = np.max(x) - x
-    plot_data(x, x_outliers, spike_vals, name, prefix)
-    all_outliers = np.union1d(severe_outliers, x_outliers)
+    plot_data(x, all_outliers, spike_vals, name, prefix)
     x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked, r_sq)
 
@@ -183,11 +184,11 @@ def attempt_tukey_fit(x, x_spiked, name, pcutoff, prefix,
     smooth_TGH = smooth(fitted_TGH, bw_method =  bw_coef)(range0)
     cutoff = np.percentile(fitted_TGH, pcutoff*100)
     x_outliers = x[W > cutoff]
+    all_outliers = np.concatenate([severe_outliers, x_outliers])
     r_sq = plot_test(W, smooth_TGH, range0, exp_status, bw_coef, prefix, 
-                     cutoff, x_outliers, name, ignored_values = W_ignored)
+                     cutoff, all_outliers, name, ignored_values = W_ignored)
     
-    plot_data(x, x_outliers, spike_vals, name, prefix)
-    all_outliers = np.union1d(severe_outliers, x_outliers)
+    plot_data(x, all_outliers, spike_vals, name, prefix)
     x_spiked[np.isin(x_spiked, all_outliers)] = np.nan
     return(x_spiked, r_sq)
 
@@ -212,6 +213,7 @@ def get_constrained_max(x_spiked, disallowed_vals):
 def compute_outliers(x_spiked, name, prefix, bound, pcutoff):
 
     x_spiked = x_spiked.astype(float)
+    x_spiked_old = COPY(x_spiked)
     x, severe_outliers, spike_vals = clean_data(x_spiked, name,
                                                 prefix, 0, [], [])
 
@@ -236,22 +238,22 @@ def compute_outliers(x_spiked, name, prefix, bound, pcutoff):
                                                      prefix, bw_coef, spike_vals,
                                                      exp_status, severe_outliers)
         outlier_info.append(np.sum(np.isnan(x_spiked_new)==False)/old_count)
-        outlier_info.append(np.nanmin(x))
+        outlier_info.append(np.nanmin(x_spiked_old))
         outlier_info.append(get_constrained_min(x_spiked_new, spike_vals))
         outlier_info.append(np.nanpercentile(x, 50))
         outlier_info.append(get_constrained_max(x_spiked_new, spike_vals))
-        outlier_info.append(np.nanmax(x))
+        outlier_info.append(np.nanmax(x_spiked_old))
         return(x_spiked_new, r_sq, severe_outliers, outlier_info)
     else:
         x_spiked_new, r_sq = attempt_tukey_fit(x, x_spiked, name, pcutoff, prefix,
                                                bound, bw_coef, spike_vals,
                                                exp_status, severe_outliers)
         outlier_info.append(np.sum(np.isnan(x_spiked_new)==False)/old_count)
-        outlier_info.append(np.nanmin(x))
-        outlier_info.append(get_constrained_min(x_spiked_new, spike_vals))
+        outlier_info.append(np.nanmin(x_spiked_old))
+        outlier_info.append(get_constrained_min(x_spiked, spike_vals))
         outlier_info.append(np.nanpercentile(x, 50))
-        outlier_info.append(get_constrained_max(x_spiked_new, spike_vals))
-        outlier_info.append(np.nanmax(x))
+        outlier_info.append(get_constrained_max(x_spiked, spike_vals))
+        outlier_info.append(np.nanmax(x_spiked_old))
         return(x_spiked_new, r_sq, severe_outliers, outlier_info)
 
 
