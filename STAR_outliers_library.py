@@ -154,7 +154,7 @@ def attempt_exponential_fit(x, x_spiked, name, pcutoff,
     curve = [curve_dist, curve_range]
     fitted_curve = expon.pdf(range0, loc, scale)
     cutoff = expon.ppf(tail_cutoff, loc, scale)
-    x_outliers = np.union1d(severe_outliers, x[x > cutoff])
+    x_outliers = x[x > cutoff]
     all_outliers = np.concatenate([severe_outliers, x_outliers])
     r_sq = plot_test(x_tail, fitted_curve, range0, exp_status, bw_coef, 
                      prefix, cutoff, all_outliers, name, curve)
