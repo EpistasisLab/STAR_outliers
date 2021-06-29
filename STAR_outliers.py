@@ -11,7 +11,11 @@ def main():
     parser.add_argument('--index ', type = str, action = "store", dest = "index")
     parser.add_argument('--bound ', type = float, action = "store", dest = "bound")
     parser.add_argument('--pcutoff ', type = float, action = "store", dest = "pcutoff")
-
+    parser.add_argument('--seed ', type = float, action = "store", dest = "seed")
+    
+    seed = parser.parse_args().seed
+    if not seed is None:
+        np.random.seed(seed = int(seed))
     pcutoff = parser.parse_args().pcutoff
     if pcutoff is None:
         pcutoff = 0.993
