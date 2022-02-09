@@ -24,68 +24,18 @@ def get_len_4_float(value):
         str_value = str(value)[0:(4 + offset)]
     return(str_value)
 
-def smooth_tail_subsection(curve, range0, bw_coef, cutoff, main_dist):
-    smoothed_curve = smooth(curve[0], bw_method = bw_coef)(curve[1])
-    if cutoff > np.percentile(main_dist, 50):
-        smoothed_curve = smoothed_curve[(len(smoothed_curve) - len(range0)):]
-        subrange = curve[1][(len(curve[1]) - len(range0)):]
-    else:
-        smoothed_curve = smoothed_curve[:len(range0)]
-        subrange = curve[1][:len(range0)]
-    deltas = subrange[1:] - subrange[:-1]
-    smoothed_curve = smoothed_curve/np.sum(smoothed_curve[:-1]*deltas)
-    return(smoothed_curve)
+def compute_overlap(W, fitted_TGH, cutoff, n_bins):
 
-def plot_test(test_dist, fitted_curve, range0, exp_status, bw_coef, prefix,
-              cutoff, outliers, name, curve = None, ignored_values = None):
-
-    if not ignored_values is None:
-        main_dist = test_dist[np.isin(test_dist, ignored_values) == False]
-    else:
-        main_dist = test_dist
-     
-    if curve != None:
-        smoothed_curve = smooth_tail_subsection(curve, range0,
-                                                np.max([1.5*bw_coef, 0.3]),
-                                                cutoff, main_dist)
-    else:
-        smoothed_curve = smooth(main_dist, bw_method =  bw_coef)(range0)
-
-    r_sq = pearsonr(smoothed_curve, fitted_curve)[0]**2
-    test_name = (["tukey", "exp_tail_fit"])[np.array([exp_status]).astype(int)[0]]
-    title = "field " + name + " vs fitted " + test_name 
-    title += "\n(R^2 = " + str(r_sq)[0:6] + ")"
-    
-    plt.plot(range0, smoothed_curve, "g-", label = "empirical smoothed density")
-    plt.plot(range0, fitted_curve, "r-", label = "fitted " + test_name + "density")
-
-    num_outliers = len(outliers)
-    str_cutoff = get_len_4_float(cutoff)
-    outlier_label = "outlier threshold: " + str_cutoff 
-    outlier_label += " (" + str(num_outliers) + " outliers detected)"
-    nbins = np.max([int(len(np.unique(main_dist))/300), 100])
-    vals, counts = bin_data(main_dist, nbins)
-    deltas = np.min(vals[1:] - vals[:-1])
-    halfmax = 0.5*(np.max(counts)/np.sum(counts))/np.min(deltas)
-    plt.plot(2*[cutoff], halfmax*np.arange(2), "k-", label = outlier_label)
-    message = "real histogram"
-    if not ignored_values is None:
-        if len(ignored_values) > 0:
-            ignored_val_stubs = [get_len_4_float(val) for val in ignored_values] 
-            message += " (values ignored: " + str(ignored_val_stubs) + ")"
-    plt.hist(main_dist, bins = nbins, density = True, label = message)
-    plt.xlabel('test statistic')
-    plt.ylabel('density')
-    p1, p99 = np.percentile(main_dist, 1), np.percentile(main_dist, 99)
-    delta = (p99 - p1)/4
-    plt.xlim([p1 - delta, cutoff + delta])
-    plt.title(title)
-    plt.legend(loc = "upper left")
-    if not os.path.exists(prefix + "_outlier_plots"):
-        os.mkdir(prefix + "_outlier_plots")
-    plt.savefig(prefix + "_outlier_plots/" + name + ".png")
-    plt.clf()
-    return(r_sq)
+    W_main = W[W <= cutoff]
+    Wx, Wy = bin_data(W_main, n_bins)
+    dx = Wx[1] - Wx[0]
+    lbs, ubs = (Wx - 0.5*dx).reshape(-1, 1), (Wx + 0.5*dx).reshape(-1, 1)
+    TGH_bins = np.logical_and(fitted_TGH >= lbs, fitted_TGH < ubs)
+    TGHy = np.sum(TGH_bins, axis = 1)
+    Wy_norm = Wy/len(W_main)
+    TGHy_norm = TGHy/len(fitted_TGH)
+    Wy_overrun = np.sum(np.max([Wy_norm - TGHy_norm, np.zeros(len(Wy))], axis = 0))
+    return(1 - np.sum(Wy_overrun))
 
 def plot_highliers(plot_object, y_vec, data_dist, outliers, p50):
     if len(outliers[outliers > p50]) > 0:
@@ -120,29 +70,28 @@ def plot_lowliers(plot_object, y_vec, data_dist, outliers, p50):
         plt.plot([low_cutoff], [0], "ko", label = label)
     return(low_cutoff)
 
-def plot_data(data_dist, outliers, spike_vals, name, prefix):
-    
-    num_outliers = len(outliers)
+def plot_x_and_W(x, x_outliers, spike_vals, W, fitted_TGH,
+                 name, prefix, cutoff, n_bins):
+
     label0 = "feature distribution"
-    nbins = np.max([int(len(np.unique(data_dist))/300), 100])
-    vals, counts = bin_data(data_dist, nbins)
+    vals, counts = bin_data(x, n_bins)
     deltas = np.min(vals[1:] - vals[:-1])
     halfmax = 0.5*(np.max(counts)/np.sum(counts))/np.min(deltas)
     if len(spike_vals) > 0:
         ignored_val_stubs = [get_len_4_float(val) for val in spike_vals]
         label0 += " (omitted spikes: " + str(ignored_val_stubs) + ")"
-    if len(outliers) == 0:
+    if len(x_outliers) == 0:
         label0 += " (no outliers)"
     
-    p50 = np.percentile(data_dist, 50)
-    high_cutoff = plot_highliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)
-    low_cutoff = plot_lowliers(plt, halfmax*np.arange(2), data_dist, outliers, p50)
-    p1, p99 = np.percentile(data_dist, 1), np.percentile(data_dist, 99)
+    p50 = np.percentile(x, 50)
+    high_cutoff = plot_highliers(plt, halfmax*np.arange(2), x, x_outliers, p50)
+    low_cutoff = plot_lowliers(plt, halfmax*np.arange(2), x, x_outliers, p50)
+    p1, p99 = np.percentile(x, 1), np.percentile(x, 99)
     delta = (np.min([p99, high_cutoff]) - np.max([p1, low_cutoff]))/4
     x_lims = [low_cutoff - delta, high_cutoff + delta]
-    plot_condition = np.logical_and(data_dist >= x_lims[0],
-                                    data_dist <= x_lims[1])
-    plt.hist(data_dist[plot_condition], bins = nbins, density = True, label = label0)
+    plot_condition = np.logical_and(x >= x_lims[0],
+                                    x <= x_lims[1])
+    plt.hist(x[plot_condition], bins = n_bins, density = True, label = label0)
     
     plt.xlabel('feature value')
     plt.ylabel('density')
@@ -153,3 +102,20 @@ def plot_data(data_dist, outliers, spike_vals, name, prefix):
         os.mkdir(prefix + "_outlier_plots_untransformed")
     plt.savefig(prefix + "_outlier_plots_untransformed/" + name + ".png")
     plt.clf()
+
+    fit = compute_overlap(W, fitted_TGH, cutoff, n_bins)
+    label1 = "fitted distribution (area overlap = " + get_len_4_float(fit) + ")"
+    label2 = "actual distribution"
+    plt.hist(fitted_TGH, bins = n_bins, density = True, fc=(0, 0, 1, 0.5), label = label1)
+    plt.hist(W, bins = n_bins, density = True, fc=(1, 0, 0, 0.5), label = label2)
+    outlier_label = "outlier threshold: " + get_len_4_float(cutoff) + " ("
+    outlier_label += get_len_4_float(100*np.sum(W > cutoff)/len(W))
+    outlier_label += "% exceding outlier cutoff)"
+    plt.plot([cutoff, cutoff], [0, 0.25], label = outlier_label)
+    plt.legend()
+    if not os.path.exists(prefix + "_outlier_plots"):
+        os.mkdir(prefix + "_outlier_plots")
+    plt.savefig(prefix + "_outlier_plots/" + name + ".png")
+    plt.clf()
+
+    return(fit)
