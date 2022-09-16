@@ -93,8 +93,10 @@ def pava(bins, bin_counts, old_counts, total_counts, coef):
     slopes = np.concatenate([slopes[i]*np.ones(keepers[i + 1] - keepers[i]) for i in range(len(keepers) - 1)])
     gcm_range_full = np.cumsum(slopes*(bins[1:] - bins[:-1])) + cdf_range[0]
     gcm_range_full = np.concatenate([[cdf_range[0]], gcm_range_full])
-    check1 = np.round(gcm_cdf_range, 4) == np.round(gcm_range_full[keepers], 4)
-    check2 = np.round(cdf_range, 4) >= np.round(gcm_range_full, 4)
+    #check1 = np.round((gcm_cdf_range*1E6).astype(int)/1E6, 4) == np.round((gcm_range_full[keepers]*1E6).astype(int)/1E6, 4)
+    #check2 = np.round((cdf_range*1E6).astype(int)/1E6, 4) >= np.round((gcm_range_full*1E6).astype(int)/1E6, 4)
+    check1 = np.abs(gcm_cdf_range - gcm_range_full[keepers]) < 0.0001
+    check2 = cdf_range - gcm_range_full > -0.0001
     
     if not (np.all(check1) and np.all(check2)):
         pdb.set_trace()
@@ -191,7 +193,6 @@ def compute_d(data, nbins, binned = False):
 def test_multimodality(data, n_bins, not_sensitive = False):
     bins, unimodal_cdf_range, D = compute_d(data, n_bins)
     diffs = []
-    # TODO: address this
     if D < 0.001 and not_sensitive or D < 0.0001:
         return(False)
     for i in range(30):
@@ -202,8 +203,6 @@ def test_multimodality(data, n_bins, not_sensitive = False):
         binned_data = [bins, unimodal_bin_counts]
         void, void, Db = compute_d(binned_data, n_bins, binned = True)
         diffs.append(Db)
-    # TODO: address this
-    ttest(D - np.array(diffs), 0, alternative = 'greater')
     if D > np.max(diffs):
         return(True)
     else:
@@ -212,14 +211,14 @@ def test_multimodality(data, n_bins, not_sensitive = False):
 def test_monotonicity(data_body, data, pcutoff, n_bins, not_sensitive = False):
     x, y = bin_data(data_body, n_bins)
     r, p = spearmanr(x, y)
-    if r > 0 and p < 0.05:
+    if r > 0 and p < 0.001:
         status = "increasing"
         data_flipped = data_body + 2*(np.max(data_body) - data_body)
         data2 = np.concatenate([data_body, data_flipped])        
         is_monotonic = (test_multimodality(data2, n_bins, not_sensitive) == False)
         data_flipped2 = data + 2*(np.max(data) - data) + 1E-7
         mirrored_data = np.concatenate([data, data_flipped2])
-    elif r < 0 and p < 0.05:
+    elif r < 0 and p < 0.001:
         status = "decreasing"
         data_flipped = data_body + 2*(np.min(data_body) - data_body)
         data2 = np.concatenate([data_body, data_flipped])

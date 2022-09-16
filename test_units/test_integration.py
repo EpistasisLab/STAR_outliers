@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import pdb
 import unittest
 import mock
 import numpy as np
@@ -38,16 +37,14 @@ class test_main_library(unittest.TestCase):
         np.random.seed(0)
         raw_data = pd.read_csv("all_2018_processed.txt",
                                delimiter = "\t", header = 0)
-        new_data = remove_all_outliers("all_2018_processed.txt", None,
-                                       bound = 95, pcutoff = 0.993)[0]
+        new_data = remove_all_outliers("all_2018_processed.txt", None, 0.993)[0]
         label_order_preserved = np.all(raw_data.columns == new_data.columns)
         error_message = "The label order was not preserved."
         self.assertTrue(label_order_preserved, error_message)
 
         raw_data = raw_data.to_numpy()
         new_data = new_data.to_numpy()
-        counts = np.array([len(np.unique(col[np.isnan(col) == False]))
-                           for col in raw_data.T])
+        counts = np.array([len(np.unique(col[np.isnan(col) == False])) for col in raw_data.T])
         raw_data = raw_data[:, counts >= 10]
         new_data = new_data[:, counts >= 10]
         lbs = np.nanmin(new_data, axis = 0)

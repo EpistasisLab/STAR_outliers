@@ -70,8 +70,7 @@ def plot_lowliers(plot_object, y_vec, data_dist, outliers, p50):
         plt.plot([low_cutoff], [0], "ko", label = label)
     return(low_cutoff)
 
-def plot_x_and_W(x, x_outliers, spike_vals, W, fitted_TGH,
-                 name, prefix, cutoff, n_bins):
+def plot_x(x, x_outliers, spike_vals, name, prefix, n_bins):
 
     label0 = "feature distribution"
     vals, counts = bin_data(x, n_bins)
@@ -102,6 +101,8 @@ def plot_x_and_W(x, x_outliers, spike_vals, W, fitted_TGH,
         os.mkdir(prefix + "_outlier_plots_untransformed")
     plt.savefig(prefix + "_outlier_plots_untransformed/" + name + ".png")
     plt.clf()
+
+def plot_W(W, fitted_TGH, name, prefix, cutoff, n_bins):
 
     fit = compute_overlap(W, fitted_TGH, cutoff, n_bins)
     label1 = "fitted distribution (area overlap = " + get_len_4_float(fit) + ")"

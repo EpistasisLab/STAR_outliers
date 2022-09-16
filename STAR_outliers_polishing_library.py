@@ -59,6 +59,7 @@ def get_fitted_quantiles(percentiles, fitted_cdf, range0,
             Q_vec[0] = range0[np.where(fitted_cdf >= percentiles[0]/100)[0][0]]
         except:
             pdb.set_trace()
+            return(Q_vec)
     else:
         Q_vec[0] = qstart
     Q_vec[1] = range0[np.where(fitted_cdf >= 0.25)[0][0]]  
