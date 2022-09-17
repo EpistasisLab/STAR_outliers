@@ -428,7 +428,11 @@ def fit_tukey(x, mirrored_data, side, n_bins, dist_type,
                 A, B, g, h, void = estimate_tukey_params(W)
                 fitted_TGH = fit_TGH(A, B, g, h, 100000)
             else:
-                T1, T2 = output
+                try:
+                    T1, T2 = output
+                except:
+                    print(output)
+                    pdb.set_trace()
                 TGH1 = fit_TGH(T1[0], T1[1], T1[2], T1[3], int(T1[4]*100000))
                 TGH2 = fit_TGH(T2[0], T2[1], T2[2], T2[3], int(T2[4]*100000))
                 fitted_TGH = np.concatenate([TGH1, TGH2])
