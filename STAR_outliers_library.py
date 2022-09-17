@@ -334,12 +334,12 @@ def estimate_tukey_mixture(W, stable = True, no_penalty = False, q_bounds = [1, 
                         LLs.append(LL_seq[LL_argmax])
                         stop = True
 
-    alt_outcomes = ["use single tukey", "numerical_instability_occurred"]
-    if np.all([i in alt_outcomes for i in parametersets]):
+    alt_outcomes = ["a single tukey fits well", "numerical_instability_occurred"]
+    if parametersets == ["numerical_instability_occurred"]*8:
         return(estimate_tukey_mixture(W, False, no_penalty,
                                       q_bounds, max_length, num_percentiles,
                                       custom_weights, unit_testing))
-    if parametersets == ["a single tukey fits well"]*8:
+    elif np.all([i in alt_outcomes for i in parametersets]):
         return("use single tukey")
     else:
         return(parametersets[np.argmax(LLs)])

@@ -52,11 +52,11 @@ class test_main_library(unittest.TestCase):
     @mock.patch(f_name1, side_effect = f_alt1)
     @mock.patch(f_name2, side_effect = lambda x, Q_vec: x)
     def test_compute_w(self, mock1, mock2):
-        x = np.random.uniform(0, 1, 100000000)
+        x = np.random.uniform(0, 1, 10000000)
         W = main_lib.compute_w(x)
         #should be a standard normal distribution
         moments = np.round([np.mean(W), np.var(W), stats.skew(W), stats.kurtosis(W)], 1)
-        is_correct = np.all(np.isclose(moments, [0,1,0,0]))
+        is_correct = np.all(moments == [0,1,0,0])
         self.assertTrue(is_correct, "compute_w may have a math error")
 
     def test_estimate_tukey_mixture(self):
