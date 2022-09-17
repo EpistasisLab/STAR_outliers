@@ -34,27 +34,24 @@ class test_main_library(unittest.TestCase):
     np.random.seed(0)
 
     f_name1 = 'STAR_outliers_library.approximate_quantiles'
-    #f_name2 = 'STAR_outliers_library.plot_test'
     def f_alt1(W, percentiles): return(np.percentile(W, percentiles))
     @mock.patch(f_name1, side_effect = f_alt1)
-    #@mock.patch(f_name2, return_value = 0.99)
     def test_estimate_tukey_params(self, mock1):
-        A, B, g, h = -1.5, 0.4, 0.5, 0.1
-        z = np.random.normal(0, 1, 100000000)
+        A, B, g, h = -1.5, 0.4, 1/(np.e), 1/(np.e**3)
+        z = np.random.normal(0, 1, 1000000)
         W  = A + B*(1/(g + 1E-10))*(np.exp((g + 1E-10)*z)-1)*np.exp(h*(z**2)/2)
         A2, B2, g2, h2, W_ignored = main_lib.estimate_tukey_params(np.array(W), 99.9, True)
-        rounded_estimates = np.round([A2, B2, g2, h2], 1).tolist()  
-        is_correct = np.all(np.isclose([A, B, g, h], rounded_estimates))
+        rounded_estimates = np.round([A2, B2, np.log(g2)/10, np.log(h2)/10], 1)
+        correct_vals = np.array([-1.5, 0.4, -0.1, -0.3])
+        is_correct = np.all(correct_vals == rounded_estimates)
         self.assertTrue(is_correct, "test_estimate_tukey_params may have a math error")
 
-    
     f_name1 = 'STAR_outliers_library.approximate_quantiles'
     f_name2 = 'STAR_outliers_library.adjust_median_values'
     def f_alt1(W, percentiles): return(np.percentile(W, percentiles))
     @mock.patch(f_name1, side_effect = f_alt1)
     @mock.patch(f_name2, side_effect = lambda x, Q_vec: x)
     def test_compute_w(self, mock1, mock2):
-        np.random.seed(0)
         x = np.random.uniform(0, 1, 100000000)
         W = main_lib.compute_w(x)
         #should be a standard normal distribution
@@ -63,7 +60,6 @@ class test_main_library(unittest.TestCase):
         self.assertTrue(is_correct, "compute_w may have a math error")
 
     def test_estimate_tukey_mixture(self):
-        np.random.seed(0)
         A1, B1, g1, h1 = -1.5, 0.2, 1/(np.e), 1/(np.e**3)
         A2, B2, g2, h2 = 1.5, 0.4, 1/(np.e**2), 1/(np.e**4)
         W1 = main_lib.fit_TGH(A1, B1, g1, h1, 200000)
