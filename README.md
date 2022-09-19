@@ -1,3 +1,54 @@
+## About REGENS :dna:
+
+## Instructions to Installing REGENS :hammer_and_wrench:
+
+## Input :turkey:
+
+## Output :poultry_leg:
+
+## thing1 :computer:
+
+## thing2 :abacus:
+
+## :apple: thing3 :green_apple:
+
+### Example 1: ... :arrow_lower_right:
+
+### Example 2: ... :arrow_heading_down:
+
+### Example 3: ... :twisted_rightwards_arrows:
+
+## supplementary details :european_castle:
+
+Thank you concerned reader (for making it this far)!
+
+But our full analysis is in [another repository](https://github.com/EpistasisLab/regens-analysis)!
+
+## Repository structure
+
+### Folders in the repository :file_cabinet:
+
+  * `images`: contains figures that are either displayed or linked to in this github README
+  * `paper`: A directory containing the paper's md file, bib file, and figure
+  * `thinning_methods`: All code that was used to select 500000 SNPs from the 1000 genomes project's genotype data
+
+### Files :file_folder:
+
+  * `regens.py`: the main file that runs the regens algorithm
+  * `regens_library.py`: functions that the regens algorithm uses repeatedly. 
+  * `regens_testers.py`: functions used exclusively for correctness testing and unit testing
+  * `setup.py` and `_init_.py`: allows regens to be installed with pip
+  * `requirements.txt`: lists REGENS' dependencies
+  * `regens_tests_info.md`: Installing REGENS also downloads four folders that test REGENS' functionality. The [regens_tests_info.md](https://github.com/EpistasisLab/regens/blob/main/regens_tests_info.md) file explains what they test.   
+  
+## Contributing :thumbsup:
+If you find any bugs or have any suggestions/questions, please feel free to [post an issue](https://github.com/EpistasisLab/regens/issues/new)! 
+Please refer to our [contribution guide](CONTRIBUTING.md) for more details.
+Thanks for your support!
+
+## License
+MIT + file LICENSE
+
 ## About STAR_outliers
 
 STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open source python package that determines which points are outliers relative to their distributions shapes. An exponential tail fit is used to determine outlier status if the distribution behaves in a sufficiently exponential-like manner. Otherwise, the data is transformed and fitted to a four parameteter tukey distribution as described in the paper titled 'Outlier identification for skewed and/or heavy-tailed unimodal multivariate distributions'.
