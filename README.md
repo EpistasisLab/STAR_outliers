@@ -30,7 +30,9 @@ file_name.txt.
 
 ## Examples
 
-![Real and simulated R value vs. MAF](images/bimodal_fit.png)
+![bimodal fit 1](images/bimodal_fit.png)
+![bimodal fit 2](images/bimodal_fit2.png)
+![discrete fit](images/discrete_fit.png)
 
 ## Repository structure
 
