@@ -37,6 +37,7 @@ file_name.txt.
 ### Folders in the repository :file_cabinet:
 
   * `test_units`: contains code that confirms that many of the main functions work correctly both together and individually. 
+  * `images`: contains examples of how STAR_outliers can effectively fit unusually shaped distributions. 
 
 ### Files :file_folder:
 
