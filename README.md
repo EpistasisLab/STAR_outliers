@@ -17,16 +17,16 @@ STAR_outliers handles discreteness by replacing the original tukey parameter est
 
 ## Input :turkey:
 
-file_name.txt: A tab-delimited numeric datafile with continuous or discrete data columns (named "file_name.txt" in this example). Missing values are allowed. Each feature must have ten unique values in order to remove outliers. 
+  * `file_name.txt`: A tab-delimited numeric datafile with continuous or discrete data columns (named "file_name.txt" in this example). Missing values are allowed. Each feature must have ten unique values in order to remove outliers. 
 
 ## Output :poultry_leg:
 
-file_name_cleaned_data.txt: A tab-delimited numeric datafile. Detected outliers are replaced with missing values. It is otherwise equivalent to 
+  * `file_name_cleaned_data.txt`: A tab-delimited numeric datafile. Detected outliers are replaced with missing values. It is otherwise equivalent to 
 file_name.txt. 
-file_name_outlier_info.txt: the first column contains the column names from file_name.txt. Successive columns contain respective values for the percentage of non-outlier values,	the minimum feature value,	the low outlier cutoff value, the dataset	median, the high outlier cutoff value, and the	maximum feature value.
-file_name_all_fits.txt: Contains the percentage of the dataset's histogram that overlaps with the fitted tukey's histogram. All values above 0.9 are good. Values will be below 0.9 if the data is discrete (because the fitted tukey is continuous), but the fit may still be good if the outlier cutoff looks appropriate. 
-file_name_outlier_plots: histograms displaying the distributions with their fitted tukeys. Red is the real data, blue is the fitted model, and maroon is the overlapping region. 
-file_name_outlier_plots_untransformed: histograms displaying the untransformed data along with the lower and upper outlier bound cutoffs. 
+  * `file_name_outlier_info.txt`: the first column contains the column names from file_name.txt. Successive columns contain respective values for the percentage of non-outlier values,	the minimum feature value,	the low outlier cutoff value, the dataset	median, the high outlier cutoff value, and the	maximum feature value.
+  * `file_name_all_fits.txt`: Contains the percentage of the dataset's histogram that overlaps with the fitted tukey's histogram. All values above 0.9 are good. Values will be below 0.9 if the data is discrete (because the fitted tukey is continuous), but the fit may still be good if the outlier cutoff looks appropriate. 
+  * `file_name_outlier_plots`: histograms displaying the distributions with their fitted tukeys. Red is the real data, blue is the fitted model, and maroon is the overlapping region. 
+  * `file_name_outlier_plots_untransformed`: histograms displaying the untransformed data along with the lower and upper outlier bound cutoffs. 
 
 ## Repository structure
 
