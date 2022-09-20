@@ -1,8 +1,8 @@
 ## About STAR_outliers :sun_with_face:
 
-STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open source python package that identifies univariate outliers relative to their distributions shapes. Univariate distributions are initially transformed as described in 'Outlier identification for skewed and/or heavy-tailed unimodal multivariate distributions'. Data transformed in this way often fits well to a four parameter tukey distribution, but not if the data is originally monotonic, highly skewed, multimodal, or discrete. 
+STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open source python package that identifies univariate outliers relative to their distributions shapes. Univariate distributions are initially transformed as described in 'Outlier identification for skewed and/or heavy-tailed unimodal multivariate distributions'. Data transformed in this way often fits well to a four parameter tukey distribution, but not if the data is originally monotonic, highly skewed, multimodal, or discrete. STAR_outliers implements several modifications that robustly handle all of these cases.
 
-STAR_outliers 
+STAR_outliers handles discreteness by replacing the original tukey parameter estimates (based on only 4 fixed quantiles) with quantile regression that considers quantiles 1 through 99 in intervals of 1, which robustly accounts for single scalars that occupy entire quantile ranges. We handle monotonic data by mirroring the distribution accross the broad side prior to transforming it, and we handle skewed data by splitting it at the peak and treating each side as though it were nmonotonic. Finally, we handle multimodal data by fitting a bimodal tukey mixture model with a custom numerical EM algorithm. 
 
 ## Instructions to Installing REGENS :hammer_and_wrench:
 
