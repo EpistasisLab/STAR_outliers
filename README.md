@@ -32,22 +32,20 @@ file_name.txt.
 
 ### Folders in the repository :file_cabinet:
 
-  * `images`: contains figures that are either displayed or linked to in this github README
-  * `paper`: A directory containing the paper's md file, bib file, and figure
-  * `thinning_methods`: All code that was used to select 500000 SNPs from the 1000 genomes project's genotype data
+  * `test_units`: contains code that confirms that many of the main functions work correctly both together and individually. 
 
 ### Files :file_folder:
 
-  * `regens.py`: the main file that runs the regens algorithm
-  * `regens_library.py`: functions that the regens algorithm uses repeatedly. 
-  * `regens_testers.py`: functions used exclusively for correctness testing and unit testing
-  * `setup.py` and `_init_.py`: allows regens to be installed with pip
-  * `requirements.txt`: lists REGENS' dependencies
-  * `regens_tests_info.md`: Installing REGENS also downloads four folders that test REGENS' functionality. The [regens_tests_info.md](https://github.com/EpistasisLab/regens/blob/main/regens_tests_info.md) file explains what they test.   
+  * `STAR_outliers.py`: the main file that runs the algorithm
+  * `STAR_outliers_library.py`: primary functions for tukey transformation and fitting
+  * `STAR_outliers_plotting_library.py`: functions used for generating outlier plots
+  * `STAR_outliers_polishing_library.py`: functions used to remove large spikes from distributions, making sure that a large number of points are not exactly equal to the median, and approximating quantiles for initial parameter estimates prior to quantile regression. 
+  * `STAR_outliers_testing_library.py`: functions used to test each scalar distribution for monotonicity and multimodality. Functions are also used to split datasets at the peak and for mirroring monotonic data.
+  * `setup.py` and `_init_.py`: allows STAR_outliers to be installed with pip
+  * `requirements.txt`: lists STAR_outliers' dependencies
   
 ## Contributing :thumbsup:
-If you find any bugs or have any suggestions/questions, please feel free to [post an issue](https://github.com/EpistasisLab/regens/issues/new)! 
-Please refer to our [contribution guide](CONTRIBUTING.md) for more details.
+If you find any bugs or have any suggestions/questions, please feel free to [post an issue](https://github.com/EpistasisLab/STAR_outliers/issues/new)! 
 Thanks for your support!
 
 ## License
