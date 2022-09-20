@@ -12,30 +12,21 @@ STAR_outliers handles discreteness by replacing the original tukey parameter est
 4. Enter ```conda activate outliers``` in the terminal to enter your new environment. If that doesn't work, enter ```source activate outliers```
 5. Enter ```conda install -c conda-forge matplotlib```
 6. Enter ```pip install STAR-outliers```
-7. Run ```python -m STAR_outliers --input [file_path]``` to remove univariate outliers from every column.
-8. If one column is a sample index, then specify that with ```path -m STAR_outliers --input [file_path] --index [index_name]```
+7. Run ```python -m STAR_outliers --input file_name.txt``` to remove univariate outliers from every column.
+8. If one column is a sample index, then specify that with ```path -m STAR_outliers --input file_name.txt --index index_name```
 
 ## Input :turkey:
 
+file_name.txt: A tab-delimited numeric datafile with continuous or discrete data columns (named "file_name.txt" in this example). Missing values are allowed. Each feature must have ten unique values in order to remove outliers. 
+
 ## Output :poultry_leg:
 
-## thing1 :computer:
-
-## thing2 :abacus:
-
-## :apple: thing3 :green_apple:
-
-### Example 1: ... :arrow_lower_right:
-
-### Example 2: ... :arrow_heading_down:
-
-### Example 3: ... :twisted_rightwards_arrows:
-
-## supplementary details :european_castle:
-
-Thank you concerned reader (for making it this far)!
-
-But our full analysis is in [another repository](https://github.com/EpistasisLab/regens-analysis)!
+file_name_cleaned_data.txt: A tab-delimited numeric datafile. Detected outliers are replaced with missing values. It is otherwise equivalent to 
+file_name.txt. 
+file_name_outlier_info.txt: the first column contains the column names from file_name.txt. Successive columns contain respective values for the percentage of non-outlier values,	the minimum feature value,	the low outlier cutoff value, the dataset	median, the high outlier cutoff value, and the	maximum feature value.
+file_name_all_fits.txt: Contains the percentage of the dataset's histogram that overlaps with the fitted tukey's histogram. All values above 0.9 are good. Values will be below 0.9 if the data is discrete (because the fitted tukey is continuous), but the fit may still be good if the outlier cutoff looks appropriate. 
+file_name_outlier_plots: histograms displaying the distributions with their fitted tukeys. Red is the real data, blue is the fitted model, and maroon is the overlapping region. 
+file_name_outlier_plots_untransformed: histograms displaying the untransformed data along with the lower and upper outlier bound cutoffs. 
 
 ## Repository structure
 
