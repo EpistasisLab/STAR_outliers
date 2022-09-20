@@ -1,4 +1,6 @@
-## About REGENS :dna:
+## About STAR_outliers :sun_with_face:
+
+STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open source python package that determines which points are outliers relative to their distributions shapes. An exponential tail fit is used to determine outlier status if the distribution behaves in a sufficiently exponential-like manner. Otherwise, the data is transformed and fitted to a four parameteter tukey distribution as described in the paper titled 'Outlier identification for skewed and/or heavy-tailed unimodal multivariate distributions'.
 
 ## Instructions to Installing REGENS :hammer_and_wrench:
 
@@ -48,10 +50,6 @@ Thanks for your support!
 
 ## License
 MIT + file LICENSE
-
-## About STAR_outliers
-
-STAR_outliers (Skew and Tail-heaviness Adjusted Removal of outliers) is an open source python package that determines which points are outliers relative to their distributions shapes. An exponential tail fit is used to determine outlier status if the distribution behaves in a sufficiently exponential-like manner. Otherwise, the data is transformed and fitted to a four parameteter tukey distribution as described in the paper titled 'Outlier identification for skewed and/or heavy-tailed unimodal multivariate distributions'.
 
 ## Instructions to Installing STAR_outliers
 
