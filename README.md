@@ -12,8 +12,8 @@ STAR_outliers handles discreteness by replacing the original tukey parameter est
 4. Enter ```conda activate outliers``` in the terminal to enter your new environment. If that doesn't work, enter ```source activate outliers```
 5. Enter ```conda install -c conda-forge matplotlib```
 6. Enter ```pip install STAR-outliers```
-7. Run ```python -m STAR_outliers --input [path_to_input_file] to remove univariate outliers from every column.
-8. If one column is a sample index, then specify that with ```path -m STAR_outliers --input [path_to_input_file] --index [index column name]```
+7. Run ```python -m STAR_outliers --input [file_path]''' to remove univariate outliers from every column.
+8. If one column is a sample index, then specify that with ```path -m STAR_outliers --input [file_path] --index [index_name]```
 
 ## Input :turkey:
 
