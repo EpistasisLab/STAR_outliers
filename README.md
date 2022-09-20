@@ -30,7 +30,7 @@ file_name.txt.
 
 ## Examples
 
-![Real and simulated R value vs. MAF](images/r_maf_ACB.png)
+![Real and simulated R value vs. MAF](images/bimodal_fit.png)
 
 ## Repository structure
 
