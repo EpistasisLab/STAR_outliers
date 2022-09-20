@@ -28,6 +28,10 @@ file_name.txt.
   * `file_name_outlier_plots`: histograms displaying the distributions with their fitted tukeys. Red is the real data, blue is the fitted model, and maroon is the overlapping region. 
   * `file_name_outlier_plots_untransformed`: histograms displaying the untransformed data along with the lower and upper outlier bound cutoffs. 
 
+## Examples
+
+![Real and simulated R value vs. MAF](images/r_maf_ACB.png)
+
 ## Repository structure
 
 ### Folders in the repository :file_cabinet:
@@ -42,6 +46,7 @@ file_name.txt.
   * `STAR_outliers_polishing_library.py`: functions used to remove large spikes from distributions, making sure that a large number of points are not exactly equal to the median, and approximating quantiles for initial parameter estimates prior to quantile regression. 
   * `STAR_outliers_testing_library.py`: functions used to test each scalar distribution for monotonicity and multimodality. Functions are also used to split datasets at the peak and for mirroring monotonic data.
   * `setup.py` and `_init_.py`: allows STAR_outliers to be installed with pip
+  * `all_2018_processed.txt`: a curated NHANES 2018 dataset. Curation namely involved transforming categorical variables into binary encodings. Used as input for the testing code in `unit_tests`
   * `requirements.txt`: lists STAR_outliers' dependencies
   
 ## Contributing :thumbsup:
