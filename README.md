@@ -6,14 +6,37 @@ STAR_outliers handles discreteness by replacing the original tukey parameter est
 
 ## Instructions to Installing STAR_outliers :hammer_and_wrench:
 
-1. [Install conda](https://docs.conda.io/en/latest/miniconda.html) if you haven't already installed either Anaconda or Miniconda
-2. Open your conda terminal. 
-3. Enter ```conda create --name outliers python=3.7``` in the terminal to create a new environment called outliers with python version 3.7]
-4. Enter ```conda activate outliers``` in the terminal to enter your new environment. If that doesn't work, enter ```source activate outliers```
-5. Enter ```conda install -c conda-forge matplotlib```
-6. Enter ```pip install STAR-outliers```
-7. Run ```python -m STAR_outliers --input file_name.txt``` to remove univariate outliers from every column.
-8. If one column is a sample index, then specify that with ```path -m STAR_outliers --input file_name.txt --index index_name```
+The installation process should take no longer than a few minutes.
+
+### Prerequisite
+
+[Install conda](https://docs.conda.io/en/latest/miniconda.html) if you haven't already installed either Anaconda or Miniconda.
+
+### Installation
+Now, in your (conda) terminal, cd to your project directory and:
+
+```
+# create a new environment called outliers with python version 3.7
+conda create --name outliers python=3.7
+# enter your new environment
+conda activate outliers 
+# or `source activate outliers` if you have an older version of conda
+conda install -c conda-forge matplotlib
+pip install STAR-outliers
+```
+
+### Usage
+
+We can now use STAR_Outliers to label as NA univariate outliers from every column
+(see the Output section below for more).
+```
+python -m STAR_outliers --input file_name.txt
+``` 
+
+If one column is a sample index (_e.g._, index_name), then specify that with 
+```
+path -m STAR_outliers --input file_name.txt --index index_name
+```
 
 ## Input :turkey:
 
