@@ -208,21 +208,30 @@ def test_multimodality(data, n_bins, not_sensitive = False):
     else:
         return(False)
 
-def test_monotonicity(data_body, data, pcutoff, n_bins, not_sensitive = False):
-    x, y = bin_data(data_body, n_bins)
+def test_monotonicity(data_body, data, pcutoff, n_bins, not_sensitive = False, discrete = False):
+    if discrete:
+        x, y = np.unique(data_body, return_counts = True)
+    else:
+        x, y = bin_data(data_body, n_bins)
     r, p = spearmanr(x, y)
     if r > 0 and p < 0.001:
         status = "increasing"
         data_flipped = data_body + 2*(np.max(data_body) - data_body)
-        data2 = np.concatenate([data_body, data_flipped])        
-        is_monotonic = (test_multimodality(data2, n_bins, not_sensitive) == False)
+        data2 = np.concatenate([data_body, data_flipped])
+        if discrete:
+            is_monotonic =  np.all(y[1:] - y[:-1] > 0)
+        else:
+            is_monotonic = (test_multimodality(data2, n_bins, not_sensitive) == False)
         data_flipped2 = data + 2*(np.max(data) - data) + 1E-7
         mirrored_data = np.concatenate([data, data_flipped2])
     elif r < 0 and p < 0.001:
         status = "decreasing"
         data_flipped = data_body + 2*(np.min(data_body) - data_body)
         data2 = np.concatenate([data_body, data_flipped])
-        is_monotonic = (test_multimodality(data2, n_bins, not_sensitive) == False)
+        if discrete:
+            is_monotonic =  np.all(y[1:] - y[:-1] < 0)
+        else:
+            is_monotonic = (test_multimodality(data2, n_bins, not_sensitive) == False)
         data_flipped2 = data + 2*(np.min(data) - data) - 1E-7
         mirrored_data = np.concatenate([data, data_flipped2])
     else:
