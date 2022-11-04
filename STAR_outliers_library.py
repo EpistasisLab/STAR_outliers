@@ -533,7 +533,7 @@ def compute_outliers(x_spiked, name, prefix, pcutoff, continuity_threshold):
     outlier_info.append(np.nanmax(x_spiked_old))
     return(x_spiked_new, area_overlap, outlier_info)
 
-def remove_all_outliers(input_file_name, index_name, pcutoff, continuity_threshold):
+def remove_all_outliers(input_file_name, index_name, pcutoff, continuity_threshold = 60):
     
     fields = pd.read_csv(input_file_name, delimiter = "\t", header = 0)
     field_names = fields.columns
