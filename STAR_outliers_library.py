@@ -156,7 +156,7 @@ def compute_w(x):
     Q_vec = np.percentile(x, [10, 25, 50, 75, 90])
     x_main = x[np.logical_and(x <= Q_vec[4], x >= Q_vec[0])]
     if len(np.unique(Q_vec)) != 5:
-        Q_vec = approximate_quantiles(x, [10, 25, 50, 75, 90])
+            Q_vec = approximate_quantiles(x, [10, 25, 50, 75, 90])
     x2 = adjust_median_values(x, Q_vec)
     
     c = 0.7413
@@ -166,8 +166,11 @@ def compute_w(x):
     ASO = np.zeros(len(x2))
     ASO[x2 >= Q_vec[2]] = ASO_high[x2 >= Q_vec[2]]
     ASO[x2 < Q_vec[2]] = ASO_low[x2 < Q_vec[2]]
-    
-    W = norm.ppf((ASO + 1E-10)/(np.min(ASO) + np.max(ASO) + 2E-10))
+
+    inside = (ASO + 1E-10)/(np.min(ASO) + np.max(ASO) + 2E-10)
+    inside[inside == 1] = np.max([1 - 1E-10, np.max(inside[inside < 1])])
+    inside[inside == 0] = np.min([1E-10, np.min(inside[inside > 0])])
+    W = norm.ppf(inside)
     return(W)
 
 class Tukey:
@@ -309,6 +312,7 @@ def estimate_tukey_mixture(W, stable = True, no_penalty = False, q_bounds = [1, 
                     param_seq.append([(A1, B1, g1, h1, pi1), (A2, B2, g2, h2, pi2)])
 
                     # E step part1
+                    
                     T1 = Tukey(A1, B1, g1, h1, pi1, N, cutoff)
                     T2 = Tukey(A2, B2, g2, h2, pi2, N, cutoff)
 
@@ -364,43 +368,57 @@ def get_body(x):
             x_body = x_body[x_body < p4]
         return(x_body)
 
-def get_outlier_fit(x, x_spiked, name, pcutoff, spike_vals, prefix):
+def get_outlier_fit(x, x_spiked, name, pcutoff, spike_vals, prefix, continuity_threshold):
     x_body = get_body(x)
-    n_bins = np.max([int(len(x_body)/200), 50])
+    min_thresh = np.min([int(len(x_body)/200), len(np.unique(x_body))])
+    n_bins = np.max([min_thresh, 50])
     out = test_monotonicity(x_body, x, 100*pcutoff, n_bins, not_sensitive = True)
     is_monotonic, mirrored_data, status = out
     num_unique = len(np.unique(x_body))
-    is_low_count = num_unique < 60
+    is_low_count = num_unique < continuity_threshold
+    if is_low_count:
+        out2 = test_monotonicity(x_body, x, 100*pcutoff, n_bins, not_sensitive = True, discrete = True)
+        if out2[0] == True:
+            is_monotonic, mirrored_data, status = out2
     if is_monotonic or is_low_count:
         is_multimodal = False
     else:
         is_multimodal = test_multimodality(x_body, n_bins)
     dist_type = [is_monotonic, is_multimodal, is_low_count]
-    if is_multimodal or is_low_count:
+    if is_multimodal:
         x_outliers, area_overlap = fit_tukey(x, mirrored_data, None, n_bins, dist_type,
                                              name, pcutoff, spike_vals, prefix)
     elif is_monotonic:
         x_outliers, area_overlap = fit_tukey(x, mirrored_data, status, n_bins, dist_type,
                                              name, pcutoff, spike_vals, prefix)
     else:
-        peak = get_smooth_peak(x_body)
-        left_half, right_half = x[x <= peak], x[x >= peak]
-        left_mirror = 2*np.max(left_half) - left_half
-        right_mirror = 2*np.min(right_half) - right_half
-        x_left = np.concatenate([left_half, left_mirror])
-        x_right = np.concatenate([right_half, right_mirror])
-        all_x_outliers, all_area_overlap = [], []
-        for x_side, side in [(x_left, "_left"), (x_right, "_right")]:
-            x_outliers, area_overlap = fit_tukey(x_side, mirrored_data, side, n_bins,
-                                                 dist_type, (name + side), pcutoff,
-                                                 spike_vals, prefix, yes_plot_x = False)
-            all_x_outliers.append(x_outliers)
-            all_area_overlap.append(area_overlap)
+        if is_low_count:
+            values, counts = np.unique(x_body, return_counts = True)
+            peak = values[np.argmax(counts)]
+        else:
+            peak = get_smooth_peak(x_body)
 
-        x_outliers = np.union1d(*all_x_outliers)
-        plot_x(x, x_outliers, spike_vals, name, prefix, n_bins)
-        p_vec = np.array([len(left_half)/len(x), len(right_half)/len(x)])
-        area_overlap = np.sum(p_vec*np.array(all_area_overlap))
+        if peak == np.min(x) or peak == np.max(x):
+            x_outliers, area_overlap = fit_tukey(x, mirrored_data, None, n_bins, dist_type,
+                                                 name, pcutoff, spike_vals, prefix)
+        else:
+            left_half, right_half = x[x <= peak], x[x >= peak]
+            left_mirror = 2*np.max(left_half) - left_half
+            right_mirror = 2*np.min(right_half) - right_half
+            x_left = np.concatenate([left_half, left_mirror])
+            x_right = np.concatenate([right_half, right_mirror])
+            all_x_outliers, all_area_overlap = [], []
+            for x_side, side in [(x_left, "_left"), (x_right, "_right")]:
+                x_outliers, area_overlap = fit_tukey(x_side, mirrored_data, side, n_bins,
+                                                     dist_type, (name + side), pcutoff,
+                                                     spike_vals, prefix, yes_plot_x = False)
+                all_x_outliers.append(x_outliers)
+                all_area_overlap.append(area_overlap)
+
+            x_outliers = np.union1d(*all_x_outliers)
+            plot_x(x, x_outliers, spike_vals, name, prefix, n_bins)
+            p_vec = np.array([len(left_half)/len(x), len(right_half)/len(x)])
+            area_overlap = np.sum(p_vec*np.array(all_area_overlap))
     x_spiked[np.isin(x_spiked, x_outliers)] = np.nan
     return(x_spiked, area_overlap)
 
@@ -416,11 +434,7 @@ def fit_tukey(x, mirrored_data, side, n_bins, dist_type,
 
     is_monotonic, is_multimodal, is_low_count = dist_type
     is_none = not(is_monotonic or is_multimodal or is_low_count)
-    if is_low_count:
-        W = compute_w(x)
-        A, B, g, h, void = estimate_tukey_params(W)
-        fitted_TGH = fit_TGH(A, B, g, h, 100000)
-    elif is_monotonic:
+    if is_monotonic:
         W = compute_w(mirrored_data)
         if test_multimodality(get_body(W), n_bins):
             output = estimate_tukey_mixture(W)
@@ -453,7 +467,7 @@ def fit_tukey(x, mirrored_data, side, n_bins, dist_type,
             fitted_TGH = np.concatenate([TGH1, TGH2])
     else:
         W = compute_w(x)
-        if test_multimodality(get_body(W), n_bins) and len(np.unique(W)) > 30:
+        if len(np.unique(W)) > 30 and test_multimodality(get_body(W), n_bins):
             output = estimate_tukey_mixture(W)
             if output == "use single tukey":
                 A, B, g, h, void = estimate_tukey_params(W)
@@ -500,7 +514,7 @@ def get_constrained_max(x_spiked, disallowed_vals):
     else:
         return(x_max)
 
-def compute_outliers(x_spiked, name, prefix, pcutoff):
+def compute_outliers(x_spiked, name, prefix, pcutoff, continuity_threshold):
 
     x_spiked = x_spiked.astype(float)
     x_spiked_old = COPY(x_spiked)
@@ -509,7 +523,8 @@ def compute_outliers(x_spiked, name, prefix, pcutoff):
 
     outlier_info = [name]
     old_count = np.sum(np.isnan(x_spiked)==False)
-    x_spiked_new, area_overlap = get_outlier_fit(x, x_spiked, name, pcutoff, spike_vals, prefix)
+    x_spiked_new, area_overlap = get_outlier_fit(x, x_spiked, name, pcutoff, spike_vals,
+                                                 prefix, continuity_threshold)
     outlier_info.append(np.sum(np.isnan(x_spiked_new)==False)/old_count)
     outlier_info.append(np.nanmin(x_spiked_old))
     outlier_info.append(get_constrained_min(x_spiked, spike_vals))
@@ -518,7 +533,7 @@ def compute_outliers(x_spiked, name, prefix, pcutoff):
     outlier_info.append(np.nanmax(x_spiked_old))
     return(x_spiked_new, area_overlap, outlier_info)
 
-def remove_all_outliers(input_file_name, index_name, pcutoff):
+def remove_all_outliers(input_file_name, index_name, pcutoff, continuity_threshold):
     
     fields = pd.read_csv(input_file_name, delimiter = "\t", header = 0)
     field_names = fields.columns
@@ -539,7 +554,7 @@ def remove_all_outliers(input_file_name, index_name, pcutoff):
             name = field_names[i]
             names.append(name)
             prefix = input_file_name.split(".")[0]
-            output = compute_outliers(field, name, prefix, pcutoff)
+            output = compute_outliers(field, name, prefix, pcutoff, continuity_threshold)
             
             cleaned_field_cols.append(output[0])
             area_overlap_vals.append(output[1])
