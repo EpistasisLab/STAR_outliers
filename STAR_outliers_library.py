@@ -412,14 +412,16 @@ def get_outlier_fit(x, x_spiked, name, pcutoff, spike_vals, prefix, continuity_t
                 x_outliers, area_overlap = fit_tukey(x_side, mirrored_data, side, n_bins,
                                                      dist_type, (name + side), pcutoff,
                                                      spike_vals, prefix, yes_plot_x = False)
-                all_x_outliers.append(x_outliers)
+                if side == "_left":
+                    all_x_outliers.append(x_outliers[x_outliers < peak])
+                else:
+                    all_x_outliers.append(x_outliers[x_outliers > peak])
                 all_area_overlap.append(area_overlap)
 
             x_outliers = np.union1d(*all_x_outliers)
             plot_x(x, x_outliers, spike_vals, name, prefix, n_bins)
             p_vec = np.array([len(left_half)/len(x), len(right_half)/len(x)])
             area_overlap = np.sum(p_vec*np.array(all_area_overlap))
-    x_spiked[np.isin(x_spiked, x_outliers)] = np.nan
     return(x_spiked, area_overlap)
 
 def fit_TGH(A, B, g, h, N):
