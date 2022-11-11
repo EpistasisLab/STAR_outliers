@@ -11,17 +11,13 @@ def main():
     parser.add_argument('--index ', type = str, action = "store", dest = "index")
     parser.add_argument('--pcutoff ', type = float, action = "store", dest = "pcutoff")
     parser.add_argument('--seed ', type = float, action = "store", dest = "seed")
-    parser.add_argument('--continuity_threshold ', type = int, action = "store", dest = "continuity_threshold")
     
     seed = parser.parse_args().seed
-    continuity_threshold = parser.parse_args().continuity_threshold
     if not seed is None:
         np.random.seed(seed = int(seed))
     pcutoff = parser.parse_args().pcutoff
     if pcutoff is None:
         pcutoff = 0.993
-    if continuity_threshold is None:
-        continuity_threshold  = 60
     input_file_name = parser.parse_args().input
     index_name = parser.parse_args().index
     split_name = input_file_name.split(".")
@@ -32,7 +28,7 @@ def main():
         exit()
     file_name_prefix = split_name[0]
 
-    output = remove_all_outliers(input_file_name, index_name, pcutoff, continuity_threshold)
+    output = remove_all_outliers(input_file_name, index_name, pcutoff)
     cleaned_data = output[0]
     area_overlap_vals = output[1]
     names = output[2]
