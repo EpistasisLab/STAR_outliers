@@ -391,9 +391,12 @@ def get_outlier_fit(x, x_spiked, name, pcutoff, spike_vals, prefix):
         x_right = np.concatenate([right_half, right_mirror])
         all_x_outliers, all_area_overlap = [], []
         for x_side, side in [(x_left, "_left"), (x_right, "_right")]:
-            x_outliers, area_overlap = fit_tukey(x_side, mirrored_data, side, n_bins,
-                                                 dist_type, (name + side), pcutoff,
-                                                 spike_vals, prefix, yes_plot_x = False)
+            if len(np.unique(x_side)) > 5:
+                x_outliers, area_overlap = fit_tukey(x_side, mirrored_data, side, n_bins,
+                                                     dist_type, (name + side), pcutoff,
+                                                     spike_vals, prefix, yes_plot_x = False)
+            else:
+                x_outliers, area_overlap = [], 1
             all_x_outliers.append(x_outliers)
             all_area_overlap.append(area_overlap)
 
