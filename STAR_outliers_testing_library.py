@@ -191,18 +191,26 @@ def compute_d(data, nbins, binned = False):
     return(bins, cdf_range_est, D)
 
 def test_multimodality(data, n_bins, not_sensitive = False):
+    
     bins, unimodal_cdf_range, D = compute_d(data, n_bins)
     diffs = []
     if D < 0.001 and not_sensitive or D < 0.0001:
         return(False)
-    for i in range(30):
-        indices = np.searchsorted(unimodal_cdf_range, np.random.rand(len(data)))
-        indices = np.concatenate([indices, np.arange(len(unimodal_cdf_range))])
-        void, unimodal_bin_counts = np.unique(indices, return_counts = True)
-        unimodal_bin_counts -= np.ones(len(unimodal_bin_counts), dtype = int)
-        binned_data = [bins, unimodal_bin_counts]
-        void, void, Db = compute_d(binned_data, n_bins, binned = True)
-        diffs.append(Db)
+    i = 0
+    while i < 30:
+        try:
+            indices = np.searchsorted(unimodal_cdf_range, np.random.rand(len(data)))
+            indices = np.concatenate([indices, np.arange(len(unimodal_cdf_range))])
+            void, unimodal_bin_counts = np.unique(indices, return_counts = True)
+            unimodal_bin_counts -= np.ones(len(unimodal_bin_counts), dtype = int)
+            binned_data = [bins, unimodal_bin_counts]        
+            void, void, Db = compute_d(binned_data, n_bins, binned = True)
+            diffs.append(Db)
+            i += 1
+        except:
+            if i > 100:
+                print("there may be a bug in compute_d")
+                exit()
     if D > np.max(diffs):
         return(True)
     else:
